@@ -5,7 +5,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 
 
-public class CannonSign
+public class CraftSign
 {
 
 	

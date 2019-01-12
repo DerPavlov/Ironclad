@@ -8,14 +8,14 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.sql.PreparedStatement;
 import java.util.UUID;
 
-public class SaveCannonTask extends BukkitRunnable {
+public class SaveCraftTask extends BukkitRunnable {
 
     private UUID cannonId = null;
-    public SaveCannonTask(UUID cannonId){
+    public SaveCraftTask(UUID cannonId){
         this.cannonId = cannonId;
     }
 
-    public SaveCannonTask(){
+    public SaveCraftTask(){
         this.cannonId = null;
     }
 

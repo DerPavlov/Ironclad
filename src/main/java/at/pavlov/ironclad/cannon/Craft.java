@@ -15,7 +15,7 @@ import org.bukkit.util.Vector;
 import at.pavlov.ironclad.Enum.MessageEnum;
 import at.pavlov.ironclad.container.SimpleBlock;
 import at.pavlov.ironclad.utils.InventoryManagement;
-import at.pavlov.ironclad.sign.CannonSign;
+import at.pavlov.ironclad.sign.CraftSign;
 
 public class Craft
 {
@@ -525,7 +525,7 @@ public class Craft
         // goto the first cannon sign
         for (Location signLoc : design.getChestsAndSigns(this))
         {
-            lineStr = CannonSign.getLineOfThisSign(signLoc.getBlock(), line);
+            lineStr = CraftSign.getLineOfThisSign(signLoc.getBlock(), line);
             // if something is found return it
             if (lineStr != null && !lineStr.equals(""))
             {

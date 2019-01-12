@@ -3,7 +3,7 @@ package at.pavlov.ironclad.dao;
 import at.pavlov.ironclad.Ironclad;
 import at.pavlov.ironclad.cannon.Craft;
 import at.pavlov.ironclad.cannon.CraftDesign;
-import at.pavlov.ironclad.scheduler.CreateCannon;
+import at.pavlov.ironclad.scheduler.CreateCraft;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
@@ -17,8 +17,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class LoadCannonTask extends BukkitRunnable{
-    public LoadCannonTask(){
+public class LoadCraftTask extends BukkitRunnable{
+    public LoadCraftTask(){
 
     }
 
@@ -88,7 +88,7 @@ public class LoadCannonTask extends BukkitRunnable{
                     craft.setPaid(rs.getBoolean("paid"));
 
                     //add a craft to the craft list
-                    BukkitTask task = new CreateCannon(Ironclad.getPlugin(), craft, false).runTask(Ironclad.getPlugin());
+                    BukkitTask task = new CreateCraft(Ironclad.getPlugin(), craft, false).runTask(Ironclad.getPlugin());
                     //plugin.createCannon(craft);
                     i++;
                 }

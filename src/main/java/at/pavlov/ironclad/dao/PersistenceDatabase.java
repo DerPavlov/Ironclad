@@ -35,7 +35,7 @@ public class PersistenceDatabase
         }
 		plugin.getCraftManager().clearCannonList();
 
-	    LoadCannonTask task = new LoadCannonTask();
+	    LoadCraftTask task = new LoadCraftTask();
 	    task.runTaskAsynchronously(plugin);
 	}
 
@@ -44,7 +44,7 @@ public class PersistenceDatabase
 			plugin.logSevere("No connection to database");
 			return;
 		}
-		SaveCannonTask saveCannonTask = new SaveCannonTask();
+		SaveCraftTask saveCannonTask = new SaveCraftTask();
 		if (async)
 			saveTask = saveCannonTask.runTaskAsynchronously(plugin);
 		else
@@ -56,7 +56,7 @@ public class PersistenceDatabase
 			plugin.logSevere("No connection to database");
 			return;
 		}
-		SaveCannonTask saveCannonTask = new SaveCannonTask(craft.getUID());
+		SaveCraftTask saveCannonTask = new SaveCraftTask(craft.getUID());
 		saveTask = saveCannonTask.runTaskAsynchronously(plugin);
 	}
 
@@ -69,8 +69,8 @@ public class PersistenceDatabase
 			plugin.logSevere("No connection to database");
 			return;
 		}
-		DeleteCannonTask deleteCannonTask = new DeleteCannonTask(cannon_id);
-		deleteCannonTask.runTaskAsynchronously(plugin);
+		DeleteCraftTask deleteCraftTask = new DeleteCraftTask(cannon_id);
+		deleteCraftTask.runTaskAsynchronously(plugin);
 	}
 
 	public void deleteAllCrafts(){
@@ -78,8 +78,8 @@ public class PersistenceDatabase
 			plugin.logSevere("No connection to database");
 			return;
 		}
-		DeleteCannonTask deleteCannonTask = new DeleteCannonTask();
-		deleteCannonTask.runTaskAsynchronously(plugin);
+		DeleteCraftTask deleteCraftTask = new DeleteCraftTask();
+		deleteCraftTask.runTaskAsynchronously(plugin);
 	}
 
 	public void deleteCrafts(UUID player_id){
@@ -87,7 +87,7 @@ public class PersistenceDatabase
 			plugin.logSevere("No connection to database");
 			return;
 		}
-		DeleteCannonTask deleteCannonTask = new DeleteCannonTask(player_id, true);
-		deleteCannonTask.runTaskAsynchronously(plugin);
+		DeleteCraftTask deleteCraftTask = new DeleteCraftTask(player_id, true);
+		deleteCraftTask.runTaskAsynchronously(plugin);
 	}
 }

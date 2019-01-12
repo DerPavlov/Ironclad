@@ -6,20 +6,20 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.sql.Statement;
 import java.util.UUID;
 
-public class DeleteCannonTask extends BukkitRunnable{
+public class DeleteCraftTask extends BukkitRunnable{
     private UUID cannonId = null;
     private UUID playerId = null;
-    public DeleteCannonTask(){
+    public DeleteCraftTask(){
         this.cannonId = null;
         this.playerId = null;
     }
 
-    public DeleteCannonTask(UUID cannonId){
+    public DeleteCraftTask(UUID cannonId){
         this.cannonId = cannonId;
         this.playerId = null;
     }
 
-    public DeleteCannonTask(UUID playerId, boolean player){
+    public DeleteCraftTask(UUID playerId, boolean player){
         this.cannonId = null;
         this.playerId = playerId;
     }
