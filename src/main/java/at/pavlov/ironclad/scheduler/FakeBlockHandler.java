@@ -168,7 +168,7 @@ public class FakeBlockHandler {
      */
     private void sendBlockChangeToPlayer(final Player player, final Location loc, BlockData blockData, FakeBlockType type, double duration)
     {
-        //only spawn block in air
+        //only create block in air
         if(loc.getBlock().isEmpty())
         {
             long time = System.currentTimeMillis();

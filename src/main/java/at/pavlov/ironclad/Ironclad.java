@@ -18,10 +18,12 @@ import at.pavlov.ironclad.config.*;
 import at.pavlov.ironclad.listener.*;
 import at.pavlov.ironclad.craft.CraftMovement;
 import at.pavlov.ironclad.scheduler.FakeBlockHandler;
+import com.sun.istack.internal.NotNull;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.block.BlockFace;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
@@ -371,7 +373,12 @@ public final class Ironclad extends JavaPlugin
 
 	public void createCannon(Craft craft, boolean saveToDatabase)
 	{
-		this.getCraftManager().createCannon(craft, saveToDatabase);
+		this.getCraftManager().createCraft(craft, saveToDatabase);
+	}
+
+	public void spawnCraft(@NotNull CraftDesign cannonDesign, @NotNull Location location, @NotNull BlockFace direction, @NotNull UUID playerUID){
+		Craft craft = new Craft(cannonDesign, location.getWorld().getUID(), location.toVector(), BlockFace.NORTH, playerUID);
+		craft.create();
 	}
 
     public IroncladAPI getCannonsAPI() {

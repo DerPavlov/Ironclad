@@ -68,7 +68,7 @@ imitatedEffects:
 
   #firing effect if the player is far away and display the aiming angle of the craft
   aiming:
-    #set to true to spawn a line of blocks while aiming
+    #set to true to create a line of blocks while aiming
     enabled: true
     #how long the aiming vector will be. Longer means it is easier to see where you are aiming
     length: 5
@@ -78,11 +78,11 @@ imitatedEffects:
     time: 0.5
 
   firing:
-    #will spawn fake blocks for players which are far away
+    #will create fake blocks for players which are far away
     enabled: true
-    #firing will spawn fire blocks if the player is far away
+    #firing will create fire blocks if the player is far away
     fireBlock: 'minecraft:glowstone'
-    #firing will spawn smoke blocks if the player is far away
+    #firing will create smoke blocks if the player is far away
     smokeBlock: 'minecraft:cobweb'
     #how long the effect will be displayed [s]
     time: 2

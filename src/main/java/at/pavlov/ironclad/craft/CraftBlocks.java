@@ -15,7 +15,8 @@ class CraftBlocks
     private ArrayList<SimpleBlock> allCannonBlocks = new ArrayList<>();
     private ArrayList<Vector> hullBlocks = new ArrayList<>();
 	private ArrayList<SimpleBlock> engines = new ArrayList<>();
-    private ArrayList<SimpleBlock> chests = new ArrayList<>();
+    private ArrayList<SimpleBlock> chest = new ArrayList<>();
+	private ArrayList<SimpleBlock> sign = new ArrayList<>();
     private ArrayList<Vector> destructibleBlocks = new ArrayList<>();
 
 	public Vector getRotationCenter()
@@ -26,7 +27,7 @@ class CraftBlocks
 	{
 		this.rotationCenter = rotationCenter;
 	}
-	public ArrayList<SimpleBlock> getAllCannonBlocks()
+	public ArrayList<SimpleBlock> getAllCraftBlocks()
 	{
 		return allCannonBlocks;
 	}
@@ -43,14 +44,14 @@ class CraftBlocks
 		this.hullBlocks = barrelBlocks;
 	}
 
-	public ArrayList<SimpleBlock> getChests()
+	public ArrayList<SimpleBlock> getChest()
 	{
-		return chests;
+		return chest;
 	}
 
-	protected void setChests(ArrayList<SimpleBlock> chests)
+	protected void setChest(ArrayList<SimpleBlock> chest)
 	{
-		this.chests = chests;
+		this.chest = chest;
 	}
 
 	public ArrayList<Vector> getDestructibleBlocks()
@@ -85,5 +86,13 @@ class CraftBlocks
 
 	protected void setMaxSize(Vector maxSize) {
 		this.maxSize = maxSize;
+	}
+
+	public ArrayList<SimpleBlock> getSign() {
+		return sign;
+	}
+
+	protected void setSign(ArrayList<SimpleBlock> sign) {
+		this.sign = sign;
 	}
 }

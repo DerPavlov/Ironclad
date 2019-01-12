@@ -36,7 +36,7 @@ public class BlockListener implements Listener
         }
 
         //ironclad event - remove unbreakable blocks like bedrock
-        //this will also affect other plugins which spawn bukkit explosions
+        //this will also affect other plugins which create bukkit explosions
         List<Block> blocks = event.blockList();
         for (int i = 0; i < blocks.size(); i++) {
             Block block = blocks.get(i);

@@ -295,7 +295,7 @@ public class CraftManager
 	 * @param craft create this craft
      * @param saveToDatabase if the craft will be saved to the database after loading
 	 */
-	public void createCannon(Craft craft, boolean saveToDatabase)
+	public void createCraft(Craft craft, boolean saveToDatabase)
 	{
         //the owner can't be null
 		if (craft.getOwner() == null)
@@ -537,7 +537,7 @@ public class CraftManager
                 if (!cbceEvent.isCancelled() && cbceEvent.getMessage() != null && cbceEvent.getMessage() == MessageEnum.CraftCreated)
                 {
                     plugin.logDebug("a new craft was created by " + craft.getOwner());
-                    createCannon(craft, true);
+                    createCraft(craft, true);
 
                     //send messages
                     if (!silent)
@@ -645,7 +645,6 @@ public class CraftManager
 				// rotate craft direction
 				cannonDirection = IroncladUtil.roatateFace(cannonDirection);
 			}
-
 		}
 		return null;
 	}

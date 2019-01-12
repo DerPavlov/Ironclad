@@ -27,6 +27,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Levelled;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.util.Vector;
@@ -234,7 +235,8 @@ public class DesignStorage
 		craftDesign.setSchematicBlockTypeIgnore(IroncladUtil.createBlockData(craftDesignConfig.getString("constructionBlocks.ignore", "minecraft:sand")));
 		craftDesign.setSchematicBlockTypeRotationCenter(IroncladUtil.createBlockData(craftDesignConfig.getString("constructionBlocks.rotationCenter", "minecraft:snow_block")));
 		craftDesign.setSchematicBlockTypeEngine(IroncladUtil.createBlockData(craftDesignConfig.getString("constructionBlocks.engine", "minecraft:furnace")));
-		craftDesign.setSchematicBlockTypeChest(IroncladUtil.createBlockData(craftDesignConfig.getString("constructionBlocks.chests", "minecraft:chest")));
+		craftDesign.setSchematicBlockTypeChest(IroncladUtil.createBlockData(craftDesignConfig.getString("constructionBlocks.chest", "minecraft:chest")));
+		craftDesign.setSchematicBlockTypeSign(IroncladUtil.createBlockData(craftDesignConfig.getString("constructionBlocks.sign", "minecraft:wall_sign")));
 		// protected Blocks
 		craftDesign.setSchematicBlockTypeProtected(IroncladUtil.toBlockDataList(craftDesignConfig.getStringList("constructionBlocks.protectedBlocks")));
 	}
@@ -269,9 +271,7 @@ public class DesignStorage
 			return false;
 		}
 
-		BlockVector3 ve = cc.getMinimumPoint().multiply();
-
-        AffineTransform transform = new AffineTransform().translate(cc.getMinimumPoint().multiply(-1)).rotateY(90);
+        AffineTransform transform = new AffineTransform().translate(cc.getMinimumPoint().multiply(-1));
         BlockTransformExtent extent = new BlockTransformExtent(cc, transform);
         ForwardExtentCopy copy = new ForwardExtentCopy(extent, cc.getRegion(), cc.getOrigin(), cc, BlockVector3.ZERO);
         copy.setTransform(transform);
@@ -287,6 +287,7 @@ public class DesignStorage
 		BlockData blockRotationCenter = cannonDesign.getSchematicBlockTypeRotationCenter();
 		BlockData blockEngine = cannonDesign.getSchematicBlockTypeEngine();
 		BlockData blockChest = cannonDesign.getSchematicBlockTypeChest();
+		BlockData blockSign = cannonDesign.getSchematicBlockTypeSign();
         List<BlockData> blockProtectedList = new ArrayList<BlockData>(cannonDesign.getSchematicBlockTypeProtected());
 		
 		
@@ -311,9 +312,8 @@ public class DesignStorage
 
 					BlockData block = Bukkit.getServer().createBlockData(blockState.getAsString());
 
-
 					// ignore if block is AIR, liquid or the IgnoreBlock type
-					if (!block.getMaterial().equals(Material.AIR) && !block.getMaterial().isSolid() && !block.matches(blockIgnore)) {
+					if (!block.getMaterial().equals(Material.AIR) && !(block instanceof  Levelled) && !block.matches(blockIgnore)) {
 						schematiclist.add(new SimpleBlock(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ(), block));
 					}
 				}
@@ -335,8 +335,8 @@ public class DesignStorage
 			// of all rotation blocks have to be found
 			// setting max to the size of the marked area is a good approximation
 			// if no rotationblock is given
-			Vector minRotation = new Vector(0, 0, 0);
-			Vector maxRotation = new Vector(width, height, length);
+			Vector minRotation = null;
+			Vector maxRotation = null;
 			boolean firstEntryRotation = true;
 
             for (SimpleBlock sblock : schematiclist) {
@@ -349,16 +349,16 @@ public class DesignStorage
 				if (firstEntrySize)
 				{
 					firstEntrySize = false;
-					minSize = new Vector(x, y, z);
-					maxSize = new Vector(x, y, z);
+					minSize = new Vector(0, 0, 0);
+					maxSize = new Vector(width, height, length);
 				}
 				else
 				{
 					minSize = findMinimum(x, y, z, minSize);
 					maxSize = findMaximum(x, y, z, maxSize);
 				}
-				//muzzle blocks need to be air - else the projectile would spawn in a block
-				cannonBlocks.getAllCannonBlocks().add(new SimpleBlock(x, y, z, Material.AIR));
+				//muzzle blocks need to be air - else the projectile would create in a block
+				cannonBlocks.getAllCraftBlocks().add(new SimpleBlock(x, y, z, Material.AIR.createBlockData()));
                 // #############  find the min and max for rotation blocks
                 if (sblock.compareMaterial(blockRotationCenter))
                 {
@@ -375,49 +375,65 @@ public class DesignStorage
                         maxRotation = findMaximum(x, y, z, maxRotation);
                     }
                 }
-				// #############  engines
+				// #############  engines ########################
 				else if (sblock.compareMaterial(blockEngine))
 				{
 					// the id does not matter
-					cannonBlocks.getEngines().add(new SimpleBlock(x, y, z, Material.FURNACE));
+					cannonBlocks.getEngines().add(new SimpleBlock(x, y, z, blockEngine));
 				}
-                // #############  chests
+                // #############  chests ########################
                 else if (sblock.compareMaterial(blockChest))
                 {
                     // the id does not matter, but the data is important for signs
-                    cannonBlocks.getChests().add(new SimpleBlock(x, y, z, Material.WALL_SIGN));
+                    cannonBlocks.getChest().add(new SimpleBlock(x, y, z, blockChest));
                 }
+				// #############  sign ########################
+				else if (sblock.compareMaterial(blockSign))
+				{
+					// the id does not matter, but the data is important for signs
+					cannonBlocks.getSign().add(new SimpleBlock(x, y, z, blockSign));
+				}
                 // #############  loading Interface is a cannonblock that is non of
                 // the previous blocks
                 else
                 {
                     // all remaining blocks are loading interface or cannonBlocks
                     cannonBlocks.getHullBlocks().add(new Vector(x, y, z));
-                    cannonBlocks.getAllCannonBlocks().add(new SimpleBlock(x, y, z, sblock.getBlockData()));
                     // this can be a destructible block
                     if (!isInList(blockProtectedList, sblock.getBlockData()))
                         cannonBlocks.getDestructibleBlocks().add(new Vector(x, y, z));
                 }
+                //all craft blocks. Ignore the rotation center
+                if (!sblock.compareMaterial(blockRotationCenter))
+					cannonBlocks.getAllCraftBlocks().add(new SimpleBlock(x, y, z, sblock.getBlockData()));
             }
 
 			// calculate the muzzle location
 			//maxSize.add(new Vector(1, 1, 1));
-			cannonBlocks.setMinSize(minSize);
-			cannonBlocks.setMaxSize(maxSize);
+			cannonBlocks.setMinSize(minSize.clone());
+			cannonBlocks.setMaxSize(maxSize.clone());
 
-			// calculate the rotation Center
-			maxRotation.add(new Vector(1, 1, 1));
-			cannonBlocks.setRotationCenter(maxRotation.add(maxRotation).multiply(0.5));
+			// calculate the rotation Center if a rotation center block was used, otherwise use the size of the craft
+			if (maxRotation != null){
+				maxRotation.add(new Vector(1, 1, 1));
+				cannonBlocks.setRotationCenter(maxRotation.add(minRotation).multiply(0.5));
+			}
+			else {
+				maxRotation = maxSize.clone().add(new Vector(1, 1, 1));
+				cannonBlocks.setRotationCenter(maxRotation.add(minSize).multiply(0.5));
+			}
 
             //set the muzzle location
             Vector compensation = new Vector(cannonBlocks.getRotationCenter().getBlockX(), cannonBlocks.getRotationCenter().getBlockY(), cannonBlocks.getRotationCenter().getBlockZ());
 
-            for (SimpleBlock block : cannonBlocks.getAllCannonBlocks())
+            for (SimpleBlock block : cannonBlocks.getAllCraftBlocks())
                 block.subtract_noCopy(compensation);
             for (Vector block : cannonBlocks.getHullBlocks())
                 block.subtract(compensation);
-            for (SimpleBlock block : cannonBlocks.getChests())
+            for (SimpleBlock block : cannonBlocks.getChest())
                 block.subtract_noCopy(compensation);
+			for (SimpleBlock block : cannonBlocks.getSign())
+				block.subtract_noCopy(compensation);
 			for (SimpleBlock block : cannonBlocks.getEngines())
 				block.subtract_noCopy(compensation);
             for (Vector block : cannonBlocks.getDestructibleBlocks())

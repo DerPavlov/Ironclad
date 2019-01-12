@@ -19,6 +19,6 @@ public class CreateCraft extends BukkitRunnable {
 
     @Override
     public void run() {
-        plugin.getCraftManager().createCannon(craft, saveToDatabase);
+        plugin.getCraftManager().createCraft(craft, saveToDatabase);
     }
 }

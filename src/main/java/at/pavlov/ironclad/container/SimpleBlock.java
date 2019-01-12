@@ -32,11 +32,6 @@ public class SimpleBlock
 		this(vect.getBlockX(), vect.getBlockY(), vect.getBlockZ(), blockData);
 	}
 
-	public SimpleBlock(int x, int y, int z, Material material)
-	{
-		this(x, y, z, material.createBlockData());
-	}
-	
 	private SimpleBlock(Vector vect, Material material)
 	{
 		this(vect, material.createBlockData());
@@ -260,6 +255,11 @@ public class SimpleBlock
 	public BlockData getBlockData()
 	{
 		return this.blockData;
+	}
+
+	public Material getMaterial()
+	{
+		return this.blockData.getMaterial();
 	}
 
 	public String toString()

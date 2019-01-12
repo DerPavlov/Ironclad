@@ -509,7 +509,7 @@ public class IroncladUtil
     }
 
     /**
-     * adds a little bit random to the location so the effects don't spawn at the same point.
+     * adds a little bit random to the location so the effects don't create at the same point.
      * @return - randomized location
      */
     public static Location randomLocationOrthogonal(Location loc, BlockFace face)

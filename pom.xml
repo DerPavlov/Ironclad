@@ -4,7 +4,7 @@
     <!-- Project information -->
     <groupId>at.pavlov</groupId>
     <artifactId>Ironclad</artifactId>
-    <name>Iconclad</name>
+    <name>Ironclad</name>
     <version>0.1.0</version>
     <packaging>jar</packaging>
 

@@ -65,7 +65,8 @@ public class CraftDesign
 	private BlockData schematicBlockTypeIgnore;     				//this block this is ignored in the schematic file
     private BlockData schematicBlockTypeRotationCenter;			//location of the ship center
     private BlockData schematicBlockTypeEngine;					//blockdata of the engine
-    private BlockData schematicBlockTypeChest;				//locations of the chest and sign
+    private BlockData schematicBlockTypeChest;					//locations of the chest and sign
+	private BlockData schematicBlockTypeSign;					//locations of the chest and sign
     private List<BlockData> schematicBlockTypeProtected;			//list of blocks that are protected from explosions (e.g. buttons)
     
     //craft design block lists for every direction (NORTH, EAST, SOUTH, WEST)
@@ -135,7 +136,7 @@ public class CraftDesign
     	CraftBlocks cannonBlocks  = cannonBlockMap.get(cannonDirection);
     	if (cannonBlocks != null)
     	{
-    		return cannonBlocks.getAllCannonBlocks();
+    		return cannonBlocks.getAllCraftBlocks();
     	}
 
     	return new ArrayList<SimpleBlock>();
@@ -153,7 +154,7 @@ public class CraftDesign
         List<Location> locList = new ArrayList<Location>();
         if (cannonBlocks != null)
         {
-            for (SimpleBlock block : cannonBlocks.getAllCannonBlocks())
+            for (SimpleBlock block : cannonBlocks.getAllCraftBlocks())
             {
                 Vector vect = block.toVector();
                 locList.add(vect.clone().add(craft.getOffset()).toLocation(craft.getWorldBukkit()));
@@ -201,23 +202,40 @@ public class CraftDesign
     }
 
     /**
-     * returns a list of all chest/sign blocks
+     * returns a list of all chest blocks
      * @param craft
      * @return
      */
-    public List<Location> getChestsAndSigns(Craft craft)
+    public List<Location> getChestLocations(Craft craft)
     {
     	CraftBlocks cannonBlocks  = cannonBlockMap.get(craft.getCraftDirection());
     	List<Location> locList = new ArrayList<Location>();
-    	if (cannonBlocks != null)
-    	{
-    		for (SimpleBlock block : cannonBlocks.getChests())
-    		{
+    	if (cannonBlocks != null) {
+    		for (SimpleBlock block : cannonBlocks.getChest()) {
     			locList.add(block.toLocation(craft.getWorldBukkit(), craft.getOffset()));
     		}
     	}
 		return locList;
     }
+
+
+	/**
+	 * returns a list of all sign blocks
+	 * @param craft
+	 * @return
+	 */
+	public List<Location> getSignLocations(Craft craft)
+	{
+		CraftBlocks cannonBlocks  = cannonBlockMap.get(craft.getCraftDirection());
+		List<Location> locList = new ArrayList<Location>();
+		if (cannonBlocks != null) {
+			for (SimpleBlock block : cannonBlocks.getSign()) {
+				locList.add(block.toLocation(craft.getWorldBukkit(), craft.getOffset()));
+			}
+		}
+		return locList;
+	}
+
 
 
 	public String getDesignID()
@@ -489,5 +507,13 @@ public class CraftDesign
 
 	protected void setCraftMaxHeight(int craftMaxHeight) {
 		this.craftMaxHeight = craftMaxHeight;
+	}
+
+	public BlockData getSchematicBlockTypeSign() {
+		return schematicBlockTypeSign;
+	}
+
+	protected void setSchematicBlockTypeSign(BlockData schematicBlockTypeSign) {
+		this.schematicBlockTypeSign = schematicBlockTypeSign;
 	}
 }

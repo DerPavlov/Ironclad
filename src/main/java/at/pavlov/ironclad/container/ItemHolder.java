@@ -124,7 +124,7 @@ public class ItemHolder
 	
 	public SimpleBlock toSimpleBlock()
 	{
-		return new SimpleBlock(0, 0, 0, material);
+		return new SimpleBlock(0, 0, 0, material.createBlockData());
 	}
 	
 	public ItemStack toItemStack(int amount)

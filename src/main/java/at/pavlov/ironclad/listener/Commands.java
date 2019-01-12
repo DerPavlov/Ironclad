@@ -180,18 +180,15 @@ public class Commands implements TabExecutor
                     return true;
                 }
                 //ironclad create
-                else if(args[0].equalsIgnoreCase("create"))
+                else if(args[0].equalsIgnoreCase(CommandList.CREATE.getCommand()))
                 {
-                    if (player != null && player.hasPermission("ironclad.admin.create")) {
+                    if (player != null && player.hasPermission(CommandList.CREATE.getPermission())) {
                         if (args.length >= 2) {
                             //check if the design name is valid
                             if (config.getDesignStorage().hasDesign(args[1])) {
                                 sendMessage(sender, ChatColor.GREEN + "[Ironclad] Create design: " + ChatColor.GOLD + args[1]);
                                 CraftDesign cannonDesign = config.getDesignStorage().getDesign(args[1]);
-
-                                Craft craft = new Craft(cannonDesign, player.getWorld().getUID(), player.getLocation().toVector(), BlockFace.NORTH, player.getUniqueId());
-                                //createCannon(craft);
-                                craft.spawn();
+                                Ironclad.getPlugin().spawnCraft(cannonDesign, player.getLocation(), BlockFace.NORTH, player.getUniqueId());
                             }
                             else
                                 sendMessage(sender, ChatColor.RED + "[Ironclad] Design not found Available designs are: " + StringUtils.join(plugin.getMyConfig().getDesignStorage().getDesignIds(),", "));
@@ -335,7 +332,7 @@ public class Commands implements TabExecutor
                                 sendMessage(sender, ChatColor.GREEN + "Name:" + ChatColor.GOLD + craft.getCraftName() + ChatColor.GREEN + " design:" +
                                         ChatColor.GOLD + craft.getCraftDesign().getDesignName() + ChatColor.GREEN + " loc: " + ChatColor.GOLD + craft.getOffset().toString());
                         }
-                        //spawn craft limit
+                        //create craft limit
                         int buildlimit = plugin.getCraftManager().getCannonBuiltLimit(player);
                         if (buildlimit < Integer.MAX_VALUE){
                             int ncannon = plugin.getCraftManager().getNumberOfCrafts(player.getUniqueId());

@@ -11,6 +11,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.material.Attachable;
+import org.bukkit.material.Directional;
 import org.bukkit.util.Vector;
 
 import at.pavlov.ironclad.Enum.MessageEnum;
@@ -128,7 +129,7 @@ public class Craft
     {
         //get the inventories of all attached chests
         List<Inventory> invlist = new ArrayList<Inventory>();
-        for (Location loc : getCraftDesign().getChestsAndSigns(this))
+        for (Location loc : getCraftDesign().getChestLocations(this))
         {
             // check if block is a chest
             invlist = InventoryManagement.getInventories(loc.getBlock(), invlist);
@@ -164,16 +165,31 @@ public class Craft
     }
 
     /**
-     * this will force the craft to spawn up at this location - all blocks will be overwritten
+     * this will force the craft to create up at this location - all blocks will be overwritten
      */
-    public void spawn()
+    public void create()
     {
+        ArrayList<SimpleBlock> attatchedBlocks = new ArrayList<>();
         for (SimpleBlock cBlock : design.getAllCraftBlocks(this.getCraftDirection()))
         {
-            Block wBlock = cBlock.toLocation(getWorldBukkit(), offset).getBlock();
-            //todo check spawn
-            wBlock.setBlockData(cBlock.getBlockData());
-            //wBlock.setBlockData(cBlock);
+            System.out.println("cBlock: " + cBlock.getBlockData());
+            //check if the block is attached to something, then do it later
+            if (cBlock.getBlockData() instanceof org.bukkit.block.data.Directional){
+                System.out.println("to attach Block: " + cBlock.getBlockData());
+                attatchedBlocks.add(cBlock);
+            }
+            else {
+                Block wBlock = cBlock.toLocation(getWorldBukkit(), offset).getBlock();
+                wBlock.setBlockData(cBlock.getBlockData());
+            }
+        }
+        //place the attachable blocks
+        for (SimpleBlock aBlock : attatchedBlocks){
+            Block wBlock = aBlock.toLocation(getWorldBukkit(), offset).getBlock();
+            System.out.println("attached block: " + aBlock.getBlockData());
+            System.out.println("attached loc: " +       aBlock.toLocation(getWorldBukkit(), offset));
+            System.out.println("--------------------");
+            wBlock.setBlockData(aBlock.getBlockData());
         }
     }
 
@@ -291,7 +307,7 @@ public class Craft
      */
     public boolean isChestInterface(Location block)
     {
-        for (Location loc : design.getChestsAndSigns(this))
+        for (Location loc : design.getChestLocations(this))
         {
             if (loc.equals(block))
             {
@@ -315,7 +331,7 @@ public class Craft
         CraftBlocks cannonBlocks  = this.getCraftDesign().getCannonBlockMap().get(this.getCraftDirection());
         if (cannonBlocks != null)
         {
-            for (SimpleBlock cannonblock : cannonBlocks.getChests())
+            for (SimpleBlock cannonblock : cannonBlocks.getChest())
             {
                 // compare location
                 if (cannonblock.toLocation(this.getWorldBukkit(),this.offset).equals(loc))
@@ -416,10 +432,10 @@ public class Craft
             return;
 
         Random r = new Random();
-        List<Location> barrelList = design.getHullBlocks(this);
+        List<Location> HullBlockList = design.getHullBlocks(this);
 
         //if the barrel list is 0 something is completely odd
-        int max = barrelList.size();
+        int max = HullBlockList.size();
         if (max < 0)
             return;
 
@@ -434,7 +450,7 @@ public class Craft
             do
             {
                 i++;
-                effectLoc = barrelList.get(r.nextInt(max)).getBlock().getRelative(face).getLocation();
+                effectLoc = HullBlockList.get(r.nextInt(max)).getBlock().getRelative(face).getLocation();
             } while (i<4 && effectLoc.getBlock().getType() != Material.AIR);
 
             effectLoc.getWorld().playEffect(effectLoc, Effect.SMOKE, face);
@@ -449,7 +465,7 @@ public class Craft
     public boolean hasCannonSign()
     {
         // search all possible sign locations
-        for (Location signLoc : design.getChestsAndSigns(this))
+        for (Location signLoc : design.getSignLocations(this))
         {
             if (signLoc.getBlock().getType().equals(Material.WALL_SIGN))
                 return true;
@@ -463,7 +479,7 @@ public class Craft
     public void updateCannonSigns()
     {
         // update all possible sign locations
-        for (Location signLoc : design.getChestsAndSigns(this))
+        for (Location signLoc : design.getSignLocations(this))
         {
             //check blocktype and orientation before updating sign.
             if (isCannonSign(signLoc))
@@ -548,7 +564,7 @@ public class Craft
     {
         String lineStr = "";
         // goto the first craft sign
-        for (Location signLoc : design.getChestsAndSigns(this))
+        for (Location signLoc : design.getSignLocations(this))
         {
             lineStr = CraftSign.getLineOfThisSign(signLoc.getBlock(), line);
             // if something is found return it
