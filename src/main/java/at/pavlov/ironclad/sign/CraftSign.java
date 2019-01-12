@@ -26,7 +26,7 @@ public class CraftSign
 
 	
 	/**
-	 * returns the amount of gunpowder that is written on a cannon sign
+	 * returns the amount of gunpowder that is written on a craft sign
 	 * @return
 	 */
 	/*
@@ -42,7 +42,7 @@ public class CraftSign
 	}
 	
 	/**
-	 * returns the projectileID that is written on a cannon sign
+	 * returns the projectileID that is written on a craft sign
 	 * @return
 	 */
 	/*
@@ -63,7 +63,7 @@ public class CraftSign
 	}
 	
 	/**
-	 * returns the projectileData that is written on a cannon sign
+	 * returns the projectileData that is written on a craft sign
 	 * @return
 	 */
 	/*
@@ -84,7 +84,7 @@ public class CraftSign
 	}
 	
 	/**
-	 * returns the horizontal angle that is written on a cannon sign
+	 * returns the horizontal angle that is written on a craft sign
 	 * @return
 	 */
 	/*
@@ -100,7 +100,7 @@ public class CraftSign
 	}
 	
 	/**
-	 * returns the vertical angle that is written on a cannon sign
+	 * returns the vertical angle that is written on a craft sign
 	 * @return
 	 */
 	/*

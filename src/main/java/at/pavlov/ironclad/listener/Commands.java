@@ -5,10 +5,10 @@ import java.util.*;
 import at.pavlov.ironclad.Enum.CommandList;
 import at.pavlov.ironclad.Enum.SelectCraft;
 import at.pavlov.ironclad.Ironclad;
-import at.pavlov.ironclad.cannon.Craft;
+import at.pavlov.ironclad.craft.Craft;
 
-import at.pavlov.ironclad.cannon.CraftDesign;
-import at.pavlov.ironclad.cannon.CraftManager;
+import at.pavlov.ironclad.craft.CraftDesign;
+import at.pavlov.ironclad.craft.CraftManager;
 import at.pavlov.ironclad.utils.IroncladUtil;
 import com.google.common.base.Joiner;
 import net.milkbowl.vault.economy.EconomyResponse;
@@ -123,7 +123,7 @@ public class Commands implements TabExecutor
                     }
                     else if (args.length >= 2 && args[1] != null)
                     {
-                        // delete all cannon entries for this player
+                        // delete all craft entries for this player
                         OfflinePlayer offplayer = IroncladUtil.getOfflinePlayer(args[1]);
                         if (offplayer != null && offplayer.hasPlayedBefore())
                         {
@@ -243,7 +243,7 @@ public class Commands implements TabExecutor
                             plugin.logDebug("[Ironclad] " + sender.getName() + " has no permission for command /ironclad " + args[0]);
                             return true;
                         }
-                        // how to build a cannon
+                        // how to build a craft
                         userMessages.sendMessage(MessageEnum.HelpBuild, player);
                     }
                     //ironclad fire
@@ -321,7 +321,7 @@ public class Commands implements TabExecutor
                         }
                         toggleCraftSelector(player, SelectCraft.INFO);
                     }
-                    //get name of cannon
+                    //get name of craft
                     else if(args[0].equalsIgnoreCase("dismantle"))
                     {
                         if (!player.hasPermission("ironclad.player.dismantle") && !player.hasPermission("ironclad.admin.dismantle"))
@@ -346,7 +346,7 @@ public class Commands implements TabExecutor
                                 sendMessage(sender, ChatColor.GREEN + "Name:" + ChatColor.GOLD + craft.getCraftName() + ChatColor.GREEN + " design:" +
                                         ChatColor.GOLD + craft.getCraftDesign().getDesignName() + ChatColor.GREEN + " loc: " + ChatColor.GOLD + craft.getOffset().toString());
                         }
-                        //spawn cannon limit
+                        //spawn craft limit
                         int buildlimit = plugin.getCraftManager().getCannonBuiltLimit(player);
                         if (buildlimit < Integer.MAX_VALUE){
                             int ncannon = plugin.getCraftManager().getNumberOfCrafts(player.getUniqueId());
@@ -365,7 +365,7 @@ public class Commands implements TabExecutor
                             plugin.logDebug("[Ironclad] " + sender.getName() + " has no permission for command /ironclad " + args[0]);
                             return true;
                         }
-                        // delete all cannon entries for this player
+                        // delete all craft entries for this player
                         persistenceDatabase.deleteCrafts(player.getUniqueId());
                         plugin.getCraftManager().deleteCrafts(player.getUniqueId());
                         userMessages.sendMessage(MessageEnum.CraftsReseted, player);
@@ -462,7 +462,7 @@ public class Commands implements TabExecutor
     /**
      * this player will be removed from the selecting mode
      * @param player the player will be removed
-     * @param cmd this command will be performed when the cannon is selected
+     * @param cmd this command will be performed when the craft is selected
      */
     public void addCraftSelector(Player player, SelectCraft cmd)
     {
@@ -498,7 +498,7 @@ public class Commands implements TabExecutor
     /**
      * selecting mode will be toggled
      * @param player the player using the selecting mode
-     * @param cmd this command will be performed when the cannon is selected
+     * @param cmd this command will be performed when the craft is selected
      */
     public void toggleCraftSelector(Player player, SelectCraft cmd)
     {
@@ -514,7 +514,7 @@ public class Commands implements TabExecutor
     /**
      * this player will be removed from the buying mode
      * @param player the player will be removed
-     * @param cmd this command will be performed when the cannon is selected
+     * @param cmd this command will be performed when the craft is selected
      */
     public void addBuyCannon(Player player, SelectCraft cmd)
     {
@@ -547,7 +547,7 @@ public class Commands implements TabExecutor
     /**
      * buying mode will be toggled
      * @param player the player using the selecting mode
-     * @param cmd this command will be performed when the cannon is selected
+     * @param cmd this command will be performed when the craft is selected
      */
     public void toggleBuyCannon(Player player, SelectCraft cmd)
     {
@@ -576,8 +576,8 @@ public class Commands implements TabExecutor
     }
 
     /**
-     * adds a new selected cannon for this player
-     * @param player player that selected the cannon
+     * adds a new selected craft for this player
+     * @param player player that selected the craft
      * @param block the selected block
      */
     public void setSelectedBlock(Player player, Block block)

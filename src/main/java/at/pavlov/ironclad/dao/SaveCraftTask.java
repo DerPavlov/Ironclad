@@ -1,8 +1,8 @@
 package at.pavlov.ironclad.dao;
 
 import at.pavlov.ironclad.Ironclad;
-import at.pavlov.ironclad.cannon.Craft;
-import at.pavlov.ironclad.cannon.CraftManager;
+import at.pavlov.ironclad.craft.Craft;
+import at.pavlov.ironclad.craft.CraftManager;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.PreparedStatement;

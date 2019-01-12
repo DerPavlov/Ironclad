@@ -1,4 +1,4 @@
-package at.pavlov.ironclad.cannon;
+package at.pavlov.ironclad.craft;
 
 import java.util.*;
 
@@ -8,6 +8,7 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
+import org.bukkit.entity.Entity;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.material.Attachable;
 import org.bukkit.util.Vector;
@@ -26,13 +27,13 @@ public class Craft
     private String designID;
     private String craftName;
 
-    // direction the cannon is facing
+    // direction the craft is facing
     private BlockFace craftDirection;
     // the angle the craft is currently moving
     private double yaw;
-    // the location is describe by the offset of the cannon and the design
+    // the location is describe by the offset of the craft and the design
     private Vector offset;
-    // world of the cannon
+    // world of the craft
     private UUID world;
     // with which velocity the craft is moving
     private Vector velocity;
@@ -42,22 +43,22 @@ public class Craft
     private int craftMaxWidth;
     private int craftMaxHeight;
 
-    // was the cannon fee paid
+    // was the craft fee paid
     private boolean paid;
 
-    // player who has build this cannon
+    // player who has build this craft
     private UUID owner;
-    // designID of the cannon, for different types of ironclad - not in use
+    // designID of the craft, for different types of ironclad - not in use
     private boolean isValid;
     // time point of the last start of the firing sequence (used in combination with isFiring)
     private long lastUsed;
     // the player which has used the craft last
     private UUID lastUser;
 
-    // amount of fired cannonballs with this cannon
+    // amount of fired cannonballs with this craft
     private long travelledDistance;
 
-    // has the cannon entry changed since it was last saved in the database
+    // has the craft entry changed since it was last saved in the database
     private boolean updated;
 
     private CraftDesign design;
@@ -77,7 +78,7 @@ public class Craft
         // ignore if there is no fee
         this.paid = design.getEconomyBuildingCost() <= 0;
 
-        //the cannon is not moving
+        //the craft is not moving
         this.velocity = new Vector(0, 0, 0);
 
         this.databaseId = UUID.randomUUID();
@@ -86,8 +87,8 @@ public class Craft
 
 
     /**
-     * returns the location of the location of the cannon
-     * @return location of the cannon
+     * returns the location of the location of the craft
+     * @return location of the craft
      */
     public Location getLocation()
     {
@@ -104,7 +105,7 @@ public class Craft
     }
 
     /**
-     * returns a random block of the barrel or the cannon if there is no barrel
+     * returns a random block of the barrel or the craft if there is no barrel
      * @return location of the barrel block
      */
     public Location getRandomBarrelBlock()
@@ -134,14 +135,14 @@ public class Craft
     }
 
     /**
-     * removes the sign text and charge of the cannon after destruction
-     * @param breakBlocks break all cannon block naturally
-     * @param canExplode if the cannon can explode when loaded with gunpoweder
-     * @param cause cause of the cannon destruction
+     * removes the sign text and charge of the craft after destruction
+     * @param breakBlocks break all craft block naturally
+     * @param canExplode if the craft can explode when loaded with gunpoweder
+     * @param cause cause of the craft destruction
      */
     public MessageEnum destroyCraft(boolean breakBlocks, boolean canExplode, BreakCause cause)
     {
-        // update cannon signs the last time
+        // update craft signs the last time
         isValid = false;
         updateCannonSigns();
 
@@ -161,7 +162,7 @@ public class Craft
     }
 
     /**
-     * this will force the cannon to spawn up at this location - all blocks will be overwritten
+     * this will force the craft to spawn up at this location - all blocks will be overwritten
      */
     public void spawn()
     {
@@ -175,7 +176,7 @@ public class Craft
     }
 
     /**
-     * this will force the cannon blocks to become AIR
+     * this will force the craft blocks to become AIR
      */
     public void hide()
     {
@@ -209,7 +210,7 @@ public class Craft
 
 
     /**
-     * breaks all cannon blocks of the cannon
+     * breaks all craft blocks of the craft
      */
     private void breakAllBlocks()
     {
@@ -222,12 +223,15 @@ public class Craft
 
 
     /**
-     * returns true if this block is a block of the cannon
+     * returns true if this block is a block of the craft
      * @param block - block to check
-     * @return - true if it is part of this cannon
+     * @return - true if it is part of this craft
      */
     public boolean isCraftBlock(Block block)
     {
+        if (block == null || block.getLocation() == null || block.getWorld() == null)
+            return false;
+
         if (getWorld().equals(block.getWorld().getUID())){
             for (SimpleBlock designBlock : design.getAllCraftBlocks(craftDirection))
             {
@@ -235,6 +239,25 @@ public class Craft
                 {
                     return true;
                 }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * returns true if this block is a block of the craft
+     * @param loc - location to check
+     * @return - true if it is part of this craft
+     */
+    public boolean isLocationPartOfCraft(Location loc)
+    {
+        if (loc == null || loc.getWorld() == null)
+            return false;
+
+        if (getWorld().equals(loc.getWorld().getUID())){
+            for (SimpleBlock designBlock : design.getAllCraftBlocks(craftDirection)) {
+                if (designBlock.compareLocation(loc, offset))
+                    return true;
             }
         }
         return false;
@@ -259,7 +282,7 @@ public class Craft
 
 
     /**
-     * return true if this location where the torch interacts with the cannon
+     * return true if this location where the torch interacts with the craft
      *
      * @param block
      * @return
@@ -277,7 +300,7 @@ public class Craft
     }
 
     /**
-     * return true if this location where the torch interacts with the cannon
+     * return true if this location where the torch interacts with the craft
      * does not check the ID
      *
      * @param loc
@@ -308,8 +331,8 @@ public class Craft
     }
 
     /**
-     * updates the location of the cannon
-     * @param moved - how far the cannon has been moved
+     * updates the location of the craft
+     * @param moved - how far the craft has been moved
      */
     public void move(Vector moved)
     {
@@ -318,9 +341,9 @@ public class Craft
     }
 
     /**
-     * updates the rotation of the cannon
+     * updates the rotation of the craft
      * @param center - center of the rotation
-     * @param angle - how far the cannon is rotated in degree (90, 180, 270, -90)
+     * @param angle - how far the craft is rotated in degree (90, 180, 270, -90)
      */
     public void rotate(Vector center, int angle)
     {
@@ -354,7 +377,7 @@ public class Craft
     }
 
     /**
-     * updates the rotation of the cannon by rotating it 90 to the right
+     * updates the rotation of the craft by rotating it 90 to the right
      * @param center - center of the rotation
      */
     public void rotateRight(Vector center)
@@ -363,7 +386,7 @@ public class Craft
     }
 
     /**
-     * updates the rotation of the cannon by rotating it 90 to the left
+     * updates the rotation of the craft by rotating it 90 to the left
      * @param center - center of the rotation
      */
     public void rotateLeft(Vector center)
@@ -372,7 +395,7 @@ public class Craft
     }
 
     /**
-     * updates the rotation of the cannon by rotating it 180
+     * updates the rotation of the craft by rotating it 180
      * @param center - center of the rotation
      */
     public void rotateFlip(Vector center)
@@ -433,7 +456,7 @@ public class Craft
     }
 
     /**
-     * updates all signs that are attached to a cannon
+     * updates all signs that are attached to a craft
      */
     public void updateCannonSigns()
     {
@@ -515,14 +538,14 @@ public class Craft
 
 
     /**
-     * returns the name of the cannon written on the sign
+     * returns the name of the craft written on the sign
      *
      * @return
      */
     private String getLineOfCannonSigns(int line)
     {
         String lineStr = "";
-        // goto the first cannon sign
+        // goto the first craft sign
         for (Location signLoc : design.getChestsAndSigns(this))
         {
             lineStr = CraftSign.getLineOfThisSign(signLoc.getBlock(), line);
@@ -537,7 +560,7 @@ public class Craft
     }
 
     /**
-     * returns the cannon name that is written on a cannon sign
+     * returns the craft name that is written on a craft sign
      *
      * @return
      */
@@ -547,7 +570,7 @@ public class Craft
     }
 
     /**
-     * returns the cannon owner that is written on a cannon sign
+     * returns the craft owner that is written on a craft sign
      *
      * @return
      */
@@ -557,7 +580,7 @@ public class Craft
     }
 
     /**
-     * returns true if cannon design for this cannon is found
+     * returns true if craft design for this craft is found
      *
      * @param cannonDesign
      * @return
@@ -804,7 +827,21 @@ public class Craft
         this.craftMaxHeight = craftMaxHeight;
     }
 
-    public boolean onShip(Location loc){
+    public boolean isEntityOnShip(Entity entity){
+        if (entity == null || entity.getLocation() == null || entity.getLocation().getWorld() == null)
+            return false;
+
+        Location loc = entity.getLocation();
+        //make the bounding box a little bit large if someone is peeking over the edge
+        Location minBB = this.getCraftDesign().getMinBoundnigBoxLocation(this).subtract(1, 1, 1);
+        Location maxBB = this.getCraftDesign().getMaxBoundnigBoxLocation(this).add(1, 1, 1);
+        if (loc.getWorld().getUID().equals(this.world)){
+            return loc.getX() >= minBB.getX() && loc.getY() >= minBB.getY() && loc.getZ() >= minBB.getZ() && loc.getX() <= maxBB.getX() && loc.getY() <= maxBB.getY() && loc.getZ() <= maxBB.getZ();
+        }
+        return false;
+    }
+
+    public boolean isBlockOnShip(Location loc){
         if (loc == null || loc.getWorld() == null)
             return false;
 
@@ -812,7 +849,14 @@ public class Craft
         Location minBB = this.getCraftDesign().getMinBoundnigBoxLocation(this).subtract(1, 1, 1);
         Location maxBB = this.getCraftDesign().getMaxBoundnigBoxLocation(this).add(1, 1, 1);
         if (loc.getWorld().getUID().equals(this.world)){
-            return loc.getX() >= minBB.getX() && loc.getY() >= minBB.getY() && loc.getZ() >= minBB.getZ() && loc.getX() <= maxBB.getX() && loc.getY() <= maxBB.getY() && loc.getZ() <= maxBB.getZ();
+            if (loc.getX() >= minBB.getX() && loc.getY() >= minBB.getY() && loc.getZ() >= minBB.getZ() && loc.getX() <= maxBB.getX() && loc.getY() <= maxBB.getY() && loc.getZ() <= maxBB.getZ()){
+                return this.isLocationPartOfCraft(loc.clone().subtract(1, 0, 0)) &&
+                        this.isLocationPartOfCraft(loc.clone().add(1, 0, 0)) &&
+                        this.isLocationPartOfCraft(loc.clone().subtract(0, 1, 0)) &&
+                        this.isLocationPartOfCraft(loc.clone().add(0, 1, 0)) &&
+                        this.isLocationPartOfCraft(loc.clone().subtract(0, 0, 1)) &&
+                        this.isLocationPartOfCraft(loc.clone().add(0, 0, 1));
+            }
         }
         return false;
     }

@@ -3,19 +3,13 @@ package at.pavlov.ironclad.Enum;
 
 public enum CommandList {
     BUILD("build", "/ironclad build", "ironclad.player.command", false),
-    FIRE("fire", "/ironclad fire", "ironclad.player.command", false),
-    ADJUST("adjust", "/ironclad adjust", "ironclad.player.command", false),
     COMMANDS("commands", "/ironclad commands", "ironclad.player.command", false),
     IMITATE("imitate", "/ironclad imitate", null, false),
     RENAME("rename", "/ironclad rename [OLD] [NEW]", "ironclad.player.rename", false),
-    OBSERVER("observer", "/ironclad observer", "ironclad.player.observer", false),
     INFO("info", "/ironclad info", "ironclad.player.info", false),
     LIST("list", "/ironclad list", "ironclad.player.list", false),
     BUY("buy", "/ironclad buy", "ironclad.player.buy", false),
     DISMANTLE("dismantle", "/ironclad dismantle", "ironclad.player.dismantle", false),
-    TARGET("target", "/ironclad target", "ironclad.player.target", false),
-    WHITELIST_ADD("whitelist add", "/ironclad whitelist add [NAME]", "ironclad.player.whitelist", false),
-    WHITELIST_REMOVE("whitelist add", "/ironclad whitelist remove [NAME]", "ironclad.player.whitelist", false),
     RESET("reset", "/ironclad reset", "ironclad.player.reset", false),
     CLAIM("claim", "/ironclad claim", "ironclad.player.claim", false),
     //admin commands
@@ -26,7 +20,6 @@ public enum CommandList {
     RELOAD("reload", "/ironclad reload", "ironclad.admin.reload", true),
     SAVE("save", "/ironclad save", "ironclad.admin.save", true),
     LOAD("load", "/ironclad load", "ironclad.admin.load", true),
-    GIVE("give", "/ironclad give", "ironclad.admin.give", true),
     PERMISSIONS("permissions", "/ironclad permissions [NAME]", "ironclad.admin.permissions", true),
     BLOCKDATA("blockdata", "/ironclad blockdata", "ironclad.admin.blockdata", true);
 

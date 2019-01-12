@@ -2,12 +2,9 @@ package at.pavlov.ironclad.API;
 
 import at.pavlov.ironclad.Ironclad;
 import at.pavlov.ironclad.Enum.BreakCause;
-import at.pavlov.ironclad.Enum.InteractAction;
-import at.pavlov.ironclad.cannon.Craft;
-import at.pavlov.ironclad.Enum.MessageEnum;
-import at.pavlov.ironclad.cannon.CraftManager;
+import at.pavlov.ironclad.craft.Craft;
+import at.pavlov.ironclad.craft.CraftManager;
 import org.bukkit.Location;
-import org.bukkit.entity.Player;
 
 import java.util.HashSet;
 import java.util.List;
@@ -23,10 +20,10 @@ public class IroncladAPI {
     }
 
     /**
-     * returns the cannon on the given location
-     * @param location - location of a cannon block
-     * @param playerUID - player UID searching for the cannon. If there is no cannon he will be the owner. If null no new Craft can be created.
-     * @return - null if there is no cannon, else the cannon
+     * returns the craft on the given location
+     * @param location - location of a craft block
+     * @param playerUID - player UID searching for the craft. If there is no craft he will be the owner. If null no new Craft can be created.
+     * @return - null if there is no craft, else the craft
      */
     public Craft getCannon(Location location, UUID playerUID)
     {
@@ -34,7 +31,7 @@ public class IroncladAPI {
     }
 
     /**
-     * returns all known cannon in a sphere around the given location
+     * returns all known craft in a sphere around the given location
      * @param center - center of the box
      * @param sphereRadius - radius of the sphere in blocks
      * @return - list of all ironclad in this sphere
@@ -45,7 +42,7 @@ public class IroncladAPI {
     }
 
     /**
-     * returns all known cannon in a box around the given location
+     * returns all known craft in a box around the given location
      * @param center - center of the box
      * @param lengthX - box length in X
      * @param lengthY - box length in Y
@@ -58,9 +55,9 @@ public class IroncladAPI {
     }
 
     /**
-     * returns all ironclad for a list of locations - this will update all cannon locations
+     * returns all ironclad for a list of locations - this will update all craft locations
      * @param locations - a list of location to search for ironclad
-     * @param playerUID - player UID which operates the cannon
+     * @param playerUID - player UID which operates the craft
      * @param silent - no messages will be displayed if silent is true
      * @return - list of all ironclad in this sphere
      */
@@ -70,9 +67,9 @@ public class IroncladAPI {
     }
 
     /**
-     * returns all ironclad for a list of locations - this will update all cannon locations
+     * returns all ironclad for a list of locations - this will update all craft locations
      * @param locations - a list of location to search for ironclad
-     * @param playerUID - player UID which operates the cannon
+     * @param playerUID - player UID which operates the craft
      * @return - list of all ironclad in this sphere
      */
     public HashSet<Craft> getCannons(List<Location> locations, UUID playerUID)
@@ -81,9 +78,9 @@ public class IroncladAPI {
     }
 
     /**
-     * returns the cannon from the storage
-     * @param uid UUID of the cannon
-     * @return the cannon from the storage
+     * returns the craft from the storage
+     * @param uid UUID of the craft
+     * @return the craft from the storage
      */
     public static Craft getCannon(UUID uid)
     {
@@ -97,11 +94,11 @@ public class IroncladAPI {
     }
 
     /**
-     * removes a cannon from the list
-     * @param uid UID of the cannon
-     * @param breakCannon the cannon will explode and all cannon blocks will drop
-     * @param canExplode if the cannon can explode when loaded with gunpowder
-     * @param cause the reason way the cannon was broken
+     * removes a craft from the list
+     * @param uid UID of the craft
+     * @param breakCannon the craft will explode and all craft blocks will drop
+     * @param canExplode if the craft can explode when loaded with gunpowder
+     * @param cause the reason way the craft was broken
      */
     public void removeCannon(UUID uid, boolean breakCannon, boolean canExplode, BreakCause cause)
     {

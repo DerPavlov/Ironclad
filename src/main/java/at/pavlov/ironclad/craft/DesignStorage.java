@@ -1,4 +1,4 @@
-package at.pavlov.ironclad.cannon;
+package at.pavlov.ironclad.craft;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -55,8 +55,8 @@ public class DesignStorage
 	}
 
 	/**
-	 * returns a list of all cannon design names
-	 * @return list of all cannon design names
+	 * returns a list of all craft design names
+	 * @return list of all craft design names
 	 */
 	public ArrayList<String> getDesignIds(){
 		ArrayList<String> list = new ArrayList<String>();
@@ -67,7 +67,7 @@ public class DesignStorage
 	}
 
 	/**
-	 * loads all custom cannon desgins
+	 * loads all custom craft desgins
 	 */
 	public void loadCraftDesigns()
 	{
@@ -101,7 +101,7 @@ public class DesignStorage
 				craftsDesignList.add(cannonDesign);
 		}
 		
-		//sort the list so the designs with more cannon blocks comes first
+		//sort the list so the designs with more craft blocks comes first
 		//important if there is a design with one block less but else identically 
 		Comparator<CraftDesign> comparator = new DesignComparator();
 		craftsDesignList.sort(comparator);
@@ -124,7 +124,7 @@ public class DesignStorage
 	}
 
 	/**
-	 * returns a list with valid cannon designs (.yml + .schematic)
+	 * returns a list with valid craft designs (.yml + .schematic)
 	 * 
 	 * @return
 	 */
@@ -169,9 +169,9 @@ public class DesignStorage
 	}
 
 	/**
-	 * loads the config for one cannon from the .yml file
-     * @param craftDesign design of the cannon
-	 * @param ymlFile of the cannon config file
+	 * loads the config for one craft from the .yml file
+     * @param craftDesign design of the craft
+	 * @param ymlFile of the craft config file
 	 */
 	private void loadDesignYml(CraftDesign craftDesign, String ymlFile)
 	{
@@ -237,7 +237,7 @@ public class DesignStorage
 
 	/**
 	 * loads the schematic of the config file
-	 * @param cannonDesign design of the cannon
+	 * @param cannonDesign design of the craft
 	 * @param schematicFile path of the schematic file
 	 */
 	private boolean loadDesignSchematic(CraftDesign cannonDesign, String schematicFile)
@@ -286,7 +286,7 @@ public class DesignStorage
         List<BlockData> blockProtectedList = new ArrayList<BlockData>(cannonDesign.getSchematicBlockTypeProtected());
 		
 		
-		// get facing of the cannon
+		// get facing of the craft
 		BlockFace cannonDirection = cannonDesign.getDefaultHorizontalFacing();
 
 		// read out blocks
@@ -538,9 +538,9 @@ public class DesignStorage
 	}
 	
 	/**
-	 * returns the cannon design by its id
+	 * returns the craft design by its id
 	 * @param designId Name of the design
-	 * @return cannon design
+	 * @return craft design
 	 */
 	public CraftDesign getDesign(String designId)
 	{
@@ -553,9 +553,9 @@ public class DesignStorage
 	}
 
 	/**
-	 * is there a cannon design with the give name
+	 * is there a craft design with the give name
 	 * @param name name of the design
-	 * @return true if there is a cannon design with this name
+	 * @return true if there is a craft design with this name
      */
 	public boolean hasDesign(String name){
 		for (CraftDesign design : craftsDesignList){

@@ -2,8 +2,8 @@ package at.pavlov.ironclad.config;
 
 
 import at.pavlov.ironclad.Ironclad;
-import at.pavlov.ironclad.cannon.CraftManager;
-import at.pavlov.ironclad.cannon.DesignStorage;
+import at.pavlov.ironclad.craft.CraftManager;
+import at.pavlov.ironclad.craft.DesignStorage;
 import at.pavlov.ironclad.container.ItemHolder;
 import at.pavlov.ironclad.utils.IroncladUtil;
 import org.bukkit.Bukkit;

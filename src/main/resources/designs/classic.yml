@@ -26,50 +26,50 @@ realisticBehaviour:
   dismantlingDelay: 1.75
 
 economy:
-  #the money the is withdrawn from your account when you build a cannon. If you have not enough - no cannon will be created
+  #the money the is withdrawn from your account when you build a craft. If you have not enough - no craft will be created
   buildingCosts: 100.0
-  #how much money you receive if your cannon was deconstructed
+  #how much money you receive if your craft was deconstructed
   dismantlingRefund: 90.0
-  #how much money you receive if your cannon was destroyed
+  #how much money you receive if your craft was destroyed
   destructionRefund: 10.0
 
 permissions:
-  #all the permissions required for a player to use certain parts of the cannon
+  #all the permissions required for a player to use certain parts of the craft
   #more information can be found here: http://dev.bukkit.org/bukkit-plugins/cannons/pages/installation-and-configuration/cannons-2-0-and-up/permissions/
   build: ironclad.player.build
   #permission for piloting an ironclad
   piloting: ironclad.player.piloting
-  #for deconstructing a cannon you need to be the owner and have this permission
+  #for deconstructing a craft you need to be the owner and have this permission
   dismantle: ironclad.player.dismantle
-  #give the cannon a new name
+  #give the craft a new name
   rename: ironclad.player.rename
   #permission for loading gunpowder and projectiles
 
 accessRestriction:
-  #whether only the owner of the cannon can use it or not (not implemented yet)
+  #whether only the owner of the craft can use it or not (not implemented yet)
   ownerOnly: false
 
 sounds:
-  #sound effects for this cannon.
+  #sound effects for this craft.
   #You can enter new sounds in the following way 'NAME:VOLUME:PITCH'. Like 'IRON_GOLEM_WALK:1:0.5'
   #NAME: You can use minecraft sounds (block.anvil.hit), custom resource sound packs, or bukkit sound names (https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Sound.html)
   #VOLUME: How far you will hear this sound
   #PITCH: How fast it is played. (0.5-2)
   #USE 'none:1:1' to disable this sound
 
-  #creating a new cannon
+  #creating a new craft
   create: 'BLOCK_ANVIL_LAND:1:0.5'
-  #paying the cannon fee of a new cannon
+  #paying the craft fee of a new craft
   selected: 'BLOCK_ANVIL_LAND:1:2'
-  #destroying a cannon
+  #destroying a craft
   destroy: 'ENTITY_ZOMBIE_ATTACK_IRON_DOOR:1:0.5'
-  #dismantling a cannon
+  #dismantling a craft
   dismantle: 'BLOCK_ANVIL_USE:1:0.5'
 
 constructionBlocks:
-  #blocks of the cannon schematic which are ignored and not required to build the cannon. Default is sand
+  #blocks of the craft schematic which are ignored and not required to build the craft. Default is sand
   ignore: 'minecraft:sand'
-  #the block which the projectile is fired from the cannon, direction can be adjusted using the defaultHorizontalFacing property. Default is block of snow
+  #the block which the projectile is fired from the craft, direction can be adjusted using the defaultHorizontalFacing property. Default is block of snow
   rotationCenter: 'minecraft:snow_block'
   #type of the engine block
   engine: 'minecraft:furnace'

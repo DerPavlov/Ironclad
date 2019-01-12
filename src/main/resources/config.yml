@@ -5,7 +5,7 @@ general:
   relayExplosionEvent: fase
   #number of blocks updated per tick
   maxBlockUpdateSize: 500
-  #size of the box of the claim cannon command
+  #size of the box of the claim craft command
   claimEdgeLength: 60
 
 
@@ -24,23 +24,23 @@ keepProjectileAlive:
 
 
 tools:
-  #the item a player needs to be holding to adjust the aim of a cannon. Default is air.
+  #the item a player needs to be holding to adjust the aim of a craft. Default is air.
   #minimum is id:data. Named items id:data:displayName:lore1:lore2:....
   ajust: 'minecraft:air'
-  #the item used to autoaim a cannon. Default is clock
+  #the item used to autoaim a craft. Default is clock
   #minimum is id:data. Named items id:data:displayName:lore1:lore2:....
   autoaim: 'minecraft:clock'
-  #the item used to fire a cannon. Default is flint and steel. Not every cannon needs a FiringItem.
+  #the item used to fire a craft. Default is flint and steel. Not every craft needs a FiringItem.
   #a data value of -1 means that every durability is accepted for flint and steel
   #minimum is id:data. Named items id:data:displayName:lore1:lore2:....
   firing: 'minecraft:flint_and_steel'
-  #required for cleaning a cannon after firing and pushing a projectile against the gunpowder
+  #required for cleaning a craft after firing and pushing a projectile against the gunpowder
   #minimum is id:data. Named items id:data:displayName:lore1:lore2:....
   ramrod: 'minecraft:stick'
-  #item used to rotate a cannon 90 degrees. Not implemented yet
+  #item used to rotate a craft 90 degrees. Not implemented yet
   #minimum is id:data. Named items id:data:displayName:lore1:lore2:....
   rotatingItem: 'minecraft:rail'
-  #item to measure the cannon temperature. Default is a gold nugget
+  #item to measure the craft temperature. Default is a gold nugget
   #minimum is id:data. Named items id:data:displayName:lore1:lore2:....
   thermometer: 'minecraft:gold_nugget'
 
@@ -66,7 +66,7 @@ imitatedEffects:
     #how long the effect will be displayed [s]
     time: 2
 
-  #firing effect if the player is far away and display the aiming angle of the cannon
+  #firing effect if the player is far away and display the aiming angle of the craft
   aiming:
     #set to true to spawn a line of blocks while aiming
     enabled: true
@@ -88,7 +88,7 @@ imitatedEffects:
     time: 2
 
   predictor:
-    #shows the impact of the projectile for a loaded cannon
+    #shows the impact of the projectile for a loaded craft
     enabled: true
     #how many iterations until the projectile hits the surface
     maxIterations: 500

@@ -3,7 +3,7 @@ package at.pavlov.ironclad.listener;
 
 import at.pavlov.ironclad.Ironclad;
 import at.pavlov.ironclad.Enum.BreakCause;
-import at.pavlov.ironclad.cannon.Craft;
+import at.pavlov.ironclad.craft.Craft;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -90,14 +90,14 @@ public class BlockListener implements Listener
 
 
     /**
-     * retraction pistons will trigger this event. If the pulled block is part of a cannon, it is canceled
+     * retraction pistons will trigger this event. If the pulled block is part of a craft, it is canceled
      * @param event - BlockPistonRetractEvent
      */
     @EventHandler
     public void BlockPistonRetract(BlockPistonRetractEvent event)
     {
-        // when piston is sticky and has a cannon block attached delete the
-        // cannon
+        // when piston is sticky and has a craft block attached delete the
+        // craft
         if (event.isSticky())
         {
             Location loc = event.getBlock().getRelative(event.getDirection(), 2).getLocation();
@@ -110,7 +110,7 @@ public class BlockListener implements Listener
     }
 
     /**
-     * pushing pistons will trigger this event. If the pused block is part of a cannon, it is canceled
+     * pushing pistons will trigger this event. If the pused block is part of a craft, it is canceled
      * @param event - BlockPistonExtendEvent
      */
     @EventHandler
@@ -135,7 +135,7 @@ public class BlockListener implements Listener
     @EventHandler
     public void BlockBurn(BlockBurnEvent event)
     {
-        // the cannon will not burn down
+        // the craft will not burn down
         if (plugin.getCraftManager().getCraft(event.getBlock().getLocation(), null) != null)
         {
             event.setCancelled(true);
@@ -143,7 +143,7 @@ public class BlockListener implements Listener
     }
 
     /**
-     * if one block of the cannon is destroyed, it is removed from the list of ironclad
+     * if one block of the craft is destroyed, it is removed from the list of ironclad
      * @param event - BlockBreakEvent
      */
     @EventHandler

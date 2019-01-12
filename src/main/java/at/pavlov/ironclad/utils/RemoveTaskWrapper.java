@@ -1,7 +1,7 @@
 package at.pavlov.ironclad.utils;
 
 import at.pavlov.ironclad.Enum.BreakCause;
-import at.pavlov.ironclad.cannon.Craft;
+import at.pavlov.ironclad.craft.Craft;
 
 
 public class RemoveTaskWrapper {

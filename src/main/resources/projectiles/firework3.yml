@@ -7,12 +7,12 @@ general:
   itemName: firework rocket
   #the item which is associated with the projectile.
   #items can be assigned to many different projectiles which are used with different ironclad
-  #example: one cannon can be loaded with stone but will fire an armor piercing round, while a different cannon
+  #example: one craft can be loaded with stone but will fire an armor piercing round, while a different craft
   #can be loaded with stone and it will fire an explosive projectile (minimum is minecraft:material. Named items minecraft:material;displayName;lore1;lore2:....)
   #https://www.digminecraft.com/lists/item_id_list_pc.php
   loadingItem: 'minecraft:air'
   #some item create a block when placed e.g. redstone dust makes a wire if placed on ground. 
-  #if you load the dust, type in the wire id and data, else there is a wire on the cannon.
+  #if you load the dust, type in the wire id and data, else there is a wire on the craft.
   #minimum is minecraft:material. Named items minecraft:material;displayName;lore1;lore2:....
   alternativeId:
 
@@ -32,11 +32,11 @@ cannonball:
   timefuse: 0.5
   #the delay in seconds between two fired cannonball in the automatic firing mode. Highest firing frequency is 20 shots per second - 0.05s
   automaticFiringDelay: 1.0
-  #a cannon can fire several times with a single projectile - like a magazine in a automatic firearm
+  #a craft can fire several times with a single projectile - like a magazine in a automatic firearm
   automaticFiringMagazineSize: 1
   #how many projectiles are fired
   numberOfBullets: 2
-  #the higher this is, the more inaccurate the projectile. This multiplies the "spreadOfCannon" property of the cannon it is fired from
+  #the higher this is, the more inaccurate the projectile. This multiplies the "spreadOfCannon" property of the craft it is fired from
   spreadMultiplier: 1.0
   #different properties of the projectile. If you don't want any of these properties then just leave this all blank.
   #possible properties are: superbreaker, incendiary, human_cannonball, teleport, observer

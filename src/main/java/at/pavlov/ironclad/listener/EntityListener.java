@@ -5,10 +5,8 @@ import java.util.List;
 import java.util.UUID;
 
 import at.pavlov.ironclad.Enum.BreakCause;
-import at.pavlov.ironclad.cannon.Craft;
+import at.pavlov.ironclad.craft.Craft;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.*;
@@ -39,7 +37,7 @@ public class EntityListener implements Listener
     }
 
 	/**
-	 * handles the explosion event. Protects the buttons and torches of a cannon, because they break easily
+	 * handles the explosion event. Protects the buttons and torches of a craft, because they break easily
 	 * @param event
 	 */
 	@EventHandler

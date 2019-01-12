@@ -2,7 +2,7 @@ package at.pavlov.ironclad.scheduler;
 
 
 import at.pavlov.ironclad.Ironclad;
-import at.pavlov.ironclad.cannon.Craft;
+import at.pavlov.ironclad.craft.Craft;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class CreateCraft extends BukkitRunnable {

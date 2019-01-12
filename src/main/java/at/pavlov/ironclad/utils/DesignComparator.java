@@ -4,7 +4,7 @@ import java.util.Comparator;
 
 import org.bukkit.block.BlockFace;
 
-import at.pavlov.ironclad.cannon.CraftDesign;
+import at.pavlov.ironclad.craft.CraftDesign;
 
 public class DesignComparator implements Comparator<CraftDesign>
 {
@@ -24,7 +24,7 @@ public class DesignComparator implements Comparator<CraftDesign>
 		//if the design is invalid something goes wrong, message the user
 		if (design.getAllCraftBlocks(BlockFace.NORTH) == null)
 		{
-			System.out.println("[Ironclad] invalid cannon design for " + design.getDesignName());
+			System.out.println("[Ironclad] invalid craft design for " + design.getDesignName());
 			return 0;
 		}
 		

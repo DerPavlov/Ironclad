@@ -203,44 +203,6 @@ public class IroncladUtil
 		return materialList;
 	}
 
-    /**
-     * returns a list of ItemHolder. Formatting id:data min:max
-     * @param stringList list of strings to convert
-     * @return list of converted SpawnItemHolder
-     */
-    public static List<SpawnMaterialHolder> toSpawnMaterialHolderList(List<String> stringList)
-    {
-        List<SpawnMaterialHolder> materialList = new ArrayList<SpawnMaterialHolder>();
-        for (String str : stringList)
-        {
-            SpawnMaterialHolder material = new SpawnMaterialHolder(str);
-            materialList.add(material);
-        }
-
-        return materialList;
-    }
-
-    /**
-     * returns a list of MaterialHolder. Formatting id:data min:max
-     * @param stringList list of strings to convert
-     * @return list of converted SpawnMaterialHolder
-     */
-    public static List<SpawnEntityHolder> toSpawnEntityHolderList(List<String> stringList)
-    {
-        List<SpawnEntityHolder> entityList = new ArrayList<SpawnEntityHolder>();
-
-        for (String str : stringList)
-        {
-            SpawnEntityHolder entity = new SpawnEntityHolder(str);
-            //if id == -1 the str was invalid
-            if (entity.getType() != null)
-                entityList.add(entity);
-        }
-
-        return entityList;
-    }
-
-
 
     /**
 	 * get all block next to this block (UP, DOWN, SOUT, WEST, NORTH, EAST)

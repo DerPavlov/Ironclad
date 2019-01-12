@@ -1,7 +1,7 @@
 package at.pavlov.ironclad.listener;
 
 import at.pavlov.ironclad.Ironclad;
-import at.pavlov.ironclad.cannon.Craft;
+import at.pavlov.ironclad.craft.Craft;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -11,7 +11,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.SignChangeEvent;
 
-import at.pavlov.ironclad.cannon.CraftManager;
+import at.pavlov.ironclad.craft.CraftManager;
 import at.pavlov.ironclad.config.Config;
 import at.pavlov.ironclad.config.UserMessages;
 

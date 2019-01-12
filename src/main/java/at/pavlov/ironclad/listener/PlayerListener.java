@@ -1,6 +1,6 @@
 package at.pavlov.ironclad.listener;
 
-import at.pavlov.ironclad.cannon.Craft;
+import at.pavlov.ironclad.craft.Craft;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -14,9 +14,9 @@ import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 
-import at.pavlov.ironclad.cannon.CraftManager;
+import at.pavlov.ironclad.craft.CraftManager;
 import at.pavlov.ironclad.Ironclad;
-import at.pavlov.ironclad.cannon.CraftDesign;
+import at.pavlov.ironclad.craft.CraftDesign;
 import at.pavlov.ironclad.config.Config;
 import at.pavlov.ironclad.config.UserMessages;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -67,7 +67,7 @@ public class PlayerListener implements Listener
     }
 
     /**
-     * cancels the event if the player click a cannon with water
+     * cancels the event if the player click a craft with water
      * @param event - PlayerBucketEmptyEvent
      */
     @EventHandler
@@ -88,7 +88,7 @@ public class PlayerListener implements Listener
     }
 
     /**
-     * Create a cannon if the building process is finished Deletes a projectile
+     * Create a craft if the building process is finished Deletes a projectile
      * if loaded Checks for redstone torches if built
      * @param event BlockPlaceEvent
      */
@@ -99,13 +99,13 @@ public class PlayerListener implements Listener
         Block block = event.getBlockPlaced();
         Location blockLoc = block.getLocation();
 
-        // setup a new cannon
+        // setup a new craft
         cannonManager.getCraft(blockLoc, event.getPlayer().getUniqueId());
 
         // cancel igniting of the craft
         if (event.getBlock().getType() == Material.FIRE)
         {
-            // check cannon
+            // check craft
             if (event.getBlockAgainst() != null) {
                 Location loc = event.getBlockAgainst().getLocation();
                 if (cannonManager.getCraft(loc, event.getPlayer().getUniqueId(), true) != null) {
@@ -128,7 +128,7 @@ public class PlayerListener implements Listener
 
 
     /**
-     * Handles event if player interacts with the cannon
+     * Handles event if player interacts with the craft
      * @param event
      */
 	@EventHandler

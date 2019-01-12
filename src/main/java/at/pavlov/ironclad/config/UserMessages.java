@@ -4,7 +4,7 @@ import java.io.*;
 import java.util.*;
 
 import at.pavlov.ironclad.Enum.MessageEnum;
-import at.pavlov.ironclad.cannon.Craft;
+import at.pavlov.ironclad.craft.Craft;
 import at.pavlov.ironclad.utils.IroncladUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

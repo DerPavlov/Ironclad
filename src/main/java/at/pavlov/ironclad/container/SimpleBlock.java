@@ -62,11 +62,25 @@ public class SimpleBlock
 		return new Location(world, locX + offset.getBlockX(), locY + offset.getBlockY(), locZ + offset.getBlockZ());
 	}
 
+	/**
+	 * compare the location
+	 * @param loc location to compare to
+	 * @param offset the offset of the craft
+	 * @return true if both block match
+	 */
+	public boolean compareLocation(Location loc, Vector offset)
+	{
+		if (toVector().add(offset).equals(loc.toVector()))
+		{
+			return true;
+		}
+		return false;
+	}
 
 	/**
 	 * compare the location of the block and the id and data or data = -1
 	 * @param block block to compare to
-	 * @param offset the offset of the cannon
+	 * @param offset the offset of the craft
 	 * @return true if both block match
 	 */
 	public boolean compareMaterialAndLoc(Block block, Vector offset)

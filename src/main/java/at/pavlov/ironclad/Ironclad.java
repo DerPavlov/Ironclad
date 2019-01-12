@@ -11,12 +11,12 @@ import java.util.logging.Logger;
 
 import at.pavlov.ironclad.API.IroncladAPI;
 import at.pavlov.ironclad.Enum.MessageEnum;
-import at.pavlov.ironclad.cannon.CraftManager;
-import at.pavlov.ironclad.cannon.Craft;
-import at.pavlov.ironclad.cannon.DesignStorage;
+import at.pavlov.ironclad.craft.CraftManager;
+import at.pavlov.ironclad.craft.Craft;
+import at.pavlov.ironclad.craft.DesignStorage;
 import at.pavlov.ironclad.config.*;
 import at.pavlov.ironclad.listener.*;
-import at.pavlov.ironclad.scheduler.CraftMovement;
+import at.pavlov.ironclad.craft.CraftMovement;
 import at.pavlov.ironclad.scheduler.FakeBlockHandler;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
@@ -30,7 +30,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import at.pavlov.ironclad.cannon.CraftDesign;
+import at.pavlov.ironclad.craft.CraftDesign;
 import at.pavlov.ironclad.dao.PersistenceDatabase;
 import org.mcstats.MetricsLite;
 

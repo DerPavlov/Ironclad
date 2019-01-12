@@ -1,14 +1,10 @@
-package at.pavlov.ironclad.scheduler;
+package at.pavlov.ironclad.craft;
 
 import at.pavlov.ironclad.Enum.MessageEnum;
 import at.pavlov.ironclad.Ironclad;
-import at.pavlov.ironclad.cannon.Craft;
-import at.pavlov.ironclad.cannon.CraftDesign;
-import at.pavlov.ironclad.cannon.CraftManager;
 import at.pavlov.ironclad.config.Config;
 import at.pavlov.ironclad.config.UserMessages;
 import at.pavlov.ironclad.utils.IroncladUtil;
-import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 
@@ -20,9 +16,9 @@ public class CraftMovement {
     private final UserMessages userMessages;
     private final Config config;
 
-    //<Player,cannon name>
+    //<Player,craft name>
     private HashMap<UUID, UUID> inPilotingMode = new HashMap<UUID, UUID>();
-    //<cannon uid, timespamp>
+    //<craft uid, timespamp>
     private HashMap<UUID, Long> lastInteraction = new HashMap<UUID, Long>();
 
 
@@ -74,9 +70,9 @@ public class CraftMovement {
     }
 
     /**
-     * switches aming mode for this cannon
+     * switches aming mode for this craft
      * @param player - player in aiming mode
-     * @param craft - operated cannon
+     * @param craft - operated craft
      */
     public void pilotingMode(Player player, Craft craft)
     {
@@ -95,8 +91,8 @@ public class CraftMovement {
             //check if player has permission to aim
             if (player.hasPermission(craft.getCraftDesign().getPermissionPiloting()))
             {
-                //check distance before enabling the cannon
-                if (distanceCheck(player, craft))
+                //check if pilot is on the craft
+                if (craft.isEntityOnShip(player))
                 {
                     MessageEnum message = enablePilotingMode(player, craft);
                     userMessages.sendMessage(message, player, craft);
@@ -117,7 +113,7 @@ public class CraftMovement {
 
     /**
      * enable the aiming mode
-     * @param player player how operates the cannon
+     * @param player player how operates the craft
      * @param craft the craft in piloting mode
      * @return message for the user
      */
@@ -179,36 +175,15 @@ public class CraftMovement {
 	}
 
     /**
-     * returns the cannon of the player if he is in aiming mode
+     * returns the craft of the player if he is in aiming mode
      * @param player the player who is in aiming mode
-     * @return the cannon which is in aiming mode by the given player
+     * @return the craft which is in aiming mode by the given player
      */
     public Craft getCraftInAimingMode(Player player)
     {
         if (player == null)
             return null;
-        //return the cannon of the player if he is in aiming mode
+        //return the craft of the player if he is in aiming mode
         return CraftManager.getCraft(inPilotingMode.get(player.getUniqueId()));
-    }
-
-    /**
-     * if the player is not near the cannon
-     * @param player The player which has moved
-     * @param  craft the ironclad craft
-     * @return false if the player is too far away
-     */
-    public boolean distanceCheck(Player player, Craft craft)
-    {
-        // no cannon? then exit
-        if (craft == null)
-            return true;
-
-        //check if player if far away from the cannon
-        CraftDesign design = plugin.getCraftDesign(craft);
-        //go to center location
-        Location locCannon = design.getRotationCenter(craft);
-
-        //todo add bounding box
-        return player.getLocation().distance(locCannon) <= 10;
     }
 }

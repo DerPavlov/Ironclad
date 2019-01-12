@@ -1,6 +1,6 @@
 package at.pavlov.ironclad.event;
 
-import at.pavlov.ironclad.cannon.Craft;
+import at.pavlov.ironclad.craft.Craft;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 

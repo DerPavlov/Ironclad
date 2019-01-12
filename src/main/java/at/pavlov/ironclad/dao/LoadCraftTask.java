@@ -1,8 +1,8 @@
 package at.pavlov.ironclad.dao;
 
 import at.pavlov.ironclad.Ironclad;
-import at.pavlov.ironclad.cannon.Craft;
-import at.pavlov.ironclad.cannon.CraftDesign;
+import at.pavlov.ironclad.craft.Craft;
+import at.pavlov.ironclad.craft.CraftDesign;
 import at.pavlov.ironclad.scheduler.CreateCraft;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -37,7 +37,7 @@ public class LoadCraftTask extends BukkitRunnable{
             // found ironclad - load them
             while (rs.next()) {
                 UUID cannon_id = UUID.fromString(rs.getString("id"));
-                //check if cannon design exists
+                //check if craft design exists
                 CraftDesign design = Ironclad.getPlugin().getCraftDesign(rs.getString("design_id"));
                 if (design == null) {
                     Ironclad.getPlugin().logDebug("Design " + rs.getString("design_id") + " not found in plugin/designs");
@@ -103,7 +103,7 @@ public class LoadCraftTask extends BukkitRunnable{
 
             for (UUID inv : invalid) {
                 statement.addBatch(String.format("DELETE FROM %s WHERE id='%s'", Ironclad.getPlugin().getCannonDatabase(), inv.toString()));
-                Ironclad.getPlugin().logDebug("Delete cannon " + inv);
+                Ironclad.getPlugin().logDebug("Delete craft " + inv);
             }
             statement.executeBatch();
         } catch (Exception e) {

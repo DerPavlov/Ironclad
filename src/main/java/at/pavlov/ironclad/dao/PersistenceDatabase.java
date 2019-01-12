@@ -3,7 +3,7 @@ package at.pavlov.ironclad.dao;
 import java.util.UUID;
 
 import at.pavlov.ironclad.Ironclad;
-import at.pavlov.ironclad.cannon.Craft;
+import at.pavlov.ironclad.craft.Craft;
 import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 

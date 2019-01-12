@@ -1,4 +1,4 @@
-package at.pavlov.ironclad.cannon;
+package at.pavlov.ironclad.craft;
 
 import java.text.DecimalFormat;
 import java.util.*;
@@ -45,7 +45,7 @@ public class CraftManager
 
 	/**
 	 * removes a ironclad from the list that are not valid
-     * @param cause the reason why the cannon is removed
+     * @param cause the reason why the craft is removed
 	 */
 	private void removeInvalidCannons(BreakCause cause)
 	{
@@ -91,11 +91,11 @@ public class CraftManager
     }
 
 	/**
-	 * removes a cannon from the list
-	 * @param loc location of the cannon
-     * @param breakCannon all cannon blocks will drop
-     * @param canExplode if the cannon can explode when loaded with gunpowder
-     * @param cause the reason way the cannon was broken
+	 * removes a craft from the list
+	 * @param loc location of the craft
+     * @param breakCannon all craft blocks will drop
+     * @param canExplode if the craft can explode when loaded with gunpowder
+     * @param cause the reason way the craft was broken
 	 */
 	public void removeCannon(Location loc, boolean breakCannon, boolean canExplode, BreakCause cause)
 	{
@@ -116,11 +116,11 @@ public class CraftManager
 	}
 
     /**
-     * removes a cannon from the list
-     * @param uid UID of the cannon
-     * @param breakCannon all cannon blocks will drop
-     * @param canExplode if the cannon can explode when loaded with gunpowder
-     * @param cause the reason way the cannon was broken
+     * removes a craft from the list
+     * @param uid UID of the craft
+     * @param breakCannon all craft blocks will drop
+     * @param canExplode if the craft can explode when loaded with gunpowder
+     * @param cause the reason way the craft was broken
      */
     public void removeCannon(UUID uid, boolean breakCannon, boolean canExplode, BreakCause cause)
     {
@@ -128,12 +128,12 @@ public class CraftManager
     }
 
     /**
-     * removes a cannon from the list
-     * @param uid UID of the cannon
-     * @param breakCannon all cannon blocks will drop
-     * @param canExplode if the cannon can explode when loaded with gunpowder
-     * @param cause the reason way the cannon was broken
-     * @param removeEntry should the cannon be removed from the list
+     * removes a craft from the list
+     * @param uid UID of the craft
+     * @param breakCannon all craft blocks will drop
+     * @param canExplode if the craft can explode when loaded with gunpowder
+     * @param cause the reason way the craft was broken
+     * @param removeEntry should the craft be removed from the list
      */
     public void removeCannon(UUID uid, boolean breakCannon, boolean canExplode, BreakCause cause, boolean removeEntry)
     {
@@ -224,8 +224,8 @@ public class CraftManager
 
 
 	/**
-	 * Checks if the name of a cannon is unique
-	 * @param name name of the cannon
+	 * Checks if the name of a craft is unique
+	 * @param name name of the craft
 	 * @return true if the name is unique
 	 */
 	private static boolean isCannonNameUnique(String name)
@@ -234,8 +234,8 @@ public class CraftManager
             return false;
 
 		// try to find this in the map
-        //there is no such cannon name
-        //there is such a cannon name
+        //there is no such craft name
+        //there is such a craft name
         return cannonNameMap.get(name) == null;
 	}
 
@@ -405,7 +405,7 @@ public class CraftManager
     /**
      * returns all ironclad for a list of locations - this will update all locations
      * @param locations - a list of location to search for ironclad
-     * @param player - player which operates the cannon
+     * @param player - player which operates the craft
      * @param silent - no messages will be displayed if silent is true
      * @return - list of all ironclad in this sphere
      */
@@ -425,9 +425,9 @@ public class CraftManager
     }
 
 	/**
-	 * get cannon by cannonName and Owner - used for Signs
-	 * @param cannonName name of the cannon
-	 * @return the cannon with this name
+	 * get craft by cannonName and Owner - used for Signs
+	 * @param cannonName name of the craft
+	 * @return the craft with this name
 	 */
 	public static Craft getCraft(String cannonName)
 	{
@@ -437,15 +437,15 @@ public class CraftManager
         if (uid != null)
 		    return craftList.get(uid);
 
-        //cannon not found
+        //craft not found
         return null;
 	}
 
 	/**
 	 * Searches the storage if there is already a cannonblock on this location
-	 * and returns the cannon
-	 * @param loc location of one cannon block
-	 * @return the cannon at this location
+	 * and returns the craft
+	 * @param loc location of one craft block
+	 * @return the craft at this location
 	 */
 	private Craft getCannonFromStorage(Location loc)
 	{
@@ -460,10 +460,10 @@ public class CraftManager
 	}
 
 	/**
-	 * searches for a cannon and creates a new entry if it does not exist
-	 * @param cannonBlock - one block of the cannon
-	 * @param owner - the owner of the cannon (important for message notification). Can't be null if a new cannon is created
-	 * @return the cannon at this location
+	 * searches for a craft and creates a new entry if it does not exist
+	 * @param cannonBlock - one block of the craft
+	 * @param owner - the owner of the craft (important for message notification). Can't be null if a new craft is created
+	 * @return the craft at this location
 	 */
 	public Craft getCraft(Location cannonBlock, UUID owner)
 	{
@@ -471,11 +471,11 @@ public class CraftManager
 	}
 	
 	/**
-	 * searches for a cannon and creates a new entry if it does not exist
+	 * searches for a craft and creates a new entry if it does not exist
 	 * 
-	 * @param cannonBlock - one block of the cannon
-	 * @param owner - the owner of the cannon (important for message notification). Can't be null
-	 * @return the cannon at this location
+	 * @param cannonBlock - one block of the craft
+	 * @param owner - the owner of the craft (important for message notification). Can't be null
+	 * @return the craft at this location
 	 */
 	public Craft getCraft(Location cannonBlock, UUID owner, boolean silent)
 	{
@@ -570,9 +570,9 @@ public class CraftManager
 	}
 
     /**
-     * returns the cannon from the storage
-     * @param uid UUID of the cannon
-     * @return the cannon from the storage
+     * returns the craft from the storage
+     * @param uid UUID of the craft
+     * @return the craft from the storage
      */
     public static Craft getCraft(UUID uid)
     {
@@ -583,21 +583,21 @@ public class CraftManager
     }
 
 	/**
-	 * searches if this block is part of a cannon and create a new one
-	 * @param cannonBlock block of the cannon
-	 * @param owner the player who will be the owner of the cannon if it is a new cannon
-	 * @return cannon if found, else null
+	 * searches if this block is part of a craft and create a new one
+	 * @param cannonBlock block of the craft
+	 * @param owner the player who will be the owner of the craft if it is a new craft
+	 * @return craft if found, else null
 	 */
     private Craft checkCannon(Location cannonBlock, UUID owner)
 	{
 
-	    // is this block material used for a cannon design
+	    // is this block material used for a craft design
         if (cannonBlock.getBlock() == null || !plugin.getDesignStorage().isCannonBlockMaterial(cannonBlock.getBlock().getBlockData().getMaterial()))
             return null;
 
 		World world = cannonBlock.getWorld();
 
-		// check all cannon design if this block is part of the design
+		// check all craft design if this block is part of the design
 		for (CraftDesign cannonDesign : plugin.getDesignStorage().getCraftsDesignList())
 		{
 			// check of all directions
@@ -609,7 +609,7 @@ public class CraftManager
                 //check for empty entries
                 if (designBlockList.size() == 0)
                 {
-                    plugin.logSevere("There are empty cannon design schematics in your design folder. Please check it.");
+                    plugin.logSevere("There are empty craft design schematics in your design folder. Please check it.");
                     return null;
                 }
 				for (SimpleBlock designBlock : designBlockList)
@@ -620,7 +620,7 @@ public class CraftManager
 						// this block is same as in the design, get the offset
 						Vector offset = designBlock.subtractInverted(cannonBlock).toVector();
 
-						// check all other blocks of the cannon
+						// check all other blocks of the craft
 						boolean isCannon = true;
 
 						for (SimpleBlock checkBlocks : designBlockList)
@@ -634,15 +634,15 @@ public class CraftManager
 							}
 						}
 
-						// this is a cannon
+						// this is a craft
 						if (isCannon)
 						{
-                           // cannon
+                           // craft
 							return new Craft(cannonDesign, world.getUID(), offset, cannonDirection, owner);
 						}
 					}
 				}
-				// rotate cannon direction
+				// rotate craft direction
 				cannonDirection = IroncladUtil.roatateFace(cannonDirection);
 			}
 
@@ -701,7 +701,7 @@ public class CraftManager
 	/**
 	 * returns the amount of ironclad a player can build
 	 * 
-	 * @param player check the number of cannon this player can build
+	 * @param player check the number of craft this player can build
 	 * @return the maximum number of ironclad
 	 */
     public int getCannonBuiltLimit(Player player)
@@ -803,7 +803,7 @@ public class CraftManager
 	}
 
     /**
-     * removes all cannon
+     * removes all craft
      */
     public void deleteAllCrafts()
     {
@@ -825,8 +825,8 @@ public class CraftManager
 
 
 	/**
-	 * Deletes all ironclad of this player in the database to reset the cannon limit
-	 * @param owner the owner of the cannon
+	 * Deletes all ironclad of this player in the database to reset the craft limit
+	 * @param owner the owner of the craft
      * @return returns true if there was an entry of this player in the list
 	 */
 	public boolean deleteCrafts(UUID owner)
@@ -848,7 +848,7 @@ public class CraftManager
 	}
 
     /**
-     * reloads designs from the design list and updates all entries in the cannon
+     * reloads designs from the design list and updates all entries in the craft
      */
     public void updateCrafts()
     {

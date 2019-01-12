@@ -58,7 +58,7 @@ public enum MessageEnum
 	loadGunpowderNormalLimit ("Load.loadGunpowderNormalLimit"),
 	loadOverloadedGunpowder ("Load.OverloadedGunpowder"),
 	
-	//cannon
+	//craft
 	CannonCreated ("Craft.Created"),
 	CraftDismantled("Craft.Dismantled"),
 	CraftDestroyed("Craft.Destroyed"),

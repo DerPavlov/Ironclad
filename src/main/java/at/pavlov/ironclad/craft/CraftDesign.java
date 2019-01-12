@@ -1,4 +1,4 @@
-package at.pavlov.ironclad.cannon;
+package at.pavlov.ironclad.craft;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -68,7 +68,7 @@ public class CraftDesign
     private BlockData schematicBlockTypeChest;				//locations of the chest and sign
     private List<BlockData> schematicBlockTypeProtected;			//list of blocks that are protected from explosions (e.g. buttons)
     
-    //cannon design block lists for every direction (NORTH, EAST, SOUTH, WEST)
+    //craft design block lists for every direction (NORTH, EAST, SOUTH, WEST)
     private HashMap<BlockFace, CraftBlocks> cannonBlockMap = new HashMap<BlockFace, CraftBlocks>();
 
 
@@ -127,8 +127,8 @@ public class CraftDesign
 
     /**
      * returns a list of all cannonBlocks
-     * @param cannonDirection - the direction the cannon is facing
-     * @return List of cannon blocks
+     * @param cannonDirection - the direction the craft is facing
+     * @return List of craft blocks
      */
     public List<SimpleBlock> getAllCraftBlocks(BlockFace cannonDirection)
     {

@@ -1,4 +1,4 @@
-package at.pavlov.ironclad.cannon;
+package at.pavlov.ironclad.craft;
 
 import java.util.ArrayList;
 
