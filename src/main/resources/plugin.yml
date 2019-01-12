@@ -1,0 +1,116 @@
+name: ironclad
+main: at.pavlov.ironclad.Ironclad
+api-version: 1.13
+version: ${version}
+depend: [WorldEdit]
+softdepend: [Vault]
+author: DerPavlov
+description: Fire block build ironclad and smash your enemies
+
+commands:
+  ironclad:
+    description: Info how to use, build and manuver crafts.
+
+permissions:
+  ironclad.*:
+    description: Gives  permissions for using, building and manuvering help with ironclad crafts
+    children:
+      ironclad.player.*: true
+      ironclad.admin.*: true
+      ironclad.projectiles.*: true
+    default: false
+
+  ironclad.player.*:
+    description: Gives single permissions for loading, adjusting, firing and recall help with ironclad
+    children:
+      ironclad.player.command: true
+      ironclad.player.rename: true
+      ironclad.player.build: true
+      ironclad.player.dismantle: true
+      ironclad.player.piloting: true
+      ironclad.player.info: true
+      ironclad.player.help: true
+      ironclad.player.reset: true
+      ironclad.player.list: true
+      ironclad.player.claim: true
+    default: op
+
+  ironclad.player.command:
+    description: Allows a player to use the help commands
+    default: true
+  ironclad.player.help:
+    description: Allows a player to request help with a ironclad
+    default: true
+  ironclad.player.rename:
+    description: Allows the player to give his ironclad better names
+    default: false
+  ironclad.player.build:
+    description: Allows a player to build a ironclad
+    default: false
+  ironclad.player.dismantle:
+    description: Allows a player to deconstruct a ironclad when he is the owner
+    default: false
+  ironclad.player.piloting:
+    description: Allows a player to pilot an ironclad
+    default: false
+  ironclad.player.info:
+    description: Allows a player to get information about the ironclad
+    default: false
+  ironclad.player.reset:
+    description: Allows a player to delete all of his build ironclad.
+    default: false
+  ironclad.player.list:
+    description: Allows a player to request a list of all his ironclad
+    default: false
+  ironclad.player.claim:
+    description: Allows a player to claim ironclad in the vicinity
+    default: false
+
+  ironclad.limit.*:
+    description: Resets limits
+    children:
+      ironclad.limit.limitA: false
+      ironclad.limit.limitB: false
+    default: false
+
+  ironclad.limit.limitA:
+    description: Maximum amount of ironclad a player can build
+    default: false
+  ironclad.limit.limitB:
+    description: Maximum amount of ironclad a player can build
+    default: false
+
+
+  ironclad.admin.*:
+    description: Gives all admin rights
+    children:
+      ironclad.admin.reload: true
+      ironclad.admin.reset: true
+      ironclad.admin.list: true
+      ironclad.admin.create: true
+      ironclad.admin.dismantle: true
+      ironclad.admin.permissions: true
+      ironclad.admin.blockdata: true
+    default: op
+
+  ironclad.admin.reload:
+      description: Allows an admin to reload the config
+      default: op
+  ironclad.admin.reset:
+      description: Allows an admin to delete all ironclad of a player in the database
+      default: op
+  ironclad.admin.list:
+      description: Allows an admin to list all ironcladd of a player
+      default: op
+  ironclad.admin.create:
+      description: Allows an admin create a ironclad craft just with the design file name
+      default: op
+  ironclad.admin.dismantle:
+      description: Allows to deconstruct a ironclad craft without being its owner
+      default: op
+  ironclad.admin.permissions:
+      description: Allows an admin to list all default permissions for a player
+      default: op
+  ironclad.admin.blockdata:
+      description: Shows information about the blockdata
+      default: op

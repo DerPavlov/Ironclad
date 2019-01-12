@@ -1,0 +1,153 @@
+Error:
+  FiringInProgress: 'RED [Ironclad] CANNON feuert. Zurücktreten!'
+  LoadingInProgress: 'RED [Ironclad] CANNON lädt nach.'
+  BarrelTooHot: 'RED [Ironclad] Das Rohr ist zu heiss'
+  NotCleaned: 'RED [Ironclad] Das Rohr muss noch geputzt werden.'
+  NoGunpowder: 'RED [Ironclad] Kein Schwarzpulver. Lade zuerst die Treibladung!'
+  NoGunpowderNeeded: 'RED [Ironclad] Diese CANNON braucht keine Treibladung.'
+  NoProjectile: 'RED [Ironclad] Kein Kanonenkugel im Rohr. Lade einen Block!'
+  NoGunpowderInChest: 'RED [Ironclad] Nicht genügend Schwarzpulver zum Laden in der Kiste.'
+  NoProjectileInChest: 'RED [Ironclad] Kein Projectile in der Kiste.'
+  NotPushed: 'RED [Ironclad] Die CANNON muss noch gestopft werden.'
+  NoFlintAndSteel: 'RED [Ironclad] Du brauchst ein Feuerzeug zum Feuern.'
+  MaximumGunpowderLoaded: 'YELLOW [Ironclad] Du hast bereits GOLD GUNPOWDERkg YELLOW Schwarzpulver geladen.'
+  ProjectileAlreadyLoaded: 'YELLOW [Ironclad] Es wurde bereits eine Kanonenkugel aus GOLD PROJECTILE YELLOW mit GOLD GUNPOWDERkg YELLOW Pulver geladen. Feuere die Kanone endlich ab!'
+  CannonBuiltLimit: 'RED [Ironclad] Du darfst nicht mehr als GOLD LIMIT Kanone(n) YELLOW bauen.'
+  NotTheOwner: 'RED [Ironclad] Diese CANNON kann nur vom Besitzer benutzt werden.'
+  DismantlingNotOwner: 'RED [Ironclad] Nur der Besitzer kann eine Kanone abbauen.'
+  MissingSign: 'RED [Ironclad] Diese CANNON benötigt ein Sign um zu funktioinieren.'
+  NoMoney: 'RED [Ironclad] Du brauchst mindestens BUILD_COSTS um diese Kanone zu erstellen.'
+  NotPaid: "RED [Ironclad] Die Kanonenabgabe wurde noch nicht bezahlt. Verwende GOLD '/ironclad buy' RED um diese CANNON für GOLD BUILD_COSTS zu kaufen"
+  AlreadyPaid: 'RED [Ironclad] Die Kanonenabgabe wurde für diese Kanone bereits bezahlt'
+  PlayerNotFound: 'RED [Ironclad] Spielername nicht vorhanden.'
+
+
+Commands:
+  SelectCannon: 'YELLOW [Ironclad] Bitte Kanone auswählen.'
+    SelectBlock: 'YELLOW [Ironclad] Bitte Block auswählen.'
+  SelectCanceled: 'RED [Ironclad] Auswahl abgebrochen.'
+  CannonNotFound: 'RED [Ironclad] Kanone existiert nicht.'
+  NoSentryWhitelist: 'RED [Ironclad] Whitelist funktioniert nur bei Sentrykanonen.'
+  AddedWhitelist: 'GREEN [Ironclad] LASTWHITELISTED zur whitelist von CANNON hinzugefügt'
+  RemovedWhitelist: 'GREEN [Ironclad] LASTWHITELISTED von whitelist entfernt'
+  ToggledTargetMob: 'GOLD [Ironclad] Sentry erkennt Monster als Ziel: TARGET_MOB'
+  ToggledTargetPlayer: 'GOLD [Ironclad] Sentry erkennt Spieler als Ziel: TARGET_PLAYER'
+  ToggledTargetCannon: 'GOLD [Ironclad] Sentry erkennt Kanonen als Ziel: TARGET_CANNON'
+  ToggledTargetOther: 'GOLD [Ironclad] Sentry erkennt andere Dinge als Ziel: TARGET_OTHER'
+  BuyCannon: 'YELLOW [Ironclad] Klicke die Kanone um sie zu kaufen.'
+  PaidCannon: 'GREEN [Ironclad] Kanonenabgabe bezahlt. GOLD BUILD_COSTS GREEN wurde von deinem Konto abgebucht.'
+  ClaimCannonsStarted: 'YELLOW [Ironclad] Inbesitznahme alle Kanonen in der Umgebung gestartet. Bitte warten'
+  ClaimCannonsFinished: 'GREEN [Ironclad] Vorgang abgeschlossen.'
+
+
+Aiming:
+  EnableAimingMode: 'GREEN [Ironclad] Zielmodus aktiviert. Drücke SHIFT zum Zielen.'
+  DisableAimingMode: 'RED [Ironclad] Zielmodus deaktiviert'
+  TooFarForAimingMode: 'YELLOW [Ironclad] Zu weit entfernt für den Zielmodus'
+  SettingCombinedAngle: 'YELLOW [Ironclad] Neuer Winkel h: HDEGREE° YELLOW und v: GOLD VDEGREE°'
+  SettingVerticalAngleUp: 'YELLOW [Ironclad] Neuer vertikaler Winkel GOLD VDEGREE Grad'
+  SettingVerticalAngleDown: 'YELLOW [Ironclad] Neuer vertikaler Winkel GOLD VDEGREE Grad'
+  SettingHorizontalAngleRight: 'YELLOW [Ironclad] Neuer horizontaler Winkel GOLD HDEGREE Grad YELLOW nach GOLD rechts'
+  SettingHorizontalAngleLeft: 'YELLOW [Ironclad] Neuer horizontaler Winkel GOLD HDEGREE Grad YELLOW nach GOLD links'
+
+
+Load:  
+  Projectile: 'YELLOW [Ironclad] Projektil GOLD PROJECTILE YELLOW wurde geladen.'
+  Gunpowder: 'YELLOW [Ironclad] GOLD GUNPOWDERkg YELLOW von GOLD MAX_GUNPOWDER YELLOW Schwarzpulver geladen.'
+  loadGunpowderNormalLimit: 'YELLOW [Ironclad] GOLD Maximale Menge von (MAX_GUNPOWDERkg) geladen. Mehr würde die Kanone zerstören.'
+  OverloadedGunpowder: 'YELLOW [Ironclad] RED GUNPOWDERkg YELLOW von GOLD MAX_GUNPOWDERkg YELLOW Schwarzpulver geladen'
+
+
+Cannon:
+  Fire: 'YELLOW [Ironclad] FEUER!'
+  Created: 'GREEN [Ironclad] Eine GOLD CANNON GREEN wurde erstellt.'
+  Destroyed: 'RED [Ironclad] Eine deiner Kanonen wurde zerstört.'
+  Dismantled: 'GREEN [Ironclad] Eine deiner Kanonen wurde abgebaut.'
+  Reseted: 'GREEN [Ironclad] Alle Kanonen von GOLD PLAYER GREEN wurden aus der Datenbank entfernt.'
+  ObserverAdded: 'GREEN [Ironclad] Du wurdest als Beobachter bei GOLD CANNON_NAME GRENN hinzugefügt.'
+  ObserverRemoved: 'RED [Ironclad] Du bist nicht mehr Beobachter für GOLD CANNON_NAME.'
+  Info: 'NEWLINE YELLOW ========== Ironclad Information ==========
+    NEWLINE YELLOW Name: GOLD CANNON_NAME
+    NEWLINE YELLOW Typ: GOLD CANNON
+    NEWLINE YELLOW Info: GOLD DESCRIPTION
+    NEWLINE YELLOW Eigentümer: GOLD OWNER
+    NEWLINE YELLOW Ladung: GOLD GUNPOWDERkg YELLOW of GOLD MAX_GUNPOWDERkg
+    NEWLINE YELLOW Projektil: GOLD PROJECTILE
+    NEWLINE YELLOW Russ: GOLD SOOT
+    NEWLINE YELLOW Ausrichtung H/V: GOLD HDEGREE YELLOW / GOLD VDEGREE
+    -SENTRY-INFORMATION-
+    NEWLINE YELLOW Zielerfassung Monster: TARGET_MOB
+    NEWLINE YELLOW Zielerfassung Spieler: TARGET_PLAYER
+    NEWLINE YELLOW Zielerfassung Kanonen: TARGET_CANNON
+    NEWLINE YELLOW Zielerfassung Anderes: TARGET_OTHER
+    NEWLINE YELLOW Whitelist: WHITELIST '
+  RenameSuccess: 'GREEN [Ironclad] Die Kanone wurde umbenannt in GOLD CANNON_NAME.'
+  RenameFail: 'RED [Ironclad] Der Name für die Kanone ist nicht einzigartig.'
+
+
+Projectile:
+  Explosion: 'YELLOW [Ironclad] Einschlag war in einer Entfernung von GOLD IMPACT_DISTANCEm YELLOW und GOLD IMPACT_Ym YELLOW GREEN Höhe'
+  Canceled: 'YELLOW [Ironclad] Einschlag war bei GOLD IMPACT_X, IMPACT_Y, IMPACT_Z YELLOW aber das Gebiet ist geschützt'
+
+
+HeatManagement:
+  Burn: 'YELLOW [Ironclad] Du hast dir die Finger an der Kanone verbrannt'
+  Cooling: 'GREEN [Ironclad] Die CANNON kühlt sich ab'
+  Info: 'YELLOW [Ironclad] Die CANNON hat GOLD CANNON_TEMP YELLOW von GOLD MAX_TEMP YELLOW Grad. Explosionswahrscheinlichkeit: GOLD EXPLOSION_CHANCE YELLOW Prozent'
+  Critical: 'YELLOW [Ironclad] Kritische Temperatur von CANNON_TEMPC'
+  Overheated: 'RED [Ironclad] Die CANNON explodierte durch Überhitzung'
+
+
+Ramrod:
+  Cleaning: 'YELLOW [Ironclad] Das Rohr is noch nicht sauber genug. GOLD SOOT_LEFT YELLOW mal noch.'
+  CleaningDone: 'GREEN [Ironclad] Die CANNON is jetzt bereit zum Laden.'
+  PushingProjectile: 'YELLOW [Ironclad] Projectile in das Rohr gedrückt. Es ist noch nicht fixiert, mach es noch GOLD PUSHING_LEFT YELLOW mal.'
+  PushingProjectileDone: 'GREEN [Ironclad] Projectile fixiert. CANNON bereit.'
+
+
+  ImitatedEffects:
+    Enabled: 'GREEN [Ironclad] Alternativ Effekte aktiviert'
+    Disabled: 'RED [Ironclad] Alternativ Effekte deaktiviert'
+
+
+Permission:
+  ErrorRedstone: 'RED [Ironclad] Du kannst diese CANNON nicht mit Redstone bedienen.'
+  ErrorBuild: 'RED [Ironclad] Du darfst diese CANNON nicht bauen.'
+  ErrorRename: 'RED [Ironclad] Du darfst diese Kanone nicht umbenennen CANNON.'
+  ErrorFire: 'RED [Ironclad] Du weisst nicht wie du diese CANNON abfeuerst.'
+  ErrorLoad: 'RED [Ironclad] Keine Berechtigung um die Kanone zu laden.'
+  ErrorAdjust: 'RED [Ironclad] Dir fehlt die Berechtigung zum Zielen.'
+  ErrorAutoaim: 'RED [Ironclad] Du weißt nicht wie du die Zieleinrichtung verwendest.'
+  ErrorObserver: 'RED [Ironclad] Du taugst nicht als Beobachter für CANNON_NAME.'
+  ErrorProjectile: 'RED [Ironclad] Keine Erlaubnis für dieses Projektil.'
+  ErrorThermometer: 'RED [Ironclad] Du hast keine Ahnung wie man das Thermometer bedient.'
+  ErrorRamrod: 'RED [Ironclad] Du würdest dich nur selbst verletzen.'
+
+
+Death:
+  message1: 'RED PLAYER wurde von SHOOTER CANNON getötet'
+  message2: 'RED SHOOTER erwischte PLAYER mit PROJECTILE'
+  message3: 'RED PLAYER fing SHOOTERs CBALL'
+
+
+Help:
+  Text: 'NEWLINE GOLD Ironclad plugin
+    NEWLINE GOLD /ironclad build YELLOW - Wie man eine Kanone baut
+    NEWLINE GOLD /ironclad fire YELLOW - Wie man eine Kanone abfeuert
+    NEWLINE GOLD /ironclad adjust YELLOW - Wie man mit Kanonen zielt
+    NEWLINE GOLD /ironclad commands YELLOW - Alle zugänglichen Befehle'
+  Build: 'NEWLINE GOLD Wie baut man eine Kanone?
+    NEWLINE YELLOW Plaziere 3 Block schwarze Wolle hintereinander für das Kanonenrohr.
+    NEWLINE YELLOW Auf jeder Seite des Rohrs ein Knopf.
+    NEWLINE YELLOW Zum Abschluss noch eine Fackel auf den ersten Block des Rohrs.
+    NEWLINE YELLOW Jetzt sollte eine Meldung erschienen sein.'
+  Fire: 'NEWLINE GOLD Wie lädt man eine Kanone?
+    NEWLINE YELLOW 1) Lade Schwarzpuvler in das Kanonenrohr
+    NEWLINE YELLOW in dem du auf das Rohr rechts klickst.
+    NEWLINE YELLOW 2) Rechtsklick auf das Rohr mit dem Projektil (e.g. cobblestone).
+    NEWLINE YELLOW 3) Zum Feuern Rechtsklick an der Fackel.'
+  Adjust: 'NEWLINE GOLD Du hast das Ziel verfehlt? Lerne wie man richtig zielt
+    NEWLINE YELLOW Rechtsklick auf das Rohr dreht die Kanone.
+    NEWLINE YELLOW Shift+Rechtsklick ändert den Winkel in die andere Richtung.
+    NEWLINE YELLOW Ein Klick auf die obere oder untere Seite ändert den vertikalen Winkel
+    NEWLINE YELLOW Links- und Rechtsklicks den horizontalen Winkel.'

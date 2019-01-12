@@ -1,0 +1,207 @@
+general:
+  #sets debug mode on or off. Turn off if you do not want to see as much info on in the server console or log files
+  debugMode: false
+  #relays the new BlockExplodeEvent to the old EntityExplodeEvent for protection plugins, which don't support this feature
+  relayExplosionEvent: fase
+  #number of blocks updated per tick
+  maxBlockUpdateSize: 500
+  #size of the box of the claim cannon command
+  claimEdgeLength: 60
+
+
+craftLimits:
+  #limits regarding how many ironclad a player can build. set to false if you dont need it
+  useLimits: false
+  buildLimitA: 1
+  buildLimitB: 100
+
+
+keepProjectileAlive:
+  #projectile will only be updated by minecraft if a player is close to it. Enable this to keep them alive forever
+  enabled: true
+  #teleports the projectile to the expected location when the difference is too big
+  teleportProjectile: 5.0
+
+
+tools:
+  #the item a player needs to be holding to adjust the aim of a cannon. Default is air.
+  #minimum is id:data. Named items id:data:displayName:lore1:lore2:....
+  ajust: 'minecraft:air'
+  #the item used to autoaim a cannon. Default is clock
+  #minimum is id:data. Named items id:data:displayName:lore1:lore2:....
+  autoaim: 'minecraft:clock'
+  #the item used to fire a cannon. Default is flint and steel. Not every cannon needs a FiringItem.
+  #a data value of -1 means that every durability is accepted for flint and steel
+  #minimum is id:data. Named items id:data:displayName:lore1:lore2:....
+  firing: 'minecraft:flint_and_steel'
+  #required for cleaning a cannon after firing and pushing a projectile against the gunpowder
+  #minimum is id:data. Named items id:data:displayName:lore1:lore2:....
+  ramrod: 'minecraft:stick'
+  #item used to rotate a cannon 90 degrees. Not implemented yet
+  #minimum is id:data. Named items id:data:displayName:lore1:lore2:....
+  rotatingItem: 'minecraft:rail'
+  #item to measure the cannon temperature. Default is a gold nugget
+  #minimum is id:data. Named items id:data:displayName:lore1:lore2:....
+  thermometer: 'minecraft:gold_nugget'
+
+
+#fake blocks/sound that are send to the player, to make effects visible at large distance
+imitatedEffects:
+  #is the player closer than this distance, there will be no fake block
+  minimumBlockDistance: 80
+  #if the player is above this distance, there will be no fake block
+  maximumBlockDistance: 200
+  #if the player is above this distance, there will be no sound
+  maximumSoundDistance: 200
+  #how loud the sound effects will be (possible values: 0.0-1.0)
+  maximumSoundVolume: 0.8
+
+  explosion:
+    #are imitated blocks enabled
+    enabled: true
+    #size of the impact imitated explosion
+    sphereSize: 3
+    #material of the imitated explosion (default is a active minecraft:glowstone)
+    material: 'minecraft:glowstone'
+    #how long the effect will be displayed [s]
+    time: 2
+
+  #firing effect if the player is far away and display the aiming angle of the cannon
+  aiming:
+    #set to true to spawn a line of blocks while aiming
+    enabled: true
+    #how long the aiming vector will be. Longer means it is easier to see where you are aiming
+    length: 5
+    #this block will used to display the angle
+    block: 'minecraft:glass'
+    #how long the effect will be displayed [s]
+    time: 0.5
+
+  firing:
+    #will spawn fake blocks for players which are far away
+    enabled: true
+    #firing will spawn fire blocks if the player is far away
+    fireBlock: 'minecraft:glowstone'
+    #firing will spawn smoke blocks if the player is far away
+    smokeBlock: 'minecraft:cobweb'
+    #how long the effect will be displayed [s]
+    time: 2
+
+  predictor:
+    #shows the impact of the projectile for a loaded cannon
+    enabled: true
+    #how many iterations until the projectile hits the surface
+    maxIterations: 500
+    #the predictor will work for this distance (muzzle to impact)
+    maxDistance: 200.0
+    #fake block which shows the impact location
+    material: 'minecraft:glowstone'
+    #how long the effect will be displayed [s]
+    time: 0.5
+
+#enter here the blocks which require the superbreaker ability to destroy.
+#e.g. if you enter here the enchantment table it requires a projectile with superbreaker to be destroyed.
+#else it can be destroyed by normal explosions
+#https://www.digminecraft.com/lists/item_id_list_pc.php
+superbreakerBlocks:
+  #water
+  - 'minecraft:water'
+  #lava
+  - 'minecraft:lava'
+  #obsidian
+  - 'minecraft:obsidian'
+  #enchantmenttable
+  - 'minecraft:enchanting_table'
+  #enderchest
+  - 'minecraft:ender_chest'
+  #anvil
+  - 'minecraft:anvil'
+  #blocks which can't be destroyed by penetration of the projectile.
+  #normal minecraft explosions are not affected by this option.
+
+
+unbreakableBlocks:
+  # bedrock
+  #https://www.digminecraft.com/lists/item_id_list_pc.php
+  - 'minecraft:bedrock'
+
+
+#some items will consumed when used as projectile (e.g. a egg will be thrown) and the event has to be canceled, else the item can't be used as projectile
+#you can also enter here a lever to use it as right click trigger not as redstone trigger.
+#https://www.digminecraft.com/lists/item_id_list_pc.php
+cancelEventForLoadingItem:
+  #EGG
+  - 'minecraft:egg'
+  #SNOW_BALL
+  - 'minecraft:snowball'
+  #SPAWN_EGG
+  - 'minecraft:bat_spawn_egg'
+  - 'minecraft:blaze_spawn_egg'
+  - 'minecraft:cave_spider_spawn_egg'
+  - 'minecraft:chicken_spawn_egg'
+  - 'minecraft:cod_spawn_egg'
+  - 'minecraft:cow_spawn_egg'
+  - 'minecraft:creeper_spawn_egg'
+  - 'minecraft:dolphin_spawn_egg'
+  - 'minecraft:donkey_spawn_egg'
+  - 'minecraft:drowned_spawn_egg'
+  - 'minecraft:elder_guardian_spawn_egg'
+  - 'minecraft:enderman_spawn_egg'
+  - 'minecraft:endermite_spawn_egg'
+  - 'minecraft:evoker_spawn_egg'
+  - 'minecraft:ghast_spawn_egg'
+  - 'minecraft:guardian_spawn_egg'
+  - 'minecraft:horse_spawn_egg'
+  - 'minecraft:husk_spawn_egg'
+  - 'minecraft:llama_spawn_egg'
+  - 'minecraft:magma_cube_spawn_egg'
+  - 'minecraft:mooshroom_spawn_egg'
+  - 'minecraft:mule_spawn_egg'
+  - 'minecraft:ocelot_spawn_egg'
+  - 'minecraft:parrot_spawn_egg'
+  - 'minecraft:phantom_spawn_egg'
+  - 'minecraft:pig_spawn_egg'
+  - 'minecraft:polar_bear_spawn_egg'
+  - 'minecraft:pufferfish_spawn_egg'
+  - 'minecraft:rabbit_spawn_egg'
+  - 'minecraft:salmon_mob_spawn_egg'
+  - 'minecraft:sheep_spawn_egg'
+  - 'minecraft:shulker_spawn_egg'
+  - 'minecraft:silverfish_spawn_egg'
+  - 'minecraft:skeleton_horse_spawn_egg'
+  - 'minecraft:skeleton_spawn_egg'
+  - 'minecraft:slime_spawn_egg'
+  - 'minecraft:spider_spawn_egg'
+  - 'minecraft:squid_spawn_egg'
+  - 'minecraft:stray_spawn_egg'
+  - 'minecraft:tropical_fish_spawn_egg'
+  - 'minecraft:vex_spawn_egg'
+  - 'minecraft:villager_spawn_egg'
+  - 'minecraft:vindicator_spawn_egg'
+  - 'minecraft:witch_spawn_egg'
+  - 'minecraft:wither_skeleton_spawn_egg'
+  - 'minecraft:wolf_spawn_egg'
+  - 'minecraft:zombie_horse_spawn_egg'
+  - 'minecraft:zombie_pigman_spawn_egg'
+  - 'minecraft:zombie_spawn_egg'
+  - 'minecraft:zombie_villager_spawn_egg'
+  #ENDER_PEARL
+  - 'minecraft:ender_pearl'
+  #FIREWORK
+  - 'minecraft:fireworks'
+  #REDSTONE
+  - 'minecraft:redstone'
+
+database:
+  #database implementation. Default is SQLite, can be changed to MySql if you change the driver.  
+  username: bukkit
+  password: walrus
+  isolation: SERIALIZABLE
+  driver: org.sqlite.JDBC
+  url: jdbc:sqlite:{DIR}{NAME}.db
+  #mysql example
+  #username: {USERNAME}
+  #password: {PASSWORD}
+  #isolation: SERIALIZABLE
+  #driver: com.mysql.jdbc.Driver
+  #url: jdbc:mysql://{IP}:{PORT}/{DATABASENAME}

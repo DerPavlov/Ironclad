@@ -1,0 +1,154 @@
+Error:
+  FiringInProgress: 'RED [Ironclad] CANNON is firing. Step back.'
+  LoadingInProgress: 'RED [Ironclad] CANNON is loading a projectile.'
+  BarrelTooHot: 'RED [Ironclad] The barrel is too hot and must cool down.'
+  NotCleaned: 'RED [Ironclad] The barrel must be cleaned before firing.'
+  NoGunpowder: 'RED [Ironclad] No gunpowder. Please load the barrel.'
+  NoGunpowderNeeded: 'RED [Ironclad] This CANNON needs no gunpowder.'
+  NoProjectile: 'RED [Ironclad] No projectile loaded. Load something!'
+  NoGunpowderInChest: 'RED [Ironclad] Not enough gunpowder in the chest to reload the cannon.'
+  NoProjectileInChest: 'RED [Ironclad] No projectile in the chest.'
+  NoFlintAndSteel: 'RED [Ironclad] You need flint and steel to fire.'
+  NotPushed: 'RED [Ironclad] Push the projectile with a stick before firing.'
+  MaximumGunpowderLoaded: 'YELLOW [Ironclad] Maximum gunpowder of GOLD GUNPOWDERkg YELLOW already loaded.'
+  ProjectileAlreadyLoaded: 'YELLOW [Ironclad] Projectile GOLD PROJECTILE YELLOW and GOLD GUNPOWDER YELLOW gunpowder already loaded. Fire the damn gun before you blow yourself up.'
+  CannonBuiltLimit: 'RED [Ironclad] You cant build more than GOLD LIMIT YELLOW guns'
+  NotTheOwner: 'RED [Ironclad] This CANNON is locked and can only used by its owner'
+  DismantlingNotOwner: 'RED [Ironclad] Just the owner can dismantle a cannon.'
+  MissingSign: 'RED [Ironclad] This CANNON needs a sign to operate.'
+  NoMoney: 'RED [Ironclad] You need BUILD_COSTS to create this cannon.'
+  NotPaid: "RED [Ironclad] The cannon fee is not paid. Use GOLD '/ironclad buy' RED to buy this CANNON for GOLD BUILD_COSTS"
+  AlreadyPaid: 'RED [Ironclad] The fee for this cannon has already been paid'
+  PlayerNotFound: 'RED [Ironclad] Player does not exist.'
+
+
+Aiming:
+  EnableAimingMode: 'GREEN [Ironclad] Entering aiming mode. Hold SHIFT to aim.'
+  DisableAimingMode: 'RED [Ironclad] Leaving aiming mode'
+  TooFarForAimingMode: 'YELLOW [Ironclad] You need to be closer to the CANNON for the aiming mode'
+  SettingCombinedAngle: 'YELLOW [Ironclad] New angle h: GOLD HDEGREE degree YELLOW and v: GOLD VDEGREE degree'
+  SettingVerticalAngleUp: 'YELLOW [Ironclad] Setting vertical angle to GOLD VDEGREE degree'
+  SettingVerticalAngleDown: 'YELLOW [Ironclad] Setting vertical angle to GOLD VDEGREE degree'
+  SettingHorizontalAngleRight: 'YELLOW [Ironclad] Aiming GOLD HDEGREE degree YELLOW to the GOLD right'
+  SettingHorizontalAngleLeft: 'YELLOW [Ironclad] Aiming GOLD HDEGREE degree YELLOW to the GOLD left'
+
+
+Commands:
+  SelectCannon: 'YELLOW [Ironclad] Please click on the cannon.'
+  SelectBlock: 'YELLOW [Ironclad] Please click on the block.'
+  SelectCanceled: 'RED [Ironclad] Selection canceled.'
+  CannonNotFound: 'RED [Ironclad] Craft not found.'
+  NoSentryWhitelist: 'RED [Ironclad] Whitelist works for sentries only.'
+  AddedWhitelist: 'GREEN [Ironclad] Added LASTWHITELISTED to whitelist of CANNON'
+  RemovedWhitelist: 'GREEN [Ironclad] Removed LASTWHITELISTED from whitelist of CANNON'
+  ToggledTargetMob: 'GOLD [Ironclad] Changed sentry Mob targeting to: TARGET_MOB'
+  ToggledTargetPlayer: 'GOLD [Ironclad] Changed sentry Player targeting to: TARGET_PLAYER'
+  ToggledTargetCannon: 'GOLD [Ironclad] Changed sentry Craft targeting to: TARGET_CANNON'
+  ToggledTargetOther: 'GOLD [Ironclad] Changed sentry Other targeting to: TARGET_OTHER'
+  BuyCannon: 'YELLOW [Ironclad] Click the cannon buy it. This will withdraw money from your account'
+  PaidCannon: 'GREEN [Ironclad] Craft fee paid. GOLD BUILD_COSTS GREEN has be withdrawn from your bank account.'
+  ClaimCannonsStarted: 'YELLOW [Ironclad] Claiming ironclad in the surrounding. This might take a few seconds.'
+  ClaimCannonsFinished: 'GREEN [Ironclad] Successfully claimed all ironclad in the surrounding.'
+
+
+Load:  
+  Projectile: 'YELLOW [Ironclad] Projectile GOLD PROJECTILE YELLOW has been loaded.'
+  Gunpowder: 'YELLOW [Ironclad] GOLD GUNPOWDERkg YELLOW of GOLD MAX_GUNPOWDERkg YELLOW of Gunpowder loaded.'
+  loadGunpowderNormalLimit: 'YELLOW [Ironclad] GOLD Maximum gunpowder (MAX_GUNPOWDERkg) loaded. More gunpowder may to destroy cannon'
+  OverloadedGunpowder: 'YELLOW [Ironclad] RED GUNPOWDERkg YELLOW of GOLD MAX_GUNPOWDERkg YELLOW of gunpowder loaded'
+
+
+Cannon:
+  Fire: 'YELLOW [Ironclad] FIRE!'
+  Created: 'GREEN [Ironclad] You created a GOLD CANNON'
+  Destroyed: 'RED [Ironclad] One of your ironclad has been destroyed'
+  Dismantled: 'GREEN [Ironclad] One of your ironclad has been dismantled'
+  Reseted: 'GREEN [Ironclad] All ironclad of GOLD PLAYER GREEN have been deleted from the database'
+  ObserverAdded: 'GREEN [Ironclad] You have been added as observer to GOLD CANNON_NAME.'
+  ObserverRemoved: 'RED [Ironclad] You are no longer observer for GOLD CANNON_NAME.'
+  Info: 'NEWLINE YELLOW ========== Ironclad Information ==========
+    NEWLINE YELLOW Name: GOLD CANNON_NAME
+    NEWLINE YELLOW Type: GOLD CANNON
+    NEWLINE YELLOW Info: GOLD DESCRIPTION
+    NEWLINE YELLOW Owner: GOLD OWNER
+    NEWLINE YELLOW Gunpowder: GOLD GUNPOWDERkg YELLOW of GOLD MAX_GUNPOWDERkg
+    NEWLINE YELLOW Projectile: GOLD PROJECTILE
+    NEWLINE YELLOW Soot: GOLD SOOT
+    NEWLINE YELLOW Targeting H/V: GOLD HDEGREE YELLOW / GOLD VDEGREE
+    -SENTRY-INFORMATION-
+    NEWLINE YELLOW Target Mob: TARGET_MOB
+    NEWLINE YELLOW Target Player: TARGET_PLAYER
+    NEWLINE YELLOW Target Craft: TARGET_CANNON
+    NEWLINE YELLOW Target Other: TARGET_OTHER
+    NEWLINE YELLOW Whitelist: WHITELIST'
+  RenameSuccess: 'GREEN [Ironclad] You have rename the cannon to GOLD CANNON_NAME.'
+  RenameFail: 'RED [Ironclad] New cannon name is not unique.'
+
+
+Projectile:
+  Explosion: 'GREEN [Ironclad] Impact was in a distance of GOLD IMPACT_DISTANCEm GREEN and GOLD IMPACT_Ym GREEN height'
+  Canceled: 'YELLOW [Ironclad] Impact was at GOLD IMPACT_X, IMPACT_Y, IMPACT_Z YELLOW but the area is protected'
+
+
+HeatManagement:
+  Burn: 'YELLOW [Ironclad] You touched a hot CANNON and burned your fingers'
+  Cooling: 'GREEN [Ironclad] The CANNON cools down'
+  Info: 'YELLOW [Ironclad] CANNON temperature is GOLD CANNON_TEMP / MAX_TEMP YELLOW degree. Explosion chance: GOLD EXPLOSION_CHANCE YELLOW percent'
+  Critical: 'YELLOW [Ironclad] CANNON temperature of CANNON_TEMPC is critical'
+  Overheated: 'RED [Ironclad] The CANNON exploded due to overheating'
+
+
+Ramrod:
+  Cleaning: 'YELLOW [Ironclad] Scouring cannon. Need to do it GOLD SOOT_LEFT YELLOW times more.'
+  CleaningDone: 'GREEN [Ironclad] The barrel is clean enough.'
+  PushingProjectile: 'YELLOW [Ironclad] Pushed projectile. Do it GOLD PUSHING_LEFT YELLOW times more.'
+  PushingProjectileDone: 'GREEN [Ironclad] Pushed projectile. CANNON is ready to fire'
+
+
+ImitatedEffects:
+  Enabled: 'GREEN [Ironclad] Imitated effects have been enabled'
+  Disabled: 'RED [Ironclad] Imitated effects have been disabled'
+
+
+Permission:
+  ErrorRedstone: 'RED [Ironclad] You are not allowed to control this with redstone.'
+  ErrorBuild: 'RED [Ironclad] You have no permission to build a CANNON.'
+  ErrorDismantle: 'RED [Ironclad] You are not allow to deconstruct this CANNON.'
+  ErrorRename: 'RED [Ironclad] You have no permission to rename CANNON.'
+  ErrorFire: 'RED [Ironclad] You have no idea how to fire this CANNON.'
+  ErrorLoad: 'RED [Ironclad] No permission to load this CANNON.'
+  ErrorAdjust: 'RED [Ironclad] You have no idea how to adjust this CANNON.'
+  ErrorAutoaim: 'RED [Ironclad] You have no idea how to use autoaim.'
+  ErrorObserver: 'RED [Ironclad] You have no permission to be an obsever for CANNON_NAME.'
+  ErrorProjectile: 'RED [Ironclad] No permission for this projectile.'
+  ErrorThermometer: 'RED [Ironclad] No permission to use the thermometer.'
+  ErrorRamrod: 'RED [Ironclad] No permission for the ramrod.'
+
+
+Death:
+  message1: 'RED PLAYER has been killed by CANNON of player SHOOTER'
+  message2: 'RED SHOOTER killed PLAYER with a CANNON'
+  message3: 'RED PLAYER catched SHOOTERs CBALL'
+
+
+Help:
+  Text: 'NEWLINE YELLOW Ironclad plugin
+    NEWLINE GOLD /ironclad build YELLOW - How to build a cannon
+    NEWLINE GOLD /ironclad fire YELLOW - How to load and fire a cannon
+    NEWLINE GOLD /ironclad adjust YELLOW - A small guide aim with a cannon
+    NEWLINE GOLD /ironclad commands YELLOW - Shows all accessable commands'
+  Build: 'NEWLINE GOLD How to build a cannon:
+    NEWLINE YELLOW To make the barrel place 3 black wool blocks in x or z.
+    NEWLINE YELLOW Place a button on each end of the barrel
+    NEWLINE YELLOW Finish it by placing a torch on the first block of the barrel.
+    NEWLINE YELLOW To check if the cannon works right click the torch and you
+    NEWLINE YELLOW will get a message.'
+  Fire: 'NEWLINE GOLD How to load and fire: N
+    EWLINE YELLOW 1) Load the barrel with gunpowder by right clicking a few times with it.
+    NEWLINE YELLOW 2) Right click with a projectile block (e.g. cobblestone).
+    NEWLINE YELLOW 3) When you have done everthing right right click the torch.'
+  Adjust: 'NEWLINE GOLD You missed the target? Learn now how to aim:
+    NEWLINE YELLOW Right clicking with empty hands will increase the angle.
+    NEWLINE YELLOW Shift right click will decrease the angle.
+    NEWLINE YELLOW Clicking on the top of the barrel will change the vertical angle.
+    NEWLINE YELLOW Clicking on the side will change the horizontal angle.'
