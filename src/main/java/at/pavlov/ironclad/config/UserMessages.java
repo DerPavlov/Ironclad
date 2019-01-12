@@ -204,50 +204,6 @@ public class UserMessages {
 		sendMessage(message, player);
 	}
 
-    public void sendImpactMessage(Player player, Location impact, boolean canceled)
-    {
-        //no player no message
-        if (player == null)
-            return;
-        //no permission no message
-        if (!player.hasPermission("ironclad.player.impactMessage"))
-            return;
-
-        Location playerLoc = player.getLocation();
-
-        String message;
-        MessageEnum messageEnum;
-
-        if (!canceled) {
-            //the projectile exploded
-            messageEnum = MessageEnum.ProjectileExplosion;
-        }
-        else {
-            //the explosion was canceled
-            messageEnum = MessageEnum.ProjectileCanceled;
-        }
-
-        message = messageMap.get(messageEnum.getString());
-
-        if (message == null){
-            plugin.logSevere("No " + messageEnum.getString() + " in localization file");
-            return;
-        }
-        //if the message is something like this Explosion: '' it will pass quietly
-        if (message.isEmpty()) {
-            return;
-        }
-        //replace tags
-        message = message.replace("IMPACT_X", Integer.toString(impact.getBlockX()));
-        message = message.replace("IMPACT_Y", Integer.toString(impact.getBlockY()));
-        message = message.replace("IMPACT_Z", Integer.toString(impact.getBlockZ()));
-        message = message.replace("IMPACT_DISTANCE", Long.toString(Math.round(impact.distance(playerLoc))));
-        message = message.replace("IMPACT_YDIFF", Integer.toString(impact.getBlockY() - playerLoc.getBlockY()));
-
-        if (message != null)
-            sendMessage(message, player);
-    }
-	
 	/**
 	 * returns the message from the Map
 	 * @param messageEnum message to display

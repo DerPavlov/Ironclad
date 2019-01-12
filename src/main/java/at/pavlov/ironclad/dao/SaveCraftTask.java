@@ -10,13 +10,13 @@ import java.util.UUID;
 
 public class SaveCraftTask extends BukkitRunnable {
 
-    private UUID cannonId = null;
-    public SaveCraftTask(UUID cannonId){
-        this.cannonId = cannonId;
+    private UUID craftId = null;
+    public SaveCraftTask(UUID craftId){
+        this.craftId = craftId;
     }
 
     public SaveCraftTask(){
-        this.cannonId = null;
+        this.craftId = null;
     }
 
     @Override
@@ -26,14 +26,14 @@ public class SaveCraftTask extends BukkitRunnable {
             return;
 
         String insert = String.format("REPLACE INTO %s " +
-                "(id, name, owner, world, cannon_direction, loc_x, loc_y, loc_Z, soot, gunpowder, projectile_id, projectile_pushed, cannon_temperature, cannon_temperature_timestamp, horizontal_angle, vertical_angle, design_id, fired_cannonballs, target_mob, target_player, target_cannon, target_other, paid) VALUES" +
-                "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
-                , Ironclad.getPlugin().getCannonDatabase());
+                "(id, name, owner, world, craft_direction, loc_x, loc_y, loc_Z, yaw, pitch, velocity, design_id, travelled_distance, paid) VALUES" +
+                "(?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
+                , Ironclad.getPlugin().getCraftDatabase());
         try (PreparedStatement preparedStatement = Ironclad.getPlugin().getConnection().prepareStatement(insert)) {
             Ironclad.getPlugin().logDebug("[Ironclad] save Task start");
             for (Craft craft : CraftManager.getCraftList().values()) {
                 // in case we want to save just one craft
-                if (this.cannonId != null && craft.getUID() != this.cannonId) {
+                if (this.craftId != null && craft.getUID() != this.craftId) {
                     continue;
                 }
 
@@ -67,25 +67,20 @@ public class SaveCraftTask extends BukkitRunnable {
                 preparedStatement.setInt(6, craft.getOffset().getBlockX());
                 preparedStatement.setInt(7, craft.getOffset().getBlockY());
                 preparedStatement.setInt(8, craft.getOffset().getBlockZ());
-
+                //save pitch/yaw/velociy
+                preparedStatement.setDouble(9, craft.getYaw());
+                preparedStatement.setDouble(10, craft.getPitch());
+                preparedStatement.setDouble(11, craft.getVelocity());
+                // id
+                preparedStatement.setString(12, craft.getDesignID());
+                //travelled distance
+                preparedStatement.setDouble(13, craft.getTravelledDistance());
                 //save paid fee
-                preparedStatement.setBoolean(23, craft.isPaid());
+                preparedStatement.setBoolean(14, craft.isPaid());
 
                 preparedStatement.addBatch();
             }
             Ironclad.getPlugin().logDebug("[Ironclad] save Task execute");
-            preparedStatement.executeBatch();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
-        //Whitelist
-        insert = String.format("REPLACE INTO %s " +
-                        "(cannon_bean_id, player) VALUES" +
-                        "(?,?)"
-                , Ironclad.getPlugin().getWhitelistDatabase());
-        try (PreparedStatement preparedStatement = Ironclad.getPlugin().getConnection().prepareStatement(insert)) {
             preparedStatement.executeBatch();
         } catch (Exception e) {
             e.printStackTrace();

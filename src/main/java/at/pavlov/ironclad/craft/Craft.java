@@ -29,14 +29,14 @@ public class Craft
 
     // direction the craft is facing
     private BlockFace craftDirection;
-    // the angle the craft is currently moving
+    // the angle and velocity the craft is currently moving
     private double yaw;
+    private double pitch;
+    private double velocity;
     // the location is describe by the offset of the craft and the design
     private Vector offset;
     // world of the craft
     private UUID world;
-    // with which velocity the craft is moving
-    private Vector velocity;
 
     //actual dimensions of the craft
     private int craftMaxLength;
@@ -56,7 +56,7 @@ public class Craft
     private UUID lastUser;
 
     // amount of fired cannonballs with this craft
-    private long travelledDistance;
+    private double travelledDistance;
 
     // has the craft entry changed since it was last saved in the database
     private boolean updated;
@@ -79,7 +79,9 @@ public class Craft
         this.paid = design.getEconomyBuildingCost() <= 0;
 
         //the craft is not moving
-        this.velocity = new Vector(0, 0, 0);
+        this.yaw = IroncladUtil.directionToYaw(craftDirection);
+        this.pitch = 0.0;
+        this.velocity = 0.0;
 
         this.databaseId = UUID.randomUUID();
         this.updated = true;
@@ -758,11 +760,11 @@ public class Craft
         return chunk != null && chunk.isLoaded();
     }
 
-    public Vector getVelocity() {
+    public double getVelocity() {
         return velocity;
     }
 
-    public void setVelocity(Vector velocity) {
+    public void setVelocity(double velocity) {
         this.velocity = velocity;
     }
 
@@ -802,6 +804,13 @@ public class Craft
         this.yaw = yaw;
     }
 
+    public double getPitch() {
+        return pitch;
+    }
+
+    public void setPitch(double pitch) {
+        this.pitch = pitch;
+    }
 
     public int getCraftMaxLength() {
         return craftMaxLength;
@@ -859,5 +868,13 @@ public class Craft
             }
         }
         return false;
+    }
+
+    public double getTravelledDistance() {
+        return travelledDistance;
+    }
+
+    public void setTravelledDistance(double travelledDistance) {
+        this.travelledDistance = travelledDistance;
     }
 }

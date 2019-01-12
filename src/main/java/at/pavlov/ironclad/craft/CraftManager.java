@@ -280,13 +280,13 @@ public class CraftManager
         if (!player.hasPermission(craft.getCraftDesign().getPermissionRename()))
             return MessageEnum.PermissionErrorRename;
         if (newCannonName == null || !isCannonNameUnique(newCannonName))
-            return MessageEnum.CannonRenameFail;
+            return MessageEnum.CraftRenameFail;
 
         //put the new name
         craft.setCraftName(newCannonName);
         craft.updateCannonSigns();
 
-        return MessageEnum.CannonRenameSuccess;
+        return MessageEnum.CraftRenameSuccess;
 
     }
 
@@ -527,14 +527,14 @@ public class CraftManager
                 MessageEnum	message = canBuildCannon(craft, owner);
 
                 //if a sign is required to operate the craft, there must be at least one sign
-                if (message == MessageEnum.CannonCreated && (craft.getCraftDesign().isSignRequired() && !craft.hasCannonSign()))
+                if (message == MessageEnum.CraftCreated && (craft.getCraftDesign().isSignRequired() && !craft.hasCannonSign()))
                     message = MessageEnum.ErrorMissingSign;
 
                 CraftBeforeCreateEvent cbceEvent = new CraftBeforeCreateEvent(craft, message, player.getUniqueId());
                 Bukkit.getServer().getPluginManager().callEvent(cbceEvent);
 
                 //add craft to the list if everything was fine and return the craft
-                if (!cbceEvent.isCancelled() && cbceEvent.getMessage() != null && cbceEvent.getMessage() == MessageEnum.CannonCreated)
+                if (!cbceEvent.isCancelled() && cbceEvent.getMessage() != null && cbceEvent.getMessage() == MessageEnum.CraftCreated)
                 {
                     plugin.logDebug("a new craft was created by " + craft.getOwner());
                     createCannon(craft, true);
@@ -796,10 +796,10 @@ public class CraftManager
 		// player does not have too many guns
 		if (getNumberOfCrafts(owner) >= getCannonBuiltLimit(player))
 		{
-			return MessageEnum.ErrorCannonBuiltLimit;
+			return MessageEnum.ErrorCraftBuiltLimit;
 		}
 		// player has sufficient permission to build a craft
-		return MessageEnum.CannonCreated;
+		return MessageEnum.CraftCreated;
 	}
 
     /**

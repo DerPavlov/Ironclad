@@ -124,7 +124,7 @@ public class DesignStorage
 	}
 
 	/**
-	 * returns a list with valid craft designs (.yml + .schematic)
+	 * returns a list with valid craft designs (.yml + .schem)
 	 * 
 	 * @return
 	 */
@@ -134,7 +134,7 @@ public class DesignStorage
 
 		try
 		{
-			// check plugin/ironclad/designs for .yml and .schematic files
+			// check plugin/ironclad/designs for .yml and .schem files
 			String ymlFile;
 			File folder = new File(getPath());
 
@@ -151,11 +151,15 @@ public class DesignStorage
 					ymlFile = listOfFile.getName();
 					if (ymlFile.endsWith(".yml") || ymlFile.endsWith(".yaml")) {
 						String schematicFile = IroncladUtil.changeExtension(ymlFile, ".schematic");
+						String schemFile = IroncladUtil.changeExtension(ymlFile, ".schem");
 						if (new File(getPath() + schematicFile).isFile()) {
 							// there is a shematic file and a .yml file
 							designList.add(new DesignFileName(ymlFile, schematicFile));
+						} else if (new File(getPath() + schemFile).isFile()) {
+							// there is a shematic file and a .yml file
+							designList.add(new DesignFileName(ymlFile, schemFile));
 						} else {
-							plugin.logSevere(schematicFile + " is missing");
+							plugin.logSevere(schemFile + " is missing");
 						}
 					}
 				}
@@ -398,7 +402,7 @@ public class DesignStorage
 
 			// calculate the muzzle location
 			//maxSize.add(new Vector(1, 1, 1));
-			cannonBlocks.setMaxSize(minSize);
+			cannonBlocks.setMinSize(minSize);
 			cannonBlocks.setMaxSize(maxSize);
 
 			// calculate the rotation Center
@@ -419,7 +423,7 @@ public class DesignStorage
             for (Vector block : cannonBlocks.getDestructibleBlocks())
                 block.subtract(compensation);
             cannonBlocks.getMinSize().subtract(compensation);
-			cannonBlocks.getMaxSize().subtract(compensation);
+            cannonBlocks.getMaxSize().subtract(compensation);
             cannonBlocks.getRotationCenter().subtract(compensation);
 
 			// add blocks to the HashMap
@@ -479,9 +483,6 @@ public class DesignStorage
 	private void copyDefaultDesigns()
 	{
 		copyFile("classic");
-        copyFile("mortar");
-        copyFile("ironCannon");
-		copyFile("sentry");
 	}
 
     /**
@@ -491,7 +492,7 @@ public class DesignStorage
     private void copyFile(String fileName)
     {
         File YmlFile = new File(plugin.getDataFolder(), "designs/" + fileName + ".yml");
-        File SchematicFile = new File(plugin.getDataFolder(), "designs/" + fileName + ".schematic");
+        File SchematicFile = new File(plugin.getDataFolder(), "designs/" + fileName + ".schem");
 
         SchematicFile.getParentFile().mkdirs();
         if (!YmlFile.exists())
@@ -500,7 +501,7 @@ public class DesignStorage
         }
         if (!SchematicFile.exists())
         {
-            IroncladUtil.copyFile(plugin.getResource("designs/" + fileName + ".schematic"), SchematicFile);
+            IroncladUtil.copyFile(plugin.getResource("designs/" + fileName + ".schem"), SchematicFile);
         }
     }
 	

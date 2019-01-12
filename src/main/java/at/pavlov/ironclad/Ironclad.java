@@ -369,11 +369,6 @@ public final class Ironclad extends JavaPlugin
 		this.config.getUserMessages().sendMessage(message, player, craft);
 	}
 
-    public void sendImpactMessage(Player player, Location impact, boolean canceled)
-    {
-        this.config.getUserMessages().sendImpactMessage(player, impact, canceled);
-    }
-	
 	public void createCannon(Craft craft, boolean saveToDatabase)
 	{
 		this.getCraftManager().createCannon(craft, saveToDatabase);
@@ -399,7 +394,7 @@ public final class Ironclad extends JavaPlugin
         return this.economy;
     }
 
-	public String getCannonDatabase() {
+	public String getCraftDatabase() {
 		return cannonDatabase;
 	}
 

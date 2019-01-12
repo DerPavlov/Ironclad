@@ -7,20 +7,20 @@ import java.sql.Statement;
 import java.util.UUID;
 
 public class DeleteCraftTask extends BukkitRunnable{
-    private UUID cannonId = null;
+    private UUID craftId = null;
     private UUID playerId = null;
     public DeleteCraftTask(){
-        this.cannonId = null;
+        this.craftId = null;
         this.playerId = null;
     }
 
-    public DeleteCraftTask(UUID cannonId){
-        this.cannonId = cannonId;
+    public DeleteCraftTask(UUID craftId){
+        this.craftId = craftId;
         this.playerId = null;
     }
 
     public DeleteCraftTask(UUID playerId, boolean player){
-        this.cannonId = null;
+        this.craftId = null;
         this.playerId = playerId;
     }
 
@@ -28,14 +28,14 @@ public class DeleteCraftTask extends BukkitRunnable{
     @Override
     public void run() {
         try (Statement statement = Ironclad.getPlugin().getConnection().createStatement()) {
-            if (cannonId == null && playerId == null){
-                statement.executeUpdate(String.format("DELETE FROM %s", Ironclad.getPlugin().getCannonDatabase()));
+            if (craftId == null && playerId == null){
+                statement.executeUpdate(String.format("DELETE FROM %s", Ironclad.getPlugin().getCraftDatabase()));
             }
-            else if (cannonId != null) {
-                statement.executeUpdate(String.format("DELETE FROM %s WHERE id='%s'", Ironclad.getPlugin().getCannonDatabase(), cannonId));
+            else if (craftId != null) {
+                statement.executeUpdate(String.format("DELETE FROM %s WHERE id='%s'", Ironclad.getPlugin().getCraftDatabase(), craftId));
             }
             else{
-                statement.executeUpdate(String.format("DELETE FROM %s WHERE owner='%s'", Ironclad.getPlugin().getCannonDatabase(), playerId));
+                statement.executeUpdate(String.format("DELETE FROM %s WHERE owner='%s'", Ironclad.getPlugin().getCraftDatabase(), playerId));
             }
         } catch (Exception e) {
             e.printStackTrace();

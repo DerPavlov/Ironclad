@@ -51,7 +51,7 @@ public class PlayerListener implements Listener
         // only active if the player is in moving mode
 //        Craft craft =  aiming.getCraftInAimingMode(event.getPlayer());
 //        if (!aiming.distanceCheck(event.getPlayer(), craft)) {
-//            userMessages.sendMessage(MessageEnum.AimingModeTooFarAway, event.getPlayer());
+//            userMessages.sendMessage(MessageEnum.PilotingModeTooFarAway, event.getPlayer());
 //            MessageEnum message = aiming.disableAimingMode(event.getPlayer(), craft);
 //            userMessages.sendMessage(message, event.getPlayer());
 //        }

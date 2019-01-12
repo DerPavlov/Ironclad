@@ -13,38 +13,19 @@ public class CreateTableTask extends BukkitRunnable {
                         "name VARCHAR(20) NOT NULL," +
                         "owner VARCHAR(40) NOT NULL," +
                         "world VARCHAR(40) NOT NULL," +
-                        "cannon_direction VARCHAR(20)," +
+                        "craft_direction VARCHAR(20)," +
                         "loc_x INTEGER," +
                         "loc_y INTEGER," +
                         "loc_z INTEGER," +
-                        "soot DOUBLE," +
-                        "gunpowder INTEGER," +
-                        "projectile_id VARCHAR(40)," +
-                        "projectile_pushed INTEGER," +
-                        "cannon_temperature DOUBLE," +
-                        "cannon_temperature_timestamp BIGINT," +
-                        "horizontal_angle DOUBLE," +
-                        "vertical_angle DOUBLE," +
+                        "yaw DOUBLE," +
+                        "pitch DOUBLE," +
+                        "velocity DOUBLE," +
                         "design_id VARCHAR(20)," +
-                        "fired_cannonballs BIGINT," +
-                        "target_mob BOOLEAN," +
-                        "target_player BOOLEAN," +
-                        "target_cannon BOOLEAN," +
-                        "target_other BOOLEAN," +
+                        "travelled_distance DOUBLE," +
                         "paid BOOLEAN)"
-                , Ironclad.getPlugin().getCannonDatabase());
-        String sql2 = String.format("CREATE TABLE IF NOT EXISTS %s (" +
-                        "cannon_bean_id VARCHAR(40) NOT NULL," +
-                        "player VARCHAR(40) NOT NULL," +
-                        "CONSTRAINT UC_Whitelist UNIQUE (cannon_bean_id, player)," +
-                        "FOREIGN KEY (cannon_bean_id) REFERENCES %s (id) " +
-                        "ON UPDATE CASCADE " +
-                        "ON DELETE CASCADE" +
-                        ")"
-                , Ironclad.getPlugin().getWhitelistDatabase(), Ironclad.getPlugin().getCannonDatabase());
+                , Ironclad.getPlugin().getCraftDatabase());
         try (Statement statement = Ironclad.getPlugin().getConnection().createStatement()) {
             statement.execute(sql1);
-            statement.execute(sql2);
         } catch (Exception e) {
             e.printStackTrace();
         }

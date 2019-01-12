@@ -3,7 +3,7 @@
 
     <!-- Project information -->
     <groupId>at.pavlov</groupId>
-    <artifactId>ironclad</artifactId>
+    <artifactId>Ironclad</artifactId>
     <name>Iconclad</name>
     <version>0.1.0</version>
     <packaging>jar</packaging>

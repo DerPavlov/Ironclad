@@ -99,14 +99,14 @@ public class CraftMovement {
                 }
                 else
                 {
-                    userMessages.sendMessage(MessageEnum.AimingModeTooFarAway, player, craft);
+                    userMessages.sendMessage(MessageEnum.PilotingModeTooFarAway, player, craft);
                 }
 
             }
             else
             {
                 //no Permission to aim
-                userMessages.sendMessage(MessageEnum.PermissionErrorAdjust, player, craft);
+                userMessages.sendMessage(MessageEnum.PermissionErrorPilot, player, craft);
             }
         }
     }
@@ -123,7 +123,7 @@ public class CraftMovement {
             return null;
 
         if (!player.hasPermission(craft.getCraftDesign().getPermissionPiloting()))
-            return MessageEnum.PermissionErrorAutoaim;
+            return MessageEnum.PermissionErrorPilot;
 
         inPilotingMode.put(player.getUniqueId(), craft.getUID());
 
@@ -164,7 +164,7 @@ public class CraftMovement {
             //player in map -> remove
             inPilotingMode.remove(player.getUniqueId());
 
-            return MessageEnum.AimingModeDisabled;
+            return MessageEnum.PilotingModeDisabled;
         }
         return null;
     }

@@ -247,7 +247,7 @@ public class Commands implements TabExecutor
                         userMessages.sendMessage(MessageEnum.HelpBuild, player);
                     }
                     //ironclad fire
-                    else if (args[0].equalsIgnoreCase("fire"))
+                    else if (args[0].equalsIgnoreCase("pilot"))
                     {
                         if (!player.hasPermission("ironclad.player.command"))
                         {
@@ -255,18 +255,7 @@ public class Commands implements TabExecutor
                             return true;
                         }
                         // how to fire
-                        userMessages.sendMessage(MessageEnum.HelpFire, player);
-                    }
-                    //ironclad adjust
-                    else if (args[0].equalsIgnoreCase("adjust"))
-                    {
-                        if (!player.hasPermission("ironclad.player.command"))
-                        {
-                            plugin.logDebug("[Ironclad] " + sender.getName() + " has no permission for command /ironclad " + args[0]);
-                            return true;
-                        }
-                        // how to adjust
-                        userMessages.sendMessage(MessageEnum.HelpAdjust, player);
+                        userMessages.sendMessage(MessageEnum.HelpPilot, player);
                     }
                     //ironclad commands
                     else if (args[0].equalsIgnoreCase("commands"))
@@ -475,7 +464,7 @@ public class Commands implements TabExecutor
             if (isBlockSelectingMode(player))
                 userMessages.sendMessage(MessageEnum.CmdSelectBlock, player);
             else
-                userMessages.sendMessage(MessageEnum.CmdSelectCannon, player);
+                userMessages.sendMessage(MessageEnum.CmdSelectCraft, player);
         }
     }
 
@@ -524,7 +513,7 @@ public class Commands implements TabExecutor
         if (!isSelectingMode(player))
         {
             craftSelector.put(player.getUniqueId(),cmd);
-            userMessages.sendMessage(MessageEnum.CmdBuyCannon, player);
+            userMessages.sendMessage(MessageEnum.CmdBuyCraft, player);
         }
     }
 
@@ -614,7 +603,7 @@ public class Commands implements TabExecutor
         {
             switch (cmd){
                 case INFO:{
-                    userMessages.sendMessage(MessageEnum.CannonInfo, player, craft);
+                    userMessages.sendMessage(MessageEnum.CraftInfo, player, craft);
                     IroncladUtil.playSound(craft.getMuzzle(), craft.getCraftDesign().getSoundSelected());
                     break;
                 }
@@ -638,7 +627,7 @@ public class Commands implements TabExecutor
                             else {
                                 craft.boughtByPlayer(player.getUniqueId());
                                 //IroncladUtil.playSound();
-                                userMessages.sendMessage(MessageEnum.CmdPaidCannon, player, craft);
+                                userMessages.sendMessage(MessageEnum.CmdPaidCraft, player, craft);
                                 IroncladUtil.playSound(craft.getMuzzle(), craft.getCraftDesign().getSoundSelected());
                             }
                         }
