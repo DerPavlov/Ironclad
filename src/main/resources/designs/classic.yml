@@ -19,7 +19,7 @@ signs:
 
 angles:
   #used to adjust in what direction a craft is facing in the schematic
-  defaultHorizontalFacing: west
+  schematicDirection: west
 
 realisticBehaviour:
   #dismantling takes some time (fits to the sound) [s]

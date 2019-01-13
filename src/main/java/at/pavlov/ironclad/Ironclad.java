@@ -16,7 +16,7 @@ import at.pavlov.ironclad.craft.Craft;
 import at.pavlov.ironclad.craft.DesignStorage;
 import at.pavlov.ironclad.config.*;
 import at.pavlov.ironclad.listener.*;
-import at.pavlov.ironclad.craft.CraftMovement;
+import at.pavlov.ironclad.craft.CraftMovementManager;
 import at.pavlov.ironclad.scheduler.FakeBlockHandler;
 import com.sun.istack.internal.NotNull;
 import net.milkbowl.vault.economy.Economy;
@@ -43,7 +43,7 @@ public final class Ironclad extends JavaPlugin
 
     private final Config config;
     private final FakeBlockHandler fakeBlockHandler;
-    private final CraftMovement craftMovement;
+    private final CraftMovementManager craftMovementManager;
 
     private final IroncladAPI cannonsAPI;
     private Economy economy;
@@ -69,7 +69,7 @@ public final class Ironclad extends JavaPlugin
 
         //setup all classes
         this.config = new Config(this);
-        this.craftMovement = new CraftMovement(this);
+        this.craftMovementManager = new CraftMovementManager(this);
         this.fakeBlockHandler = new FakeBlockHandler(this);
         this.cannonsAPI = new IroncladAPI(this);
 
@@ -172,7 +172,7 @@ public final class Ironclad extends JavaPlugin
 
 
 			// setting up Aiming Mode Task
-			craftMovement.initMovementExecute();
+			craftMovementManager.initMovementExecute();
             fakeBlockHandler.setupScheduler();
 
 			// save ironclad
@@ -377,8 +377,9 @@ public final class Ironclad extends JavaPlugin
 	}
 
 	public void spawnCraft(@NotNull CraftDesign cannonDesign, @NotNull Location location, @NotNull BlockFace direction, @NotNull UUID playerUID){
-		Craft craft = new Craft(cannonDesign, location.getWorld().getUID(), location.toVector(), BlockFace.NORTH, playerUID);
+		Craft craft = new Craft(cannonDesign, location.getWorld().getUID(), location.toVector(), direction, playerUID);
 		craft.create();
+		this.getCraftManager().createCraft(craft, true);
 	}
 
     public IroncladAPI getCannonsAPI() {
@@ -409,7 +410,7 @@ public final class Ironclad extends JavaPlugin
 		return whitelistDatabase;
 	}
 
-	public CraftMovement getCraftMovement() {
-		return craftMovement;
+	public CraftMovementManager getCraftMovementManager() {
+		return craftMovementManager;
 	}
 }

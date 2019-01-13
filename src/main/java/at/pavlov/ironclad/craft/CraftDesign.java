@@ -30,7 +30,7 @@ public class CraftDesign
 	private boolean isSignRequired;
 
 	//angles
-	private BlockFace defaultHorizontalFacing;
+	private BlockFace schematicDirection;
 
 	//realistic behavior
 	private double dismantlingDelay;
@@ -72,6 +72,20 @@ public class CraftDesign
     //craft design block lists for every direction (NORTH, EAST, SOUTH, WEST)
     private HashMap<BlockFace, CraftBlocks> cannonBlockMap = new HashMap<BlockFace, CraftBlocks>();
 
+	/**
+	 * returns real dimensions of the craft
+	 * @return minimum block of the bounding box
+	 */
+	public Vector getCraftDimensions()
+	{
+		CraftBlocks cannonBlocks  = cannonBlockMap.get(BlockFace.NORTH);
+		if (cannonBlocks != null) {
+			return cannonBlocks.getMaxSize().clone().add(new Vector(1,1,1)).subtract(cannonBlocks.getMinSize().clone());
+		}
+		System.out.println("[Ironclad] missing blocks for craft design");
+		return null;
+	}
+
 
 	/**
 	 * returns the minimum block location of the craft
@@ -108,6 +122,24 @@ public class CraftDesign
 	}
 
 
+	/**
+	 * returns the center location of the craft
+	 * @param craft operated craft
+	 * @return center of the craft
+	 */
+	public Location getCraftCenter(Craft craft)
+	{
+		CraftBlocks cannonBlocks  = cannonBlockMap.get(craft.getCraftDirection());
+		if (cannonBlocks != null)
+		{
+			return cannonBlocks.getCraftCenter().clone().add(craft.getOffset()).toLocation(craft.getWorldBukkit());
+		}
+
+		System.out.println("[Ironclad] missing location for craft design " + craft.getCraftName());
+		return craft.getOffset().toLocation(craft.getWorldBukkit());
+	}
+
+
     /**
      * returns the rotation center location
      * @param craft operated craft
@@ -121,7 +153,7 @@ public class CraftDesign
     		return cannonBlocks.getRotationCenter().clone().add(craft.getOffset()).toLocation(craft.getWorldBukkit());
     	}
 
-    	System.out.println("[Ironclad] missing muzzle location for craft design " + craft.getCraftName());
+    	System.out.println("[Ironclad] missing location for craft design " + craft.getCraftName());
     	return craft.getOffset().toLocation(craft.getWorldBukkit());
     }
 
@@ -148,20 +180,37 @@ public class CraftDesign
      * @param craft
      * @return
      */
-    public List<Location> getAllCraftBlocks(Craft craft)
+    public List<SimpleBlock> getAllCraftBlocks(Craft craft)
     {
         CraftBlocks cannonBlocks  = cannonBlockMap.get(craft.getCraftDirection());
-        List<Location> locList = new ArrayList<Location>();
-        if (cannonBlocks != null)
-        {
-            for (SimpleBlock block : cannonBlocks.getAllCraftBlocks())
-            {
-                Vector vect = block.toVector();
-                locList.add(vect.clone().add(craft.getOffset()).toLocation(craft.getWorldBukkit()));
+		ArrayList<SimpleBlock> blockList = new ArrayList<>();
+        if (cannonBlocks != null) {
+            for (SimpleBlock block : cannonBlocks.getAllCraftBlocks()) {
+				blockList.add(block.clone().add(craft.getOffset()));
             }
         }
-        return locList;
+        return blockList;
     }
+
+	/**
+	 * returns a list of all cannonBlocks
+	 * @param craft
+	 * @return
+	 */
+	public List<Location> getAllCraftBlocksAfterMovement(Craft craft)
+	{
+		CraftBlocks cannonBlocks  = cannonBlockMap.get(craft.getCraftDirection());
+		List<Location> locList = new ArrayList<Location>();
+		if (cannonBlocks != null)
+		{
+			for (SimpleBlock block : cannonBlocks.getAllCraftBlocks())
+			{
+				Vector vect = block.toVector();
+				locList.add(vect.clone().add(craft.getOffset()).toLocation(craft.getWorldBukkit()));
+			}
+		}
+		return locList;
+	}
 
     /**
      * returns a list of all destructible blocks
@@ -445,14 +494,6 @@ public class CraftDesign
 		this.lastUserBecomesOwner = lastUserBecomesOwner;
 	}
 
-	public BlockFace getDefaultHorizontalFacing() {
-		return defaultHorizontalFacing;
-	}
-
-	public void setDefaultHorizontalFacing(BlockFace defaultHorizontalFacing) {
-		this.defaultHorizontalFacing = defaultHorizontalFacing;
-	}
-
 	public double getDismantlingDelay() {
 		return dismantlingDelay;
 	}
@@ -515,5 +556,13 @@ public class CraftDesign
 
 	protected void setSchematicBlockTypeSign(BlockData schematicBlockTypeSign) {
 		this.schematicBlockTypeSign = schematicBlockTypeSign;
+	}
+
+	public BlockFace getSchematicDirection() {
+		return schematicDirection;
+	}
+
+	public void setSchematicDirection(BlockFace schematicDirection) {
+		this.schematicDirection = schematicDirection;
 	}
 }

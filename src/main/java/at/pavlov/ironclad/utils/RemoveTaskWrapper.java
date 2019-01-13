@@ -30,7 +30,7 @@ public class RemoveTaskWrapper {
         this.craft = craft;
     }
 
-    public boolean breakCannon() {
+    public boolean breakCraft() {
         return breakCannon;
     }
 

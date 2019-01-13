@@ -9,6 +9,7 @@ import at.pavlov.ironclad.container.SimpleBlock;
 
 class CraftBlocks
 {
+	private Vector craftCenter;
 	private Vector rotationCenter;														//center off all rotation blocks
 	private Vector minSize;
 	private Vector maxSize;
@@ -94,5 +95,13 @@ class CraftBlocks
 
 	protected void setSign(ArrayList<SimpleBlock> sign) {
 		this.sign = sign;
+	}
+
+	protected Vector getCraftCenter() {
+		return craftCenter;
+	}
+
+	protected void setCraftCenter(Vector craftCenter) {
+		this.craftCenter = craftCenter;
 	}
 }

@@ -33,7 +33,7 @@ public class PersistenceDatabase
             plugin.logSevere("No connection to database");
             return;
         }
-		plugin.getCraftManager().clearCannonList();
+		plugin.getCraftManager().clearCraftList();
 
 	    LoadCraftTask task = new LoadCraftTask();
 	    task.runTaskAsynchronously(plugin);
@@ -51,7 +51,7 @@ public class PersistenceDatabase
 			saveCannonTask.run();
     }
 
-    public void saveCannon(Craft craft){
+    public void saveCraft(Craft craft){
 		if (!plugin.hasConnection()) {
 			plugin.logSevere("No connection to database");
 			return;
@@ -64,7 +64,7 @@ public class PersistenceDatabase
 		return saveTask != null && Bukkit.getScheduler().isCurrentlyRunning(saveTask.getTaskId());
 	}
 
-    public void deleteCannon(UUID cannon_id){
+    public void deleteCraft(UUID cannon_id){
 		if (!plugin.hasConnection()) {
 			plugin.logSevere("No connection to database");
 			return;

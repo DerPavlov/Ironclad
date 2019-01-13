@@ -219,7 +219,7 @@ public class PlayerListener implements Listener
 //                userMessages.sendMessage(message, player, craft);
 //
 //                // update Signs
-//                craft.updateCannonSigns();
+//                craft.updateCraftSigns();
 //
 //                if(message!=null)
 //                    return;

@@ -3,7 +3,7 @@ package at.pavlov.ironclad.dao;
 import at.pavlov.ironclad.Ironclad;
 import at.pavlov.ironclad.craft.Craft;
 import at.pavlov.ironclad.craft.CraftDesign;
-import at.pavlov.ironclad.scheduler.CreateCraft;
+import at.pavlov.ironclad.scheduler.CreateCraftTask;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
@@ -92,7 +92,7 @@ public class LoadCraftTask extends BukkitRunnable{
                     craft.setPaid(rs.getBoolean("paid"));
 
                     //add a craft to the craft list
-                    BukkitTask task = new CreateCraft(Ironclad.getPlugin(), craft, false).runTask(Ironclad.getPlugin());
+                    BukkitTask task = new CreateCraftTask(Ironclad.getPlugin(), craft, false).runTask(Ironclad.getPlugin());
                     i++;
                 }
             }

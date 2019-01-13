@@ -4,32 +4,50 @@ import at.pavlov.ironclad.Enum.MessageEnum;
 import at.pavlov.ironclad.Ironclad;
 import at.pavlov.ironclad.config.Config;
 import at.pavlov.ironclad.config.UserMessages;
+import at.pavlov.ironclad.container.SimpleBlock;
+import at.pavlov.ironclad.scheduler.MoveCalculateTask;
+import at.pavlov.ironclad.scheduler.MoveCraftTask;
 import at.pavlov.ironclad.utils.IroncladUtil;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitTask;
+import org.bukkit.util.Vector;
 
+import java.text.DecimalFormat;
 import java.util.*;
 
 
-public class CraftMovement {
+public class CraftMovementManager {
     private final Ironclad plugin;
     private final UserMessages userMessages;
     private final Config config;
+
+    private BukkitTask asyncTask;
 
     //<Player,craft name>
     private HashMap<UUID, UUID> inPilotingMode = new HashMap<UUID, UUID>();
     //<craft uid, timespamp>
     private HashMap<UUID, Long> lastInteraction = new HashMap<UUID, Long>();
+    //attached Blocks will be moved with the craft once the movement is calculated
+    private ArrayList<Location> attachedBlocks = new ArrayList<>();
+
 
 
     /**
      * Constructor
      * @param plugin Ironclad main class
      */
-	public CraftMovement(Ironclad plugin) {
+	public CraftMovementManager(Ironclad plugin) {
         this.plugin = plugin;
         this.config = plugin.getMyConfig();
         this.userMessages = plugin.getMyConfig().getUserMessages();
+
+        asyncTask = null;
     }
 
     /**
@@ -42,11 +60,56 @@ public class CraftMovement {
         {
             public void run()
             {
-                //long startTime = System.nanoTime();
-                //updateAimingMode();
-                //plugin.logDebug("Time update aiming: " + new DecimalFormat("0.00").format((System.nanoTime() - startTime)/1000000.0) + "ms");
+                long startTime = System.nanoTime();
+                updateCraftMovement();
+                plugin.logDebug("Time update craft movement: " + new DecimalFormat("0.00").format((System.nanoTime() - startTime)/1000000.0) + "ms");
             }
         }, 1L, 1L);
+    }
+
+    private void updateCraftMovement(){
+        if (asyncTask != null)
+            return;
+        for (Craft craft : CraftManager.getCraftList().values()){
+            if (System.currentTimeMillis() > craft.getLastMoved() + 10000)  {
+                craft.setLastMoved(System.currentTimeMillis());
+                craft.setProcessing(true);
+                HashMap<Vector, SimpleBlock> blockSnapshot = new HashMap<>();
+
+
+                //Async calculate craft movement
+                asyncTask = new MoveCalculateTask(craft.clone(),  blockSnapshot, craft.getEntitiesOnShip()).runTaskAsynchronously(plugin);
+
+                // only do one craft at a time
+                break;
+            }
+        }
+    }
+
+
+    public void performCraftMovement(Craft craftClone, List<SimpleBlock> newBlocks, List<SimpleBlock> newAttachedBlocks, Set<Entity> entities){
+        long startTime = System.nanoTime();
+        Craft craft = CraftManager.getCraft(craftClone.getUID());
+        World world = craft.getWorldBukkit();
+
+        //update blocks
+        for (SimpleBlock cBlock : newBlocks) {
+            Block wBlock = cBlock.toLocation(world).getBlock();
+            wBlock.setBlockData(cBlock.getBlockData());
+        }
+        //place the attachable blocks
+        for (SimpleBlock aBlock : newAttachedBlocks){
+            Block wBlock = aBlock.toLocation(world).getBlock();
+            wBlock.setBlockData(aBlock.getBlockData());
+        }
+
+        for (Entity entity : entities){
+            entity.teleport(craft.getFutureLocation(entity.getLocation()));
+        }
+
+        //movement finished
+        craft.movementPerformed();
+        plugin.logDebug("Time move craft: " + new DecimalFormat("0.00").format((System.nanoTime() - startTime)/1000000.0) + "ms");
     }
 
     public void moveCraft(BlockFace blockFace){
@@ -79,33 +142,28 @@ public class CraftMovement {
         if (player == null)
             return;
 
-        boolean isAimingMode = inPilotingMode.containsKey(player.getUniqueId());
-        if (isAimingMode)
-        {
+        boolean isPilotMode = inPilotingMode.containsKey(player.getUniqueId());
+        if (isPilotMode) {
             if (craft == null)
                 craft = getCraftInAimingMode(player);
         }
         //enable aiming mode. Sentry cannons can't be operated by players
-        else if(craft != null)
-        {
+        else if(craft != null) {
             //check if player has permission to aim
             if (player.hasPermission(craft.getCraftDesign().getPermissionPiloting()))
             {
                 //check if pilot is on the craft
-                if (craft.isEntityOnShip(player))
-                {
+                if (craft.isEntityOnShip(player)) {
                     MessageEnum message = enablePilotingMode(player, craft);
                     userMessages.sendMessage(message, player, craft);
                 }
-                else
-                {
+                else {
                     userMessages.sendMessage(MessageEnum.PilotingModeTooFarAway, player, craft);
                 }
 
             }
-            else
-            {
-                //no Permission to aim
+            else {
+                //no Permission to pilot
                 userMessages.sendMessage(MessageEnum.PermissionErrorPilot, player, craft);
             }
         }

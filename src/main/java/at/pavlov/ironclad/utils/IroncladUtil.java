@@ -757,29 +757,47 @@ public class IroncladUtil
     /**
      * returns all entity in a given radius
      * @param l center location
-     * @param minRadius minium radius for search
      * @param maxRadius radius for search
      * @return array of Entities in area
      */
-    public static HashMap<UUID, Entity> getNearbyEntities(Location l, int minRadius, int maxRadius){
+    public static Set<Entity> getNearbyEntities(Location l, int maxRadius){
         int chunkRadius = maxRadius < 16 ? 1 : (maxRadius - (maxRadius % 16))/16;
-        HashMap<UUID, Entity> radiusEntities = new HashMap<UUID, Entity>();
+        Set<Entity> radiusEntities = new HashSet<>();
         for (int chX = 0 -chunkRadius; chX <= chunkRadius; chX ++){
             for (int chZ = 0 -chunkRadius; chZ <= chunkRadius; chZ++){
-                int x=(int) l.getX(),y=(int) l.getY(),z=(int) l.getZ();
-                for (Entity e : new Location(l.getWorld(),x+(chX*16),y,z+(chZ*16)).getChunk().getEntities()){
-                    if (e.getWorld().equals(l.getWorld())) {
-                        double dist = e.getLocation().distance(l);
-                        if (minRadius <= dist && dist <= maxRadius && e.getLocation().getBlock() != l.getBlock())
-                            radiusEntities.put(e.getUniqueId(), e);
-                    }
+                for (Entity e : new Location(l.getWorld(),l.getX()+(chX*16),l.getY(),l.getZ()+(chZ*16)).getChunk().getEntities()){
+                    if (e.getLocation().distance(l) <= maxRadius)
+                        radiusEntities.add(e);
                 }
             }
         }
         return radiusEntities;
     }
 
-
+    /**
+     * returns all entity in a given radius
+     * @param l center location
+     * @param sizeX size of the box in X
+     * @param sizeY size of the box in Y
+     * @param sizeZ size of the box in Z
+     * @return array of Entities in area
+     */
+    public static Set<Entity> getNearbyEntitiesInBox(Location l, double sizeX, double sizeY, double sizeZ){
+        int hX = (int) Math.ceil(sizeX/2.);
+        int hZ = (int) Math.ceil(sizeY/2.);
+        int chunkX = hX < 16 ? 1 : (hX - (hX % 16))/16;
+        int chunkZ = hZ < 16 ? 1 : (hZ - (hZ % 16))/16;
+        Set<Entity> radiusEntities = new HashSet<>();
+        for (int chX = 0 -chunkX; chX <= chunkX; chX ++){
+            for (int chZ = 0 -chunkZ; chZ <= chunkZ; chZ++){
+                for (Entity e : new Location(l.getWorld(),l.getX()+(chX*16),l.getY(),l.getZ()+(chZ*16)).getChunk().getEntities()){
+                    if (e.getLocation().distanceSquared(l) <= (sizeX*sizeX + sizeY*sizeY + sizeZ*sizeZ)/2.)
+                        radiusEntities.add(e);
+                }
+            }
+        }
+        return radiusEntities;
+    }
 
     public static double vectorToYaw(Vector vector){
         return Math.atan2(-vector.getX(), vector.getZ())*180./Math.PI;
@@ -790,9 +808,11 @@ public class IroncladUtil
     }
 
     public static Vector directionToVector(double yaw, double pitch, double speed){
-        double hx = -Math.cos(pitch * Math.PI / 180.)*Math.sin(yaw*Math.PI/180.);
-        double hy = -Math.sin(pitch * Math.PI / 180.);
-        double hz = Math.cos(pitch*Math.PI/180.)*Math.cos(yaw*Math.PI/180.);
+        double rpitch = pitch * Math.PI / 180.;
+        double ryaw = yaw*Math.PI/180.;
+        double hx = -Math.cos(rpitch)*Math.sin(ryaw);
+        double hy = -Math.sin(rpitch);
+        double hz = Math.cos(rpitch)*Math.cos(ryaw);
 //        System.out.println("yaw: " + yaw + " pitch " + pitch);
 //        System.out.println("vector: " + (new Vector(hx, hy, hz)));
         return new Vector(hx, hy, hz).multiply(speed);

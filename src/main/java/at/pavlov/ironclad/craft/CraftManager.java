@@ -27,7 +27,7 @@ import at.pavlov.ironclad.event.CraftBeforeCreateEvent;
 public class CraftManager
 {
 	private static final ConcurrentHashMap<UUID, Craft> craftList = new ConcurrentHashMap<UUID, Craft>();
-    private static final ConcurrentHashMap<String, UUID> cannonNameMap = new ConcurrentHashMap<String, UUID>();
+    private static final ConcurrentHashMap<String, UUID> craftNameMap = new ConcurrentHashMap<String, UUID>();
 
 
     private final Ironclad plugin;
@@ -47,7 +47,7 @@ public class CraftManager
 	 * removes a ironclad from the list that are not valid
      * @param cause the reason why the craft is removed
 	 */
-	private void removeInvalidCannons(BreakCause cause)
+	private void removeInvalidCrafts(BreakCause cause)
 	{
 		Iterator<Craft> iter = craftList.values().iterator();
 
@@ -56,7 +56,7 @@ public class CraftManager
             Craft next = iter.next();
 			if (!next.isValid())
 			{
-				removeCannon(next, false, false, cause, false, false);
+				removeCraft(next, false, false, cause, false, false);
                 iter.remove();
 			}
 		}
@@ -66,21 +66,21 @@ public class CraftManager
      * deconstructs a craft without the risk of explosion
      * @param craft craft to remove
      */
-    public void dismantleCannon(Craft craft, Player player)
+    public void dismantleCraft(Craft craft, Player player)
     {
         if (craft == null)
             return;
         if (player==null){
-            removeCannon(craft, true, false, BreakCause.Dismantling);
+            removeCraft(craft, true, false, BreakCause.Dismantling);
             return;
         }
         // admins can dismantle all ironclad
         if (player.hasPermission("ironclad.admin.dismantle"))
-            removeCannon(craft, true, false, BreakCause.Dismantling);
+            removeCraft(craft, true, false, BreakCause.Dismantling);
         else if (player.hasPermission(craft.getCraftDesign().getPermissionDismantle())) {
             //only the owner of the craft can dismantle a craft
             if (craft.getOwner()!=null && craft.getOwner().equals(player.getUniqueId()))
-                removeCannon(craft, true, false, BreakCause.Dismantling);
+                removeCraft(craft, true, false, BreakCause.Dismantling);
             else
             userMessages.sendMessage(MessageEnum.ErrorDismantlingNotOwner, player, craft);
         }
@@ -93,64 +93,64 @@ public class CraftManager
 	/**
 	 * removes a craft from the list
 	 * @param loc location of the craft
-     * @param breakCannon all craft blocks will drop
+     * @param breakCraft all craft blocks will drop
      * @param canExplode if the craft can explode when loaded with gunpowder
      * @param cause the reason way the craft was broken
 	 */
-	public void removeCannon(Location loc, boolean breakCannon, boolean canExplode, BreakCause cause)
+	public void removeCraft(Location loc, boolean breakCraft, boolean canExplode, BreakCause cause)
 	{
 		Craft craft = getCraft(loc, null);
-		removeCannon(craft, breakCannon, canExplode, cause);
+		removeCraft(craft, breakCraft, canExplode, cause);
 	}
 
 	/**
 	 * removes a craft from the list
 	 * @param craft craft to remove
-     * @param breakCannon all craft blocks will drop
+     * @param breakCraft all craft blocks will drop
      * @param canExplode if the craft can explode when loaded with gunpowder
      * @param cause the reason way the craft was broken
 	 */
-	public void removeCannon(Craft craft, boolean breakCannon, boolean canExplode, BreakCause cause)
+	public void removeCraft(Craft craft, boolean breakCraft, boolean canExplode, BreakCause cause)
 	{
-        removeCannon(craft, breakCannon, canExplode, cause, true, true);
+        removeCraft(craft, breakCraft, canExplode, cause, true, true);
 	}
 
     /**
      * removes a craft from the list
      * @param uid UID of the craft
-     * @param breakCannon all craft blocks will drop
+     * @param breakCraft all craft blocks will drop
      * @param canExplode if the craft can explode when loaded with gunpowder
      * @param cause the reason way the craft was broken
      */
-    public void removeCannon(UUID uid, boolean breakCannon, boolean canExplode, BreakCause cause)
+    public void removeCraft(UUID uid, boolean breakCraft, boolean canExplode, BreakCause cause)
     {
-        removeCannon(uid, breakCannon, canExplode, cause, true);
+        removeCraft(uid, breakCraft, canExplode, cause, true);
     }
 
     /**
      * removes a craft from the list
      * @param uid UID of the craft
-     * @param breakCannon all craft blocks will drop
+     * @param breakCraft all craft blocks will drop
      * @param canExplode if the craft can explode when loaded with gunpowder
      * @param cause the reason way the craft was broken
      * @param removeEntry should the craft be removed from the list
      */
-    public void removeCannon(UUID uid, boolean breakCannon, boolean canExplode, BreakCause cause, boolean removeEntry)
+    public void removeCraft(UUID uid, boolean breakCraft, boolean canExplode, BreakCause cause, boolean removeEntry)
     {
         Craft craft = craftList.get(uid);
-        removeCannon(craft, breakCannon, canExplode, cause, removeEntry, true);
+        removeCraft(craft, breakCraft, canExplode, cause, removeEntry, true);
     }
 
 
     /**
      * removes a craft from the list
      * @param craft craft to remove
-     * @param breakCannon all craft blocks will drop
+     * @param breakCraft all craft blocks will drop
      * @param canExplode if the craft can explode when loaded with gunpowder
      * @param cause the reason way the craft was broken
      * @param ignoreInvalid if true invalid ironclad will be skipped and not removed
      */
-    public void removeCannon(Craft craft, boolean breakCannon, boolean canExplode, BreakCause cause, boolean removeEntry, boolean ignoreInvalid)
+    public void removeCraft(Craft craft, boolean breakCraft, boolean canExplode, BreakCause cause, boolean removeEntry, boolean ignoreInvalid)
     {
         //ignore invalid ironclad
         if (craft == null || (!craft.isValid() && ignoreInvalid))
@@ -166,7 +166,7 @@ public class CraftManager
             IroncladUtil.playSound(craft.getRandomBarrelBlock(), craft.getCraftDesign().getSoundDestroy());
 
         //delay the remove task, so it fits to the sound
-        RemoveTaskWrapper task = new RemoveTaskWrapper(craft, breakCannon, canExplode, cause, removeEntry, ignoreInvalid);
+        RemoveTaskWrapper task = new RemoveTaskWrapper(craft, breakCraft, canExplode, cause, removeEntry, ignoreInvalid);
         plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new DelayedTask(task) {
             public void run(Object object) {
                 RemoveTaskWrapper task = (RemoveTaskWrapper) object;
@@ -205,14 +205,14 @@ public class CraftManager
                     }
                 }
 
-                MessageEnum message = craft.destroyCraft(task.breakCannon(), task.canExplode(), cause);
+                MessageEnum message = craft.destroyCraft(task.breakCraft(), task.canExplode(), cause);
                 if (player != null)
                     userMessages.sendMessage(message, player, craft);
 
                 //remove from database
-                plugin.getPersistenceDatabase().deleteCannon(craft.getUID());
+                plugin.getPersistenceDatabase().deleteCraft(craft.getUID());
                 //remove craft name
-                cannonNameMap.remove(craft.getCraftName());
+                craftNameMap.remove(craft.getCraftName());
 
                 //remove entry
                 if (task.removeEntry())
@@ -228,7 +228,7 @@ public class CraftManager
 	 * @param name name of the craft
 	 * @return true if the name is unique
 	 */
-	private static boolean isCannonNameUnique(String name)
+	private static boolean isCraftNameUnique(String name)
 	{
         if (name == null)
             return false;
@@ -236,14 +236,14 @@ public class CraftManager
 		// try to find this in the map
         //there is no such craft name
         //there is such a craft name
-        return cannonNameMap.get(name) == null;
+        return craftNameMap.get(name) == null;
 	}
 
 	/**
 	 * generates a new unique craft name
 	 * @return name string for the new craft
 	 */
-	private String newCannonName(Craft craft)
+	private String newCraftName(Craft craft)
 	{		
 		//check if this craft has a owner
 		if (craft.getOwner() == null)
@@ -259,17 +259,17 @@ public class CraftManager
 
 		for (int i = 1; i < Integer.MAX_VALUE; i++)
 		{
-			String cannonName = name + " " + i;
+			String craftName = name + " " + i;
 
-			if (isCannonNameUnique(cannonName))
+			if (isCraftNameUnique(craftName))
 			{
-				return cannonName;
+				return craftName;
 			}
 		}
 		return "no unique name";
 	}
 
-    public MessageEnum renameCannon(Player player, Craft craft, String newCannonName)
+    public MessageEnum renameCraft(Player player, Craft craft, String newCraftName)
     {
         Validate.notNull(player, "player must not be null");
         Validate.notNull(craft, "craft must not be null");
@@ -279,12 +279,12 @@ public class CraftManager
             return MessageEnum.ErrorNotTheOwner;
         if (!player.hasPermission(craft.getCraftDesign().getPermissionRename()))
             return MessageEnum.PermissionErrorRename;
-        if (newCannonName == null || !isCannonNameUnique(newCannonName))
+        if (newCraftName == null || !isCraftNameUnique(newCraftName))
             return MessageEnum.CraftRenameFail;
 
         //put the new name
-        craft.setCraftName(newCannonName);
-        craft.updateCannonSigns();
+        craft.setCraftName(newCraftName);
+        craft.updateCraftSigns();
 
         return MessageEnum.CraftRenameSuccess;
 
@@ -308,18 +308,18 @@ public class CraftManager
         if (plugin.getEconomy() == null || craft.getCraftDesign().getEconomyBuildingCost() <= 0)
             craft.setPaid(true);
 
-		//if the cannonName is empty make a new one
+		//if the craftName is empty make a new one
 		if (craft.getCraftName() ==  null || craft.getCraftName().equals(""))
-			craft.setCraftName(newCannonName(craft));
+			craft.setCraftName(newCraftName(craft));
 
 		// add craft to the list
 		craftList.put(craft.getUID(), craft);
         //add craft name to the list
-        cannonNameMap.put(craft.getCraftName(), craft.getUID());
+        craftNameMap.put(craft.getCraftName(), craft.getUID());
 
         if (saveToDatabase) {
-            plugin.getPersistenceDatabase().saveCannon(craft);
-            craft.updateCannonSigns();
+            plugin.getPersistenceDatabase().saveCraft(craft);
+            craft.updateCraftSigns();
         }
         else {
             craft.setUpdated(false);
@@ -333,7 +333,7 @@ public class CraftManager
      * @param sphereRadius - radius of the sphere in blocks
      * @return - list of all ironclad in this sphere
      */
-    public static HashSet<Craft> getCannonsInSphere(Location center, double sphereRadius)
+    public static HashSet<Craft> getCraftsInSphere(Location center, double sphereRadius)
     {
         HashSet<Craft> newCraftList = new HashSet<Craft>();
 
@@ -355,7 +355,7 @@ public class CraftManager
      * @param lengthZ - box length in Z
      * @return - list of all ironclad in this sphere
      */
-    public static HashSet<Craft> getCannonsInBox(Location center, double lengthX, double lengthY, double lengthZ)
+    public static HashSet<Craft> getCraftsInBox(Location center, double lengthX, double lengthY, double lengthZ)
     {
         HashSet<Craft> newCraftList = new HashSet<Craft>();
 
@@ -387,7 +387,7 @@ public class CraftManager
      * @param locations - a list of location to search for ironclad
      * @return - list of all ironclad in this sphere
      */
-    public static HashSet<Craft> getCannonsByLocations(List<Location> locations)
+    public static HashSet<Craft> getCraftsByLocations(List<Location> locations)
     {
         HashSet<Craft> newCraftList = new HashSet<Craft>();
         for (Craft craft : getCraftList().values())
@@ -409,7 +409,7 @@ public class CraftManager
      * @param silent - no messages will be displayed if silent is true
      * @return - list of all ironclad in this sphere
      */
-    public HashSet<Craft> getCannons(List<Location> locations, UUID player, boolean silent)
+    public HashSet<Craft> getCrafts(List<Location> locations, UUID player, boolean silent)
     {
         HashSet<Craft> newCraftList = new HashSet<Craft>();
         for (Location loc : locations)
@@ -425,15 +425,15 @@ public class CraftManager
     }
 
 	/**
-	 * get craft by cannonName and Owner - used for Signs
-	 * @param cannonName name of the craft
+	 * get craft by craftName and Owner - used for Signs
+	 * @param craftName name of the craft
 	 * @return the craft with this name
 	 */
-	public static Craft getCraft(String cannonName)
+	public static Craft getCraft(String craftName)
 	{
-		if (cannonName == null) return null;
+		if (craftName == null) return null;
 
-        UUID uid = cannonNameMap.get(cannonName);
+        UUID uid = craftNameMap.get(craftName);
         if (uid != null)
 		    return craftList.get(uid);
 
@@ -442,12 +442,12 @@ public class CraftManager
 	}
 
 	/**
-	 * Searches the storage if there is already a cannonblock on this location
+	 * Searches the storage if there is already a craftblock on this location
 	 * and returns the craft
 	 * @param loc location of one craft block
 	 * @return the craft at this location
 	 */
-	private Craft getCannonFromStorage(Location loc)
+	private Craft getCraftFromStorage(Location loc)
 	{
 		for (Craft craft : craftList.values())
 		{
@@ -461,39 +461,39 @@ public class CraftManager
 
 	/**
 	 * searches for a craft and creates a new entry if it does not exist
-	 * @param cannonBlock - one block of the craft
+	 * @param craftBlock - one block of the craft
 	 * @param owner - the owner of the craft (important for message notification). Can't be null if a new craft is created
 	 * @return the craft at this location
 	 */
-	public Craft getCraft(Location cannonBlock, UUID owner)
+	public Craft getCraft(Location craftBlock, UUID owner)
 	{
-		return getCraft(cannonBlock, owner, false);
+		return getCraft(craftBlock, owner, false);
 	}
 	
 	/**
 	 * searches for a craft and creates a new entry if it does not exist
 	 * 
-	 * @param cannonBlock - one block of the craft
+	 * @param craftBlock - one block of the craft
 	 * @param owner - the owner of the craft (important for message notification). Can't be null
 	 * @return the craft at this location
 	 */
-	public Craft getCraft(Location cannonBlock, UUID owner, boolean silent)
+	public Craft getCraft(Location craftBlock, UUID owner, boolean silent)
 	{
         // is this block material used for a craft design
-        if (cannonBlock.getBlock() == null || !plugin.getDesignStorage().isCannonBlockMaterial(cannonBlock.getBlock().getBlockData().getMaterial()))
+        if (craftBlock.getBlock() == null || !plugin.getDesignStorage().isCraftBlockMaterial(craftBlock.getBlock().getBlockData().getMaterial()))
             return null;
 
         long startTime = System.nanoTime();
 
         //check if there is a craft at this location
-        Craft craft = checkCannon(cannonBlock, owner);
+        Craft craft = checkCraft(craftBlock, owner);
 
         //if there is no craft, exit
         if (craft == null)
             return null;
 
         // search craft that is written on the sign
-        Craft craftFromSign = getCraft(craft.getCannonNameFromSign());
+        Craft craftFromSign = getCraft(craft.getCraftNameFromSign());
 
         // if there is a different name on the craft sign we use that one
         if (craftFromSign != null)
@@ -508,7 +508,7 @@ public class CraftManager
         else
         {
             // this craft has no sign, so look in the database if there is something
-            Craft storageCraft =  getCannonFromStorage(cannonBlock);
+            Craft storageCraft =  getCraftFromStorage(craftBlock);
             if (storageCraft != null)
             {
                 //try to find something in the storage
@@ -524,10 +524,10 @@ public class CraftManager
                 Player player = Bukkit.getPlayer(owner);
 
                 //can this player can build one more craft
-                MessageEnum	message = canBuildCannon(craft, owner);
+                MessageEnum	message = canBuildCraft(craft, owner);
 
                 //if a sign is required to operate the craft, there must be at least one sign
-                if (message == MessageEnum.CraftCreated && (craft.getCraftDesign().isSignRequired() && !craft.hasCannonSign()))
+                if (message == MessageEnum.CraftCreated && (craft.getCraftDesign().isSignRequired() && !craft.hasCraftSign()))
                     message = MessageEnum.ErrorMissingSign;
 
                 CraftBeforeCreateEvent cbceEvent = new CraftBeforeCreateEvent(craft, message, player.getUniqueId());
@@ -584,66 +584,58 @@ public class CraftManager
 
 	/**
 	 * searches if this block is part of a craft and create a new one
-	 * @param cannonBlock block of the craft
+	 * @param craftBlock block of the craft
 	 * @param owner the player who will be the owner of the craft if it is a new craft
 	 * @return craft if found, else null
 	 */
-    private Craft checkCannon(Location cannonBlock, UUID owner)
+    private Craft checkCraft(Location craftBlock, UUID owner)
 	{
 
 	    // is this block material used for a craft design
-        if (cannonBlock.getBlock() == null || !plugin.getDesignStorage().isCannonBlockMaterial(cannonBlock.getBlock().getBlockData().getMaterial()))
+        if (craftBlock.getBlock() == null || !plugin.getDesignStorage().isCraftBlockMaterial(craftBlock.getBlock().getBlockData().getMaterial()))
             return null;
 
-		World world = cannonBlock.getWorld();
+		World world = craftBlock.getWorld();
 
 		// check all craft design if this block is part of the design
-		for (CraftDesign cannonDesign : plugin.getDesignStorage().getCraftsDesignList())
-		{
+		for (CraftDesign craftDesign : plugin.getDesignStorage().getCraftsDesignList()) {
 			// check of all directions
-			BlockFace cannonDirection = BlockFace.NORTH;
-			for (int i = 0; i < 4; i++)
-			{
+			BlockFace craftDirection = BlockFace.NORTH;
+			for (int i = 0; i < 4; i++) {
 				// for all blocks for the design
-				List<SimpleBlock> designBlockList = cannonDesign.getAllCraftBlocks(cannonDirection);
+				List<SimpleBlock> designBlockList = craftDesign.getAllCraftBlocks(craftDirection);
                 //check for empty entries
-                if (designBlockList.size() == 0)
-                {
+                if (designBlockList.size() == 0) {
                     plugin.logSevere("There are empty craft design schematics in your design folder. Please check it.");
                     return null;
                 }
-				for (SimpleBlock designBlock : designBlockList)
-				{
+				for (SimpleBlock designBlock : designBlockList) {
 					// compare blocks
-					if (designBlock.compareMaterialAndFacing(cannonBlock.getBlock().getBlockData()))
-					{
+					if (designBlock.compareMaterialAndFacing(craftBlock.getBlock().getBlockData())) {
 						// this block is same as in the design, get the offset
-						Vector offset = designBlock.subtractInverted(cannonBlock).toVector();
+						Vector offset = designBlock.subtractInverted(craftBlock).toVector();
 
 						// check all other blocks of the craft
-						boolean isCannon = true;
+						boolean isCraft = true;
 
-						for (SimpleBlock checkBlocks : designBlockList)
-						{
-							if (!checkBlocks.compareMaterialAndFacing(world, offset))
-							{
+						for (SimpleBlock checkBlocks : designBlockList) {
+							if (!checkBlocks.compareMaterialAndFacing(world, offset)) {
 								// if the block does not match this is not the
 								// right one
-								isCannon = false;
+								isCraft = false;
 								break;
 							}
 						}
 
 						// this is a craft
-						if (isCannon)
-						{
+						if (isCraft) {
                            // craft
-							return new Craft(cannonDesign, world.getUID(), offset, cannonDirection, owner);
+							return new Craft(craftDesign, world.getUID(), offset, craftDirection, owner);
 						}
 					}
 				}
 				// rotate craft direction
-				cannonDirection = IroncladUtil.roatateFace(cannonDirection);
+				craftDirection = IroncladUtil.roatateFace(craftDirection);
 			}
 		}
 		return null;
@@ -683,7 +675,7 @@ public class CraftManager
 	/**
 	 * List of ironclad
 	 */
-	public void clearCannonList()
+	public void clearCraftList()
 	{
 		craftList.clear();
 	}
@@ -692,7 +684,7 @@ public class CraftManager
 	 * returns the number of ironclad manged by the plugin
 	 * @return number of ironclad in all world
 	 */
-	public int getCannonListSize()
+	public int getCraftListSize()
 	{
 		return craftList.size();
 	}
@@ -703,7 +695,7 @@ public class CraftManager
 	 * @param player check the number of craft this player can build
 	 * @return the maximum number of ironclad
 	 */
-    public int getCannonBuiltLimit(Player player)
+    public int getCraftBuiltLimit(Player player)
 	{
 		// the player is not valid - no limit check
 		if (player == null) return Integer.MAX_VALUE;
@@ -773,12 +765,11 @@ public class CraftManager
     }
 	/**
 	 * checks if the player can build a craft (permission, builtLimit)
-	 * 
 	 * @param craft
 	 * @param owner
 	 * @return
 	 */
-	private MessageEnum canBuildCannon(Craft craft, UUID owner)
+	private MessageEnum canBuildCraft(Craft craft, UUID owner)
 	{
 		CraftDesign design = craft.getCraftDesign();
 		
@@ -793,7 +784,7 @@ public class CraftManager
 			return MessageEnum.PermissionErrorBuild;
 		}
 		// player does not have too many guns
-		if (getNumberOfCrafts(owner) >= getCannonBuiltLimit(player))
+		if (getNumberOfCrafts(owner) >= getCraftBuiltLimit(player))
 		{
 			return MessageEnum.ErrorCraftBuiltLimit;
 		}

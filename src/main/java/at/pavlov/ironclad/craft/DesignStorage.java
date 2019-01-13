@@ -202,7 +202,7 @@ public class DesignStorage
 		craftDesign.setSignRequired(craftDesignConfig.getBoolean("signs.isSignRequired", false));
 
 		// angles
-		craftDesign.setDefaultHorizontalFacing(BlockFace.valueOf(craftDesignConfig.getString("angles.defaultHorizontalFacing", "NORTH").toUpperCase()));
+		craftDesign.setSchematicDirection(BlockFace.valueOf(craftDesignConfig.getString("angles.schematicDirection", "NORTH").toUpperCase()));
 
 		//realistic behavior
 		craftDesign.setDismantlingDelay(craftDesignConfig.getDouble("realisticBehaviour.dismantlingDelay", 1.75));
@@ -292,7 +292,7 @@ public class DesignStorage
 		
 		
 		// get facing of the craft
-		BlockFace cannonDirection = cannonDesign.getDefaultHorizontalFacing();
+		BlockFace cannonDirection = cannonDesign.getSchematicDirection();
 
 		// read out blocks
 		int width = cc.getDimensions().getBlockX();
@@ -405,14 +405,17 @@ public class DesignStorage
 			cannonBlocks.setMinSize(minSize.clone());
 			cannonBlocks.setMaxSize(maxSize.clone());
 
-			// calculate the rotation Center if a rotation center block was used, otherwise use the size of the craft
+			//craft center
+			Vector center = maxSize.clone().add(new Vector(1, 1, 1));
+			cannonBlocks.setRotationCenter(center.add(minSize).multiply(0.5).clone());
+
+			// calculate the rotation Center if a rotation center block was used, otherwise use the center of the craft
 			if (maxRotation != null){
 				maxRotation.add(new Vector(1, 1, 1));
 				cannonBlocks.setRotationCenter(maxRotation.add(minRotation).multiply(0.5));
 			}
 			else {
-				maxRotation = maxSize.clone().add(new Vector(1, 1, 1));
-				cannonBlocks.setRotationCenter(maxRotation.add(minSize).multiply(0.5));
+				cannonBlocks.setRotationCenter(center.clone());
 			}
 
             //set the center location
@@ -577,7 +580,7 @@ public class DesignStorage
 		return craftBlockMaterials;
 	}
 
-	public boolean isCannonBlockMaterial(Material material) {
+	public boolean isCraftBlockMaterial(Material material) {
 		return material != Material.AIR && craftBlockMaterials.contains(material);
 	}
 }

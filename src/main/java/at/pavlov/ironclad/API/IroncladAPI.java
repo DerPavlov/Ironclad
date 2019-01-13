@@ -38,7 +38,7 @@ public class IroncladAPI {
      */
     public static HashSet<Craft> getCannonsInSphere(Location center, double sphereRadius)
     {
-        return CraftManager.getCannonsInSphere(center, sphereRadius);
+        return CraftManager.getCraftsInSphere(center, sphereRadius);
     }
 
     /**
@@ -51,7 +51,7 @@ public class IroncladAPI {
      */
     public static HashSet<Craft> getCannonsInBox(Location center, double lengthX, double lengthY, double lengthZ)
     {
-        return CraftManager.getCannonsInBox(center, lengthX, lengthY, lengthZ);
+        return CraftManager.getCraftsInBox(center, lengthX, lengthY, lengthZ);
     }
 
     /**
@@ -63,7 +63,7 @@ public class IroncladAPI {
      */
     public HashSet<Craft> getCannons(List<Location> locations, UUID playerUID, boolean silent)
     {
-        return plugin.getCraftManager().getCannons(locations, playerUID, silent);
+        return plugin.getCraftManager().getCrafts(locations, playerUID, silent);
     }
 
     /**
@@ -74,7 +74,7 @@ public class IroncladAPI {
      */
     public HashSet<Craft> getCannons(List<Location> locations, UUID playerUID)
     {
-        return plugin.getCraftManager().getCannons(locations, playerUID, true);
+        return plugin.getCraftManager().getCrafts(locations, playerUID, true);
     }
 
     /**
@@ -102,7 +102,7 @@ public class IroncladAPI {
      */
     public void removeCannon(UUID uid, boolean breakCannon, boolean canExplode, BreakCause cause)
     {
-        plugin.getCraftManager().removeCannon(uid, breakCannon, canExplode, cause, true);
+        plugin.getCraftManager().removeCraft(uid, breakCannon, canExplode, cause, true);
     }
 
 

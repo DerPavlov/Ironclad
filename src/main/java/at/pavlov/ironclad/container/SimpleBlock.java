@@ -10,7 +10,7 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.material.Directional;
 import org.bukkit.util.Vector;
 
-public class SimpleBlock
+public class SimpleBlock implements Cloneable
 {
 	private int locX;
 	private int locY;
@@ -46,6 +46,15 @@ public class SimpleBlock
 		this.blockData = material.createBlockData();
 	}
 
+	/**
+	 * to location with offset
+	 * @param world bukkit world
+	 * @return location of the block
+	 */
+	public Location toLocation(World world)
+	{
+		return new Location(world, locX, locY, locZ);
+	}
 	
 	/**
 	 * to location with offset
@@ -196,6 +205,20 @@ public class SimpleBlock
 	public SimpleBlock subtract(Location loc)
 	{
 		return new SimpleBlock(locX - loc.getBlockX() , locY - loc.getBlockY(), locZ - loc.getBlockZ(), this.blockData);
+	}
+
+	/**
+	 * Get a new vector.
+	 *
+	 * @return vector
+	 */
+	@Override
+	public SimpleBlock clone() {
+		try {
+			return (SimpleBlock) super.clone();
+		} catch (CloneNotSupportedException e) {
+			throw new Error(e);
+		}
 	}
 
 	/**

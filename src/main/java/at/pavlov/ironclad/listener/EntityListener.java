@@ -90,6 +90,6 @@ public class EntityListener implements Listener
 
         //now remove all invalid ironclad
         for (UUID id : remove)
-            plugin.getCraftManager().removeCannon(id, false, true, BreakCause.Explosion);
+            plugin.getCraftManager().removeCraft(id, false, true, BreakCause.Explosion);
     }
 }

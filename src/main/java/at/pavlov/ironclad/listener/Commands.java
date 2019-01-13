@@ -289,7 +289,7 @@ public class Commands implements TabExecutor
                             Craft craft = CraftManager.getCraft(args[1]);
                             if (craft != null)
                             {
-                                MessageEnum message = plugin.getCraftManager().renameCannon(player, craft, args[2]);
+                                MessageEnum message = plugin.getCraftManager().renameCraft(player, craft, args[2]);
                                 userMessages.sendMessage(message, player, craft);
                             }
                         }
@@ -333,7 +333,7 @@ public class Commands implements TabExecutor
                                         ChatColor.GOLD + craft.getCraftDesign().getDesignName() + ChatColor.GREEN + " loc: " + ChatColor.GOLD + craft.getOffset().toString());
                         }
                         //create craft limit
-                        int buildlimit = plugin.getCraftManager().getCannonBuiltLimit(player);
+                        int buildlimit = plugin.getCraftManager().getCraftBuiltLimit(player);
                         if (buildlimit < Integer.MAX_VALUE){
                             int ncannon = plugin.getCraftManager().getNumberOfCrafts(player.getUniqueId());
                             int newIronclad = buildlimit - ncannon;
@@ -605,7 +605,7 @@ public class Commands implements TabExecutor
                     break;
                 }
                 case DISMANTLE:{
-                    plugin.getCraftManager().dismantleCannon(craft, player);
+                    plugin.getCraftManager().dismantleCraft(craft, player);
                     break;
                 }
                 case BUY_CRAFT:{
@@ -695,7 +695,7 @@ public class Commands implements TabExecutor
         else
             displayPermission(sender, permPlayer, "ironclad.limit." + newBuildlimit);
         int numberCrafts = plugin.getCraftManager().getNumberOfCrafts(permPlayer.getUniqueId());
-        int maxCrafts = plugin.getCraftManager().getCannonBuiltLimit(permPlayer);
+        int maxCrafts = plugin.getCraftManager().getCraftBuiltLimit(permPlayer);
         if (maxCrafts == Integer.MAX_VALUE)
             sendMessage(sender, ChatColor.YELLOW + "Built ironclad: " + ChatColor.GOLD + numberCrafts);
         else

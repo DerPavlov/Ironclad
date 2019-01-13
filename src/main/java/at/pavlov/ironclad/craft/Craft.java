@@ -18,10 +18,8 @@ import at.pavlov.ironclad.container.SimpleBlock;
 import at.pavlov.ironclad.utils.InventoryManagement;
 import at.pavlov.ironclad.sign.CraftSign;
 
-public class Craft
-{
-    // Database id - is -1 until stored in the database. Then it is the id in the
-    // database
+public class Craft implements Cloneable {
+    // Database id - is -1 until stored in the database. Then it is the id in the database
     private UUID databaseId;
 
     private String designID;
@@ -29,6 +27,7 @@ public class Craft
 
     // direction the craft is facing
     private BlockFace craftDirection;
+    private BlockFace futureCraftDirection;
     // the angle and velocity the craft is currently moving
     private double yaw;
     private double pitch;
@@ -39,9 +38,9 @@ public class Craft
     private UUID world;
 
     //actual dimensions of the craft
-    private int craftMaxLength;
-    private int craftMaxWidth;
-    private int craftMaxHeight;
+    private int craftLength;
+    private int craftWidth;
+    private int craftHeight;
 
     // was the craft fee paid
     private boolean paid;
@@ -50,8 +49,10 @@ public class Craft
     private UUID owner;
     // designID of the craft, for different types of ironclad - not in use
     private boolean isValid;
-    // time point of the last start of the firing sequence (used in combination with isFiring)
-    private long lastUsed;
+    // time point of the last movement of the craft
+    private long lastMoved;
+    // currently changed by async thread
+    private boolean isProcessing;
     // the player which has used the craft last
     private UUID lastUser;
 
@@ -72,6 +73,7 @@ public class Craft
         this.world = world;
         this.offset = cannonOffset;
         this.craftDirection = craftDirection;
+        this.futureCraftDirection = craftDirection;
         this.owner = owner;
         this.isValid = true;
         this.craftName = null;
@@ -83,8 +85,36 @@ public class Craft
         this.pitch = 0.0;
         this.velocity = 0.0;
 
+        Vector dim = design.getCraftDimensions();
+        if (dim.getX() >= dim.getY()) {
+            craftLength = dim.getBlockX();
+            craftWidth = dim.getBlockY();
+        }
+        else{
+            craftLength = dim.getBlockY();
+            craftWidth = dim.getBlockX();
+        }
+        craftHeight = dim.getBlockZ();
+
+        this.lastMoved = System.currentTimeMillis();
+        this.isProcessing = false;
+
         this.databaseId = UUID.randomUUID();
         this.updated = true;
+    }
+
+    /**
+     * Get a new vector.
+     *
+     * @return vector
+     */
+    @Override
+    public Craft clone() {
+        try {
+            return (Craft) super.clone();
+        } catch (CloneNotSupportedException e) {
+            throw new Error(e);
+        }
     }
 
 
@@ -94,7 +124,7 @@ public class Craft
      */
     public Location getLocation()
     {
-        return design.getAllCraftBlocks(this).get(0);
+        return design.getAllCraftBlocks(this).get(0).toLocation(getWorldBukkit());
     }
 
     /**
@@ -116,8 +146,8 @@ public class Craft
         List<Location> barrel = design.getHullBlocks(this);
         if (barrel.size() > 0)
             return barrel.get(r.nextInt(barrel.size()));
-        List<Location> all = design.getAllCraftBlocks(this);
-        return all.get(r.nextInt(all.size()));
+        List<SimpleBlock> all = design.getAllCraftBlocks(this);
+        return all.get(r.nextInt(all.size())).toLocation(getWorldBukkit());
     }
 
     /**
@@ -146,7 +176,7 @@ public class Craft
     {
         // update craft signs the last time
         isValid = false;
-        updateCannonSigns();
+        updateCraftSigns();
 
         if (breakBlocks)
             breakAllBlocks();
@@ -226,10 +256,11 @@ public class Craft
      */
     private void breakAllBlocks()
     {
-        List<Location> locList = design.getAllCraftBlocks(this);
-        for (Location loc : locList)
+        List<SimpleBlock> locList = design.getAllCraftBlocks(this);
+        World world = getWorldBukkit();
+        for (SimpleBlock loc : locList)
         {
-            loc.getBlock().breakNaturally();
+            loc.toLocation(world).getBlock().breakNaturally();
         }
     }
 
@@ -456,7 +487,7 @@ public class Craft
     /**
      * @return true if the ironclad has a sign
      */
-    public boolean hasCannonSign()
+    public boolean hasCraftSign()
     {
         // search all possible sign locations
         for (Location signLoc : design.getSignLocations(this))
@@ -470,7 +501,7 @@ public class Craft
     /**
      * updates all signs that are attached to a craft
      */
-    public void updateCannonSigns()
+    public void updateCraftSigns()
     {
         // update all possible sign locations
         for (Location signLoc : design.getSignLocations(this))
@@ -576,7 +607,7 @@ public class Craft
      *
      * @return
      */
-    public String getCannonNameFromSign()
+    public String getCraftNameFromSign()
     {
         return getLineOfCannonSigns(0);
     }
@@ -680,6 +711,18 @@ public class Craft
         return craftDirection;
     }
 
+    public BlockFace getFutureDirection()
+    {
+        //todo implement
+        return futureCraftDirection;
+    }
+
+    public Location getFutureLocation(Location start){
+        Location loc = start.add(getTravelVector());
+        //todo rotation
+        return loc;
+    }
+
     public void setCraftDirection(BlockFace craftDirection)
     {
         this.craftDirection = craftDirection;
@@ -754,15 +797,7 @@ public class Craft
     }
 
     public Vector getTravelVector(){
-        yaw = yaw % 360;
-        while(yaw < -180)
-            yaw = yaw + 360;
-        while(yaw > 180)
-            yaw = yaw - 360;
-
-        double ryaw = Math.toRadians(yaw);
-
-        return (new Vector(Math.sin(ryaw), 0, Math.cos(ryaw)).multiply(velocity) );
+        return IroncladUtil.directionToVector(this.yaw, this.pitch, this.velocity);
     }
 
     public boolean isChunkLoaded(){
@@ -811,6 +846,12 @@ public class Craft
     }
 
     public void setYaw(double yaw) {
+        yaw = yaw % 360;
+        while(yaw < -180)
+            yaw = yaw + 360;
+        while(yaw > 180)
+            yaw = yaw - 360;
+
         this.yaw = yaw;
     }
 
@@ -822,34 +863,62 @@ public class Craft
         this.pitch = pitch;
     }
 
-    public int getCraftMaxLength() {
-        return craftMaxLength;
+    public int getCraftLength() {
+        return craftLength;
     }
 
-    protected void setCraftMaxLength(int craftMaxLength) {
-        this.craftMaxLength = craftMaxLength;
+    protected void setCraftLength(int craftLength) {
+        this.craftLength = craftLength;
     }
 
-    public int getCraftMaxWidth() {
-        return craftMaxWidth;
+    public int getCraftWidth() {
+        return craftWidth;
     }
 
-    protected void setCraftMaxWidth(int craftMaxWidth) {
-        this.craftMaxWidth = craftMaxWidth;
+    protected void setCraftWidth(int craftWidth) {
+        this.craftWidth = craftWidth;
     }
 
-    public int getCraftMaxHeight() {
-        return craftMaxHeight;
+    public int getCraftHeight() {
+        return craftHeight;
     }
 
-    protected void setCraftMaxHeight(int craftMaxHeight) {
-        this.craftMaxHeight = craftMaxHeight;
+    protected void setCraftHeight(int craftHeight) {
+        this.craftHeight = craftHeight;
+    }
+
+    /**
+     * returns the dimensions of the craft depending of the directions the craft is facing
+     * @return Vector(x,y,z) of the dimensions
+     */
+    public Vector getCraftDimensions(){
+        switch (this.craftDirection){
+            case NORTH:
+            case SOUTH:
+                return new Vector(getCraftWidth(), getCraftLength(), getCraftHeight());
+            case EAST:
+            case WEST:
+                return new Vector(getCraftLength(), getCraftWidth(), getCraftHeight());
+            default:
+                return null;
+        }
+
+    }
+
+    /**
+     * get all Entities on a ship
+     * @return Set of Entities on ship
+     */
+    public Set<Entity> getEntitiesOnShip(){
+        Vector d = getCraftDimensions();
+        Set<Entity> entities = IroncladUtil.getNearbyEntitiesInBox(design.getCraftCenter(this), d.getX(), d.getY(), d.getZ());
+        entities.removeIf(entity -> !isEntityOnShip(entity));
+        return  entities;
     }
 
     public boolean isEntityOnShip(Entity entity){
-        if (entity == null || entity.getLocation() == null || entity.getLocation().getWorld() == null)
-            return false;
-
+//        if (entity == null || entity.getLocation() == null || entity.getLocation().getWorld() == null)
+//            return false;
         Location loc = entity.getLocation();
         //make the bounding box a little bit large if someone is peeking over the edge
         Location minBB = this.getCraftDesign().getMinBoundnigBoxLocation(this).subtract(1, 1, 1);
@@ -886,5 +955,31 @@ public class Craft
 
     public void setTravelledDistance(double travelledDistance) {
         this.travelledDistance = travelledDistance;
+    }
+
+    public long getLastMoved() {
+        return lastMoved;
+    }
+
+    public void setLastMoved(long lastMoved) {
+        this.lastMoved = lastMoved;
+    }
+
+    public boolean isProcessing() {
+        return isProcessing;
+    }
+
+    public void setProcessing(boolean processing) {
+        isProcessing = processing;
+    }
+
+    public void setFutureCraftDirection(BlockFace futureCraftDirection) {
+        this.futureCraftDirection = futureCraftDirection;
+    }
+
+    public void movementPerformed(){
+        setProcessing(false);
+        setCraftDirection(this.futureCraftDirection);
+        setLastMoved(System.currentTimeMillis());
     }
 }
