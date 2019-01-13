@@ -12,12 +12,12 @@ class CraftBlocks
 	private Vector rotationCenter;														//center off all rotation blocks
 	private Vector minSize;
 	private Vector maxSize;
-    private ArrayList<SimpleBlock> allCannonBlocks = new ArrayList<>();
+    private ArrayList<SimpleBlock> allCraftBlocks = new ArrayList<>();
     private ArrayList<Vector> hullBlocks = new ArrayList<>();
 	private ArrayList<SimpleBlock> engines = new ArrayList<>();
     private ArrayList<SimpleBlock> chest = new ArrayList<>();
 	private ArrayList<SimpleBlock> sign = new ArrayList<>();
-    private ArrayList<Vector> destructibleBlocks = new ArrayList<>();
+    private ArrayList<Vector> protectedBlocks = new ArrayList<>();
 
 	public Vector getRotationCenter()
 	{
@@ -27,15 +27,15 @@ class CraftBlocks
 	{
 		this.rotationCenter = rotationCenter;
 	}
-	public ArrayList<SimpleBlock> getAllCraftBlocks()
+	protected ArrayList<SimpleBlock> getAllCraftBlocks()
 	{
-		return allCannonBlocks;
+		return allCraftBlocks;
 	}
-	protected void setAllCannonBlocks(ArrayList<SimpleBlock> allCannonBlocks)
+	protected void setAllCraftBlocks(ArrayList<SimpleBlock> allCraftBlocks)
 	{
-		this.allCannonBlocks = allCannonBlocks;
+		this.allCraftBlocks = allCraftBlocks;
 	}
-	public ArrayList<Vector> getHullBlocks()
+	protected ArrayList<Vector> getHullBlocks()
 	{
 		return hullBlocks;
 	}
@@ -44,7 +44,7 @@ class CraftBlocks
 		this.hullBlocks = barrelBlocks;
 	}
 
-	public ArrayList<SimpleBlock> getChest()
+	protected ArrayList<SimpleBlock> getChest()
 	{
 		return chest;
 	}
@@ -54,17 +54,17 @@ class CraftBlocks
 		this.chest = chest;
 	}
 
-	public ArrayList<Vector> getDestructibleBlocks()
+	protected ArrayList<Vector> getProtectedBlocks()
 	{
-		return destructibleBlocks;
+		return protectedBlocks;
 	}
 
-	protected void setDestructibleBlocks(ArrayList<Vector> destructibleBlocks)
+	protected void setProtectedBlocks(ArrayList<Vector> protectedBlocks)
 	{
-		this.destructibleBlocks = destructibleBlocks;
+		this.protectedBlocks = protectedBlocks;
 	}
 
-	public ArrayList<SimpleBlock> getEngines() {
+	protected ArrayList<SimpleBlock> getEngines() {
 		return engines;
 	}
 
@@ -88,7 +88,7 @@ class CraftBlocks
 		this.maxSize = maxSize;
 	}
 
-	public ArrayList<SimpleBlock> getSign() {
+	protected ArrayList<SimpleBlock> getSign() {
 		return sign;
 	}
 

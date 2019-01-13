@@ -168,13 +168,13 @@ public class CraftDesign
      * @param craft
      * @return
      */
-    public List<Location> getDestructibleBlocks(Craft craft)
+    public List<Location> getProtectedBlocks(Craft craft)
     {
      	CraftBlocks cannonBlocks  = cannonBlockMap.get(craft.getCraftDirection());
     	List<Location> locList = new ArrayList<Location>();
     	if (cannonBlocks != null)
     	{
-    		for (Vector vect : cannonBlocks.getDestructibleBlocks())
+    		for (Vector vect : cannonBlocks.getProtectedBlocks())
     		{
     			locList.add(vect.clone().add(craft.getOffset()).toLocation(craft.getWorldBukkit()));
     		}

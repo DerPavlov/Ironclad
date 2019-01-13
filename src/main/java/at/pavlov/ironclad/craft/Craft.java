@@ -11,7 +11,6 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.material.Attachable;
-import org.bukkit.material.Directional;
 import org.bukkit.util.Vector;
 
 import at.pavlov.ironclad.Enum.MessageEnum;
@@ -172,10 +171,8 @@ public class Craft
         ArrayList<SimpleBlock> attatchedBlocks = new ArrayList<>();
         for (SimpleBlock cBlock : design.getAllCraftBlocks(this.getCraftDirection()))
         {
-            System.out.println("cBlock: " + cBlock.getBlockData());
             //check if the block is attached to something, then do it later
             if (cBlock.getBlockData() instanceof org.bukkit.block.data.Directional){
-                System.out.println("to attach Block: " + cBlock.getBlockData());
                 attatchedBlocks.add(cBlock);
             }
             else {
@@ -186,9 +183,6 @@ public class Craft
         //place the attachable blocks
         for (SimpleBlock aBlock : attatchedBlocks){
             Block wBlock = aBlock.toLocation(getWorldBukkit(), offset).getBlock();
-            System.out.println("attached block: " + aBlock.getBlockData());
-            System.out.println("attached loc: " +       aBlock.toLocation(getWorldBukkit(), offset));
-            System.out.println("--------------------");
             wBlock.setBlockData(aBlock.getBlockData());
         }
     }
@@ -286,9 +280,9 @@ public class Craft
      * @param block - location of the block
      * @return - true if the block can be destroyed
      */
-    public boolean isDestructibleBlock(Location block)
+    public boolean isProtectedBlock(Location block)
     {
-        for (Location loc : design.getDestructibleBlocks(this))
+        for (Location loc : design.getProtectedBlocks(this))
         {
             if (loc.equals(block))
             {

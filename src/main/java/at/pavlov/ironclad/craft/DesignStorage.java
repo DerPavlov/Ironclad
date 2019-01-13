@@ -340,72 +340,64 @@ public class DesignStorage
 			boolean firstEntryRotation = true;
 
             for (SimpleBlock sblock : schematiclist) {
-                int x = sblock.getLocX();
-                int y = sblock.getLocY();
-                int z = sblock.getLocZ();
+				int x = sblock.getLocX();
+				int y = sblock.getLocY();
+				int z = sblock.getLocZ();
 
-                // #############  find the min and max for the craft
-				// reset for the first entry
-				if (firstEntrySize)
+				// #############  find the min and max for rotation blocks
+				if (sblock.compareMaterial(blockRotationCenter))
 				{
-					firstEntrySize = false;
-					minSize = new Vector(0, 0, 0);
-					maxSize = new Vector(width, height, length);
+					// reset for the first entry
+					if (firstEntryRotation)
+					{
+						firstEntryRotation = false;
+						minRotation = new Vector(x, y, z);
+						maxRotation= new Vector(x, y, z);
+					}
+					else
+					{
+						findMinimum(x, y, z, minRotation);
+						findMaximum(x, y, z, maxRotation);
+					}
 				}
-				else
-				{
-					minSize = findMinimum(x, y, z, minSize);
-					maxSize = findMaximum(x, y, z, maxSize);
+				else {
+					//all craft blocks. Ignore the rotation center
+					cannonBlocks.getAllCraftBlocks().add(new SimpleBlock(x, y, z, sblock.getBlockData().clone()));
+					// this can be a destructible block
+					if (isInList(blockProtectedList, sblock.getBlockData()))
+						cannonBlocks.getProtectedBlocks().add(new Vector(x, y, z));
+
+					// #############  find the min and max for the craft
+					// reset for the first entry
+					if (firstEntrySize) {
+						firstEntrySize = false;
+						minSize = new Vector(0, 0, 0);
+						maxSize = new Vector(width, height, length);
+					} else {
+						findMinimum(x, y, z, minSize);
+						findMaximum(x, y, z, maxSize);
+					}
+					// #############  engines ########################
+					if (sblock.compareMaterial(blockEngine)) {
+						// the id does not matter
+						cannonBlocks.getEngines().add(new SimpleBlock(x, y, z, sblock.getBlockData().clone()));
+					}
+					// #############  chests ########################
+					else if (sblock.compareMaterial(blockChest)) {
+						// the id does not matter
+						cannonBlocks.getChest().add(new SimpleBlock(x, y, z, sblock.getBlockData().clone()));
+					}
+					// #############  sign ########################
+					else if (sblock.compareMaterial(blockSign)) {
+						// the id does not matter, but the data is important for signs
+						cannonBlocks.getSign().add(new SimpleBlock(x, y, z, sblock.getBlockData().clone()));
+					}
+					// #############  hull of the ship
+					else {
+						// all remaining blocks are loading interface or cannonBlocks
+						cannonBlocks.getHullBlocks().add(new Vector(x, y, z));
+					}
 				}
-				//muzzle blocks need to be air - else the projectile would create in a block
-				cannonBlocks.getAllCraftBlocks().add(new SimpleBlock(x, y, z, Material.AIR.createBlockData()));
-                // #############  find the min and max for rotation blocks
-                if (sblock.compareMaterial(blockRotationCenter))
-                {
-                    // reset for the first entry
-                    if (firstEntryRotation)
-                    {
-                        firstEntryRotation = false;
-                        minRotation = new Vector(x, y, z);
-                        maxRotation= new Vector(x, y, z);
-                    }
-                    else
-                    {
-                        minRotation = findMinimum(x, y, z, minRotation);
-                        maxRotation = findMaximum(x, y, z, maxRotation);
-                    }
-                }
-				// #############  engines ########################
-				else if (sblock.compareMaterial(blockEngine))
-				{
-					// the id does not matter
-					cannonBlocks.getEngines().add(new SimpleBlock(x, y, z, blockEngine));
-				}
-                // #############  chests ########################
-                else if (sblock.compareMaterial(blockChest))
-                {
-                    // the id does not matter, but the data is important for signs
-                    cannonBlocks.getChest().add(new SimpleBlock(x, y, z, blockChest));
-                }
-				// #############  sign ########################
-				else if (sblock.compareMaterial(blockSign))
-				{
-					// the id does not matter, but the data is important for signs
-					cannonBlocks.getSign().add(new SimpleBlock(x, y, z, blockSign));
-				}
-                // #############  loading Interface is a cannonblock that is non of
-                // the previous blocks
-                else
-                {
-                    // all remaining blocks are loading interface or cannonBlocks
-                    cannonBlocks.getHullBlocks().add(new Vector(x, y, z));
-                    // this can be a destructible block
-                    if (!isInList(blockProtectedList, sblock.getBlockData()))
-                        cannonBlocks.getDestructibleBlocks().add(new Vector(x, y, z));
-                }
-                //all craft blocks. Ignore the rotation center
-                if (!sblock.compareMaterial(blockRotationCenter))
-					cannonBlocks.getAllCraftBlocks().add(new SimpleBlock(x, y, z, sblock.getBlockData()));
             }
 
 			// calculate the muzzle location
@@ -423,7 +415,7 @@ public class DesignStorage
 				cannonBlocks.setRotationCenter(maxRotation.add(minSize).multiply(0.5));
 			}
 
-            //set the muzzle location
+            //set the center location
             Vector compensation = new Vector(cannonBlocks.getRotationCenter().getBlockX(), cannonBlocks.getRotationCenter().getBlockY(), cannonBlocks.getRotationCenter().getBlockZ());
 
             for (SimpleBlock block : cannonBlocks.getAllCraftBlocks())
@@ -436,7 +428,7 @@ public class DesignStorage
 				block.subtract_noCopy(compensation);
 			for (SimpleBlock block : cannonBlocks.getEngines())
 				block.subtract_noCopy(compensation);
-            for (Vector block : cannonBlocks.getDestructibleBlocks())
+            for (Vector block : cannonBlocks.getProtectedBlocks())
                 block.subtract(compensation);
             cannonBlocks.getMinSize().subtract(compensation);
             cannonBlocks.getMaxSize().subtract(compensation);
@@ -446,10 +438,10 @@ public class DesignStorage
 			cannonDesign.getCannonBlockMap().put(cannonDirection, cannonBlocks);
 
 			//rotate blocks for the next iteration
-            IroncladUtil.roateBlockFacingClockwise(blockIgnore);
-            IroncladUtil.roateBlockFacingClockwise(blockEngine);
-            IroncladUtil.roateBlockFacingClockwise(blockEngine);
+			IroncladUtil.roateBlockFacingClockwise(blockRotationCenter);
+			IroncladUtil.roateBlockFacingClockwise(blockEngine);
             IroncladUtil.roateBlockFacingClockwise(blockChest);
+            IroncladUtil.roateBlockFacingClockwise(blockSign);
 			for (BlockData aBlockProtectedList : blockProtectedList) {
                 IroncladUtil.roateBlockFacingClockwise(aBlockProtectedList);
 			}
@@ -469,7 +461,7 @@ public class DesignStorage
         return true;
 	}
 
-	private Vector findMinimum(int x, int y, int z, Vector min)
+	private void findMinimum(int x, int y, int z, Vector min)
 	{
 		if (x < min.getBlockX())
 			min.setX(x);
@@ -477,8 +469,6 @@ public class DesignStorage
 			min.setY(y);
 		if (z < min.getBlockZ())
 			min.setZ(z);
-
-		return min;
 	}
 
 	private Vector findMaximum(int x, int y, int z, Vector max)

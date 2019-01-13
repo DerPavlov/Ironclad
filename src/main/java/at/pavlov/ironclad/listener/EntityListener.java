@@ -65,7 +65,7 @@ public class EntityListener implements Listener
 
             // if it is a craft block
             if (craft != null) {
-                if (craft.isDestructibleBlock(block.getLocation())) {
+                if (craft.isProtectedBlock(block.getLocation())) {
                     //this craft is destroyed
                     remove.add(craft.getUID());
                 }

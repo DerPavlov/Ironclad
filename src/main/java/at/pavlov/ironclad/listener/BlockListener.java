@@ -160,13 +160,13 @@ public class BlockListener implements Listener
             if (plugin.getCraftMovement().isInPilotingMode(event.getPlayer().getUniqueId()))
                  aimingCraft = plugin.getCraftMovement().getCraftInAimingMode(event.getPlayer());
 
-            if (craft.isDestructibleBlock(event.getBlock().getLocation()) && (aimingCraft ==null||!craft.equals(aimingCraft)) && !plugin.getCommandListener().isSelectingMode(event.getPlayer())) {
+            if (!craft.isProtectedBlock(event.getBlock().getLocation()) && (!craft.equals(aimingCraft)) && !plugin.getCommandListener().isSelectingMode(event.getPlayer())) {
                 plugin.getCraftManager().removeCannon(craft, false, true, BreakCause.PlayerBreak);
-                plugin.logDebug("craft broken:  " + craft.isDestructibleBlock(event.getBlock().getLocation()));
+                plugin.logDebug("craft broken:  " + !craft.isProtectedBlock(event.getBlock().getLocation()));
             }
             else {
                 event.setCancelled(true);
-                plugin.logDebug("cancelled craft destruction: " + craft.isDestructibleBlock(event.getBlock().getLocation()));
+                plugin.logDebug("cancelled craft destruction: " + !craft.isProtectedBlock(event.getBlock().getLocation()));
             }
         }
     }
