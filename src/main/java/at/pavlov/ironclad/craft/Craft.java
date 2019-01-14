@@ -3,7 +3,9 @@ package at.pavlov.ironclad.craft;
 import java.util.*;
 
 import at.pavlov.ironclad.Enum.BreakCause;
+import at.pavlov.ironclad.Ironclad;
 import at.pavlov.ironclad.utils.IroncladUtil;
+import com.sun.istack.internal.NotNull;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -50,7 +52,7 @@ public class Craft implements Cloneable {
     // designID of the craft, for different types of ironclad - not in use
     private boolean isValid;
     // time point of the last movement of the craft
-    private long lastMoved;
+    private long lastMoved = 0;
     // currently changed by async thread
     private boolean isProcessing;
     // the player which has used the craft last
@@ -717,6 +719,10 @@ public class Craft implements Cloneable {
         return futureCraftDirection;
     }
 
+    public void setFutureCraftDirection(BlockFace futureCraftDirection) {
+        this.futureCraftDirection = futureCraftDirection;
+    }
+
     public Location getFutureLocation(Location start){
         Location loc = start.add(getTravelVector());
         //todo rotation
@@ -727,6 +733,12 @@ public class Craft implements Cloneable {
     {
         this.craftDirection = craftDirection;
         this.hasUpdated();
+    }
+
+    public void transformFutureLocation(Location loc){
+        Ironclad.getPlugin().logDebug("CraftLoc " + loc);
+        IroncladUtil.rotateDirection(getCraftDirection(), getFutureDirection(), loc.subtract(offset)).add(offset).add(getTravelVector());
+        Ironclad.getPlugin().logDebug("EndLoc end " + loc);
     }
 
     public UUID getWorld()
@@ -809,10 +821,13 @@ public class Craft implements Cloneable {
         return velocity;
     }
 
+    public boolean isMoving(){
+        return Math.abs(velocity) > 0.1;
+    }
+
     public void setVelocity(double velocity) {
         this.velocity = velocity;
     }
-
 
     public boolean isPaid() {
         return paid;
@@ -957,8 +972,8 @@ public class Craft implements Cloneable {
         this.travelledDistance = travelledDistance;
     }
 
-    public long getLastMoved() {
-        return lastMoved;
+    public @NotNull long getLastMoved() {
+            return lastMoved;
     }
 
     public void setLastMoved(long lastMoved) {
@@ -971,10 +986,6 @@ public class Craft implements Cloneable {
 
     public void setProcessing(boolean processing) {
         isProcessing = processing;
-    }
-
-    public void setFutureCraftDirection(BlockFace futureCraftDirection) {
-        this.futureCraftDirection = futureCraftDirection;
     }
 
     public void movementPerformed(){

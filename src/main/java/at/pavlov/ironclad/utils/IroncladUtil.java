@@ -209,7 +209,7 @@ public class IroncladUtil
 	 * @param block
 	 * @return
 	 */
-	public static ArrayList<Block> SurroundingBlocks(Block block)
+	public static ArrayList<Block> getSurroundingBlocks(Block block)
 	{
 		ArrayList<Block> Blocks = new ArrayList<Block>();
 
@@ -227,7 +227,7 @@ public class IroncladUtil
 	 * @param block
 	 * @return
 	 */
-	public static ArrayList<Block> HorizontalSurroundingBlocks(Block block)
+	public static ArrayList<Block> getHorizontalSurroundingBlocks(Block block)
 	{
 		ArrayList<Block> Blocks = new ArrayList<Block>();
 
@@ -256,6 +256,48 @@ public class IroncladUtil
             case SOUTH_WEST: return -45;
             default: return 0;
         }
+    }
+
+    public static Location rotateDirection(BlockFace startDirection, BlockFace endDirection, Location loc){
+        int diff = directionToYaw(startDirection) - directionToYaw(endDirection);
+        if (diff < 0)
+            diff += 360;
+        double hz;
+        Ironclad.getPlugin().logDebug("Blockface start: " + startDirection + " Blcokface end: " + endDirection +  " Loc " + loc);
+        switch (diff){
+            case 90:
+                hz = loc.getZ();
+                loc.setZ(loc.getX());
+                loc.setX(-hz);
+                if (loc.getYaw()+90 > 360)
+                    loc.setYaw(loc.getYaw()-270);  //subtract 360 at the same time
+                else
+                    loc.setYaw(loc.getYaw()+90);
+                Ironclad.getPlugin().logDebug("EndLoc " + loc);
+                return loc;
+            case 180:
+                hz = loc.getZ();
+                loc.setZ(-loc.getX());
+                loc.setX(-hz);
+                if (loc.getYaw()+180 > 360)
+                    loc.setYaw(loc.getYaw()-180);  //subtract 360 at the same time
+                else
+                    loc.setYaw(loc.getYaw()+180);
+
+                Ironclad.getPlugin().logDebug("EndLoc " + loc);
+                return loc;
+            case 270:
+                hz = loc.getZ();
+                loc.setZ(-loc.getX());
+                loc.setX(hz);
+                if (loc.getYaw()+270 > 360)
+                    loc.setYaw(loc.getYaw()-90);  //subtract 360 at the same time
+                else
+                    loc.setYaw(loc.getYaw()+270);
+                Ironclad.getPlugin().logDebug("EndLoc " + loc);
+                return loc;
+        }
+        return loc;
     }
 
     /**
@@ -586,8 +628,6 @@ public class IroncladUtil
      */
     public static void playErrorSound(final Location location)
     {
-//        try
-//        {
             location.getWorld().playSound(location, Sound.BLOCK_NOTE_BLOCK_PLING  , 0.25f, 0.75f);
             Bukkit.getScheduler().scheduleSyncDelayedTask(Ironclad.getPlugin(), new Runnable()
             {
@@ -597,20 +637,6 @@ public class IroncladUtil
                 }
             }
                     , 3);
-//        }
-//        catch(Exception e)
-//        {
-//            //Fired if bukkit doen't have this sound, try/catch block is not neccesury
-//            location.getWorld().playSound(location, Sound.NOTE_PIANO, 0.25f, 2f);
-//            Bukkit.getScheduler().scheduleSyncDelayedTask(Ironclad.getPlugin(), new Runnable()
-//            {
-//                @Override public void run()
-//                {
-//                    location.getWorld().playSound(location, Sound.NOTE_PIANO, 0.25f, 0.75f);
-//                }
-//            }
-//                    , 3);
-//        }
     }
 
     /**

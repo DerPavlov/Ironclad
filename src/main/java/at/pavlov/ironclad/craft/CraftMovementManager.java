@@ -10,13 +10,16 @@ import at.pavlov.ironclad.scheduler.MoveCraftTask;
 import at.pavlov.ironclad.utils.IroncladUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.Levelled;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
+import sun.java2d.pipe.SpanShapeRenderer;
 
 import java.text.DecimalFormat;
 import java.util.*;
@@ -70,20 +73,45 @@ public class CraftMovementManager {
     private void updateCraftMovement(){
         if (asyncTask != null)
             return;
-        for (Craft craft : CraftManager.getCraftList().values()){
-            if (System.currentTimeMillis() > craft.getLastMoved() + 10000)  {
-                craft.setLastMoved(System.currentTimeMillis());
-                craft.setProcessing(true);
-                HashMap<Vector, SimpleBlock> blockSnapshot = new HashMap<>();
-
-
-                //Async calculate craft movement
-                asyncTask = new MoveCalculateTask(craft.clone(),  blockSnapshot, craft.getEntitiesOnShip()).runTaskAsynchronously(plugin);
-
-                // only do one craft at a time
-                break;
+        //search for the craft which is waiting the longest
+        long waiting = System.currentTimeMillis();
+        Craft craft = null;
+        for (Craft fcraft : CraftManager.getCraftList().values()) {
+            if (fcraft.isMoving() && System.currentTimeMillis() > fcraft.getLastMoved() + 10000 && fcraft.getLastMoved() < waiting )  {
+                waiting = fcraft.getLastMoved();
+                craft = fcraft;
             }
         }
+
+        //no suitable craft found
+        if (craft == null)
+            return;
+
+        //check if the future location is empty
+        for (Location loc : craft.getCraftDesign().getAllCraftBlocksAfterMovement(craft)){
+            Block b = loc.getBlock();
+            if (!(b.getType() == Material.AIR || b instanceof Levelled)) {
+                plugin.logDebug("Path of craft " + craft.getCraftName() + " is blocked at " + loc.toVector());
+                return;
+            }
+        }
+
+        //found a craft, nothing is in our way, move it
+        craft.setLastMoved(System.currentTimeMillis());
+        craft.setProcessing(true);
+        HashMap<Vector, SimpleBlock> blockSnapshot = new HashMap<>();
+
+        //collect the block which should be moved
+        World world = craft.getWorldBukkit();
+        for (SimpleBlock sblock : craft.getCraftDesign().getAllCraftBlocks(craft)){
+            SimpleBlock snapblock = new SimpleBlock(sblock.toLocation(world).getBlock());
+            blockSnapshot.put(snapblock.toVector(), snapblock);
+        }
+
+        //Async calculate craft movement
+        asyncTask = new MoveCalculateTask(craft.clone(),  blockSnapshot, craft.getEntitiesOnShip()).runTaskAsynchronously(plugin);
+
+        // only do one craft at a time
     }
 
 

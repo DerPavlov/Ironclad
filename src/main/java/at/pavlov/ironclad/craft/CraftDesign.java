@@ -199,7 +199,7 @@ public class CraftDesign
 	 */
 	public List<Location> getAllCraftBlocksAfterMovement(Craft craft)
 	{
-		CraftBlocks cannonBlocks  = cannonBlockMap.get(craft.getCraftDirection());
+		CraftBlocks cannonBlocks  = cannonBlockMap.get(craft.getFutureDirection());
 		List<Location> locList = new ArrayList<Location>();
 		if (cannonBlocks != null)
 		{

@@ -27,9 +27,12 @@ public class SimpleBlock implements Cloneable
 		this.blockData = blockData;
 	}
 
-	public SimpleBlock(Vector vect, BlockData blockData)
-	{
+	public SimpleBlock(Vector vect, BlockData blockData) {
 		this(vect.getBlockX(), vect.getBlockY(), vect.getBlockZ(), blockData);
+	}
+
+	public SimpleBlock(Block block) {
+		this(block.getX(), block.getY(), block.getZ(), block.getBlockData().clone());
 	}
 
 	private SimpleBlock(Vector vect, Material material)
@@ -227,8 +230,8 @@ public class SimpleBlock implements Cloneable
 	 */
 	public void rotate90(){
 		this.blockData = IroncladUtil.roateBlockFacingClockwise(this.blockData);
-		int newx = -this.locZ;
-		this.locZ = this.locX;
+		int newx = this.locZ;
+		this.locZ = -this.locX;
 		this.locX = newx;
 	}
 	
