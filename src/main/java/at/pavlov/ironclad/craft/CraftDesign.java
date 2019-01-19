@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import at.pavlov.ironclad.container.IntVector;
 import at.pavlov.ironclad.container.SoundHolder;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
@@ -112,8 +113,7 @@ public class CraftDesign
 	public Location getMaxBoundnigBoxLocation(Craft craft)
 	{
 		CraftBlocks cannonBlocks  = cannonBlockMap.get(craft.getCraftDirection());
-		if (cannonBlocks != null)
-		{
+		if (cannonBlocks != null) {
 			return cannonBlocks.getMaxSize().clone().add(craft.getOffset()).toLocation(craft.getWorldBukkit());
 		}
 
@@ -121,6 +121,26 @@ public class CraftDesign
 		return craft.getOffset().toLocation(craft.getWorldBukkit());
 	}
 
+	/** calculate the offset for the snapshot array
+	 *
+	 * @param craft snapshot craft
+	 * @return offset
+	 */
+	public IntVector getArrayOffset(Craft craft){
+		CraftBlocks cannonBlocks  = cannonBlockMap.get(craft.getCraftDirection());
+		Vector min = new Vector(0,0,0);
+		if (cannonBlocks != null) {
+			min = cannonBlocks.getMinSize().clone().add(craft.getOffset());
+		}
+		Vector travel = craft.getTravelVector();
+		if (travel.getX() > 0)
+			travel.setX(0);
+		if (travel.getY() > 0)
+			travel.setY(0);
+		if (travel.getZ() > 0)
+			travel.setZ(0);
+		return new IntVector(min.subtract(travel));
+	}
 
 	/**
 	 * returns the center location of the craft

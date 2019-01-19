@@ -19,6 +19,7 @@ import com.sk89q.worldedit.extent.transform.BlockTransformExtent;
 import com.sk89q.worldedit.function.operation.ForwardExtentCopy;
 import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.math.Vector3;
 import com.sk89q.worldedit.math.transform.AffineTransform;
 import com.sk89q.worldedit.util.io.Closer;
 import com.sk89q.worldedit.world.block.BlockState;
@@ -271,10 +272,10 @@ public class DesignStorage
 			return false;
 		}
 
-        AffineTransform transform = new AffineTransform().translate(cc.getMinimumPoint().multiply(-1));
-        BlockTransformExtent extent = new BlockTransformExtent(cc, transform);
-        ForwardExtentCopy copy = new ForwardExtentCopy(extent, cc.getRegion(), cc.getOrigin(), cc, BlockVector3.ZERO);
-        copy.setTransform(transform);
+		AffineTransform transform = new AffineTransform().translate(cc.getMinimumPoint().multiply(-1));
+		BlockTransformExtent extent = new BlockTransformExtent(cc, transform);
+		ForwardExtentCopy copy = new ForwardExtentCopy(extent, cc.getRegion(), cc.getOrigin(), cc, BlockVector3.ZERO);
+		copy.setTransform(transform);
         try {
             Operations.complete(copy);
         } catch (WorldEditException e) {
@@ -307,7 +308,8 @@ public class DesignStorage
 				for (int z = 0; z < length; ++z) {
 
 					BlockVector3 pt = BlockVector3.at(x, y, z);
-					BlockState blockState = cc.getBlock(pt.add(cc.getMinimumPoint()));
+					com.sk89q.worldedit.Vector minPoint = cc.getMinimumPoint();
+					BlockState blockState = cc.getBlock(pt.add(BlockVector3.at(minPoint.getX(), minPoint.getBlockY(), minPoint.getZ())));
 					//plugin.logDebug("blockstate: " + blockState.getAsString());
 
 					BlockData block = Bukkit.getServer().createBlockData(blockState.getAsString());

@@ -19,6 +19,7 @@ import at.pavlov.ironclad.listener.*;
 import at.pavlov.ironclad.craft.CraftMovementManager;
 import at.pavlov.ironclad.scheduler.FakeBlockHandler;
 import net.milkbowl.vault.economy.Economy;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -33,7 +34,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import at.pavlov.ironclad.craft.CraftDesign;
 import at.pavlov.ironclad.dao.PersistenceDatabase;
-import org.mcstats.MetricsLite;
 
 public final class Ironclad extends JavaPlugin
 {
@@ -182,13 +182,8 @@ public final class Ironclad extends JavaPlugin
 					persistenceDatabase.saveAllCrafts(true);
 				}
 			}, 6000L, 6000L);
-			
-			try {
-			    MetricsLite metrics = new MetricsLite(this);
-			    metrics.start();
-			} catch (IOException e) {
-			    // Failed to submit the stats :-(
-			}
+
+			Metrics metrics = new Metrics(this);
 
             logDebug("Time to enable ironclad: " + new DecimalFormat("0.00").format((System.nanoTime() - startTime)/1000000.0) + "ms");
 

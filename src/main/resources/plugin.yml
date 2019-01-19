@@ -2,7 +2,7 @@ name: Ironclad
 main: at.pavlov.ironclad.Ironclad
 api-version: 1.13
 version: ${version}
-depend: [WorldEdit]
+depend: [FastAsyncWorldEdit,WorldEdit]
 softdepend: [Vault, Cannons]
 author: DerPavlov
 description: Fire block build ironclad and smash your enemies

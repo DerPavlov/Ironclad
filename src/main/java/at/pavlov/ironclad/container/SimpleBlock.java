@@ -77,11 +77,18 @@ public class SimpleBlock implements Cloneable
 	 */
 	public boolean compareLocation(Location loc, Vector offset)
 	{
-		if (toVector().add(offset).equals(loc.toVector()))
-		{
-			return true;
-		}
-		return false;
+		return compareLocation(loc.toVector(), offset);
+	}
+
+	/**
+	 * compare the location
+	 * @param loc location to compare to
+	 * @param offset the offset of the craft
+	 * @return true if both block match
+	 */
+	public boolean compareLocation(Vector loc, Vector offset)
+	{
+		return toVector().add(offset).equals(loc);
 	}
 
 	/**
@@ -189,6 +196,17 @@ public class SimpleBlock implements Cloneable
         locY -= vect.getBlockY();
         locZ -= vect.getBlockZ();
     }
+
+	/**
+	 * shifts the location of the block without comparing the id
+	 * @param vect vector to subtract
+	 */
+	public void subtract_noCopy(IntVector vect)
+	{
+		locX -= vect.getX();
+		locY -= vect.getY();
+		locZ -= vect.getZ();
+	}
 	
 	/** 
 	 * shifts the location of the block without comparing the id

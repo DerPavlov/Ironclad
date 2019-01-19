@@ -3,6 +3,7 @@ package at.pavlov.ironclad.scheduler;
 
 import at.pavlov.ironclad.Ironclad;
 import at.pavlov.ironclad.container.SimpleBlock;
+import at.pavlov.ironclad.container.SimpleEntity;
 import at.pavlov.ironclad.craft.Craft;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -19,11 +20,11 @@ public class MoveCraftTask extends BukkitRunnable {
     final private List<SimpleBlock> newAttachedBlocks;
     private final List<SimpleBlock> resetBlocks;
     private final List<SimpleBlock> resetAttachedBlocks;
-    final private Set<Entity> entities;
+    final private Set<SimpleEntity> entities;
     private final boolean successful;
 
 
-    MoveCraftTask(Craft craftClone, List<SimpleBlock> newBlocks, List<SimpleBlock> newAttachedBlocks, List<SimpleBlock> resetBlocks, List<SimpleBlock> resetAttachedBlocks, Set<Entity> entities, boolean successful){
+    MoveCraftTask(Craft craftClone, List<SimpleBlock> newBlocks, List<SimpleBlock> newAttachedBlocks, List<SimpleBlock> resetBlocks, List<SimpleBlock> resetAttachedBlocks, Set<SimpleEntity> entities, boolean successful){
         this.craftClone = craftClone;
         this.newBlocks = newBlocks;
         this.newAttachedBlocks = newAttachedBlocks;

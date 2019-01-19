@@ -4,7 +4,9 @@ import at.pavlov.ironclad.Enum.MessageEnum;
 import at.pavlov.ironclad.Ironclad;
 import at.pavlov.ironclad.config.Config;
 import at.pavlov.ironclad.config.UserMessages;
+import at.pavlov.ironclad.container.IntVector;
 import at.pavlov.ironclad.container.SimpleBlock;
+import at.pavlov.ironclad.container.SimpleEntity;
 import at.pavlov.ironclad.scheduler.MoveCalculateTask;
 import at.pavlov.ironclad.scheduler.MoveCraftTask;
 import at.pavlov.ironclad.utils.IroncladUtil;
@@ -92,30 +94,46 @@ public class CraftMovementManager {
         //found a craft, move it
         craft.setLastMoved(System.currentTimeMillis());
         craft.setProcessing(true);
-        HashMap<Vector, SimpleBlock> blockSnapshot = new HashMap<>();
+        IntVector dim = craft.getCraftDimensions();
+        IntVector travel = new IntVector(craft.getTravelVector());
+        int x = dim.getX() + Math.abs(travel.getX()) + 1;
+        int y = dim.getY() + Math.abs(travel.getY()) + 1;
+        int z = dim.getZ() + Math.abs(travel.getZ()) + 1;
+        plugin.logDebug("array dimensions " + x + "," + y + "," + z);
+        SimpleBlock[][][] blockSnapshot = new SimpleBlock[x][y][z];
 
         //collect the block which should be moved
         World world = craft.getWorldBukkit();
+        IntVector offbox = craft.getCraftDesign().getArrayOffset(craft);
+        plugin.logDebug("offbox " + offbox);
         for (SimpleBlock sblock : craft.getCraftDesign().getAllCraftBlocks(craft)){
             SimpleBlock snapblock = new SimpleBlock(sblock.toLocation(world).getBlock());
-            blockSnapshot.put(snapblock.toVector(), snapblock);
+            plugin.logDebug("start block " + snapblock);
+            snapblock.subtract_noCopy(offbox);
+            plugin.logDebug("snapblock " + snapblock);
+            blockSnapshot[snapblock.getLocX()][snapblock.getLocY()][snapblock.getLocZ()] = snapblock;
         }
 
         //add the blocks the craft should be moved
         for (Location loc : craft.getCraftDesign().getAllCraftBlocksAfterMovement(craft)){
             SimpleBlock snapblock = new SimpleBlock(loc.getBlock());
+            plugin.logDebug("future block " + snapblock);
+            plugin.logDebug("future blo " + snapblock.toVector());
+            plugin.logDebug("future loc " + loc.toVector());
             // add if block not exist already
-            if (!blockSnapshot.containsKey(snapblock.toVector()))
-                blockSnapshot.put(snapblock.toVector(), snapblock);
+            snapblock.subtract_noCopy(offbox);
+            plugin.logDebug("snapblock " + snapblock);
+            blockSnapshot[snapblock.getLocX()][snapblock.getLocY()][snapblock.getLocZ()] = snapblock;
         }
 
 
+        Map<Vector, SimpleBlock> blockSnapshot1 = new HashMap<>();
         //Async calculate craft movement
-        asyncTask = new MoveCalculateTask(craft.clone(),  blockSnapshot, craft.getEntitiesOnShip()).runTaskAsynchronously(plugin);
+        asyncTask = new MoveCalculateTask(craft.clone(),  blockSnapshot1, craft.getSimpleEntitiesOnShip()).runTaskAsynchronously(plugin);
     }
 
 
-    public void performCraftMovement(Craft craftClone, List<SimpleBlock> newBlocks, List<SimpleBlock> newAttachedBlocks, List<SimpleBlock> resetBlocks, List<SimpleBlock> resetAttachedBlocks, Set<Entity> entities, boolean successful){
+    public void performCraftMovement(Craft craftClone, List<SimpleBlock> newBlocks, List<SimpleBlock> newAttachedBlocks, List<SimpleBlock> resetBlocks, List<SimpleBlock> resetAttachedBlocks, Set<SimpleEntity> entities, boolean successful){
         asyncTask = null;
         Craft craft = CraftManager.getCraft(craftClone.getUID());
         // not successful since target desitination was blocked
@@ -157,13 +175,19 @@ public class CraftMovementManager {
             wBlock.setBlockData(rBlock.getBlockData());
         }
 
-        for (Entity entity : entities){
-            entity.teleport(craft.getFutureLocation(entity.getLocation()));
+        plugin.logDebug("Time move craft: " + new DecimalFormat("0.00").format((System.nanoTime() - startTime)/1000000.0) + "ms");
+        startTime = System.nanoTime();
+
+        //teleport the entities
+        for (SimpleEntity entity : entities){
+            Entity bEntity = Bukkit.getEntity(entity.getUuid());
+            bEntity.getLocation().add(entity.getLocationUpate());
+            bEntity.getLocation().setYaw(entity.getYawUpdate());
         }
 
         //movement finished
         craft.movementPerformed();
-        plugin.logDebug("Time move craft: " + new DecimalFormat("0.00").format((System.nanoTime() - startTime)/1000000.0) + "ms");
+        plugin.logDebug("Time teleportation: " + new DecimalFormat("0.00").format((System.nanoTime() - startTime)/1000000.0) + "ms");
     }
 
     public void moveCraft(BlockFace blockFace){

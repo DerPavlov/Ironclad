@@ -1,9 +1,12 @@
 package at.pavlov.ironclad.craft;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import at.pavlov.ironclad.Enum.BreakCause;
 import at.pavlov.ironclad.Ironclad;
+import at.pavlov.ironclad.container.SimpleEntity;
+import at.pavlov.ironclad.container.IntVector;
 import at.pavlov.ironclad.utils.IroncladUtil;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -12,6 +15,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.material.Attachable;
+import org.bukkit.util.BlockVector;
 import org.bukkit.util.Vector;
 
 import at.pavlov.ironclad.Enum.MessageEnum;
@@ -303,6 +307,23 @@ public class Craft implements Cloneable {
                 if (designBlock.compareLocation(loc, offset))
                     return true;
             }
+        }
+        return false;
+    }
+
+    /**
+     * returns true if this block is a block of the craft
+     * @param loc - location to check
+     * @return - true if it is part of this craft
+     */
+    public boolean isLocationPartOfCraft(Vector loc)
+    {
+        if (loc == null)
+            return false;
+
+        for (SimpleBlock designBlock : design.getAllCraftBlocks(craftDirection)) {
+            if (designBlock.compareLocation(loc, offset))
+                return true;
         }
         return false;
     }
@@ -921,14 +942,14 @@ public class Craft implements Cloneable {
      * returns the dimensions of the craft depending of the directions the craft is facing
      * @return Vector(x,y,z) of the dimensions
      */
-    public Vector getCraftDimensions(){
+    public IntVector getCraftDimensions(){
         switch (this.craftDirection){
             case NORTH:
             case SOUTH:
-                return new Vector(getCraftWidth(), getCraftLength(), getCraftHeight());
+                return new IntVector(getCraftWidth(), getCraftLength(), getCraftHeight());
             case EAST:
             case WEST:
-                return new Vector(getCraftLength(), getCraftWidth(), getCraftHeight());
+                return new IntVector(getCraftLength(), getCraftWidth(), getCraftHeight());
             default:
                 return null;
         }
@@ -940,10 +961,18 @@ public class Craft implements Cloneable {
      * @return Set of Entities on ship
      */
     public Set<Entity> getEntitiesOnShip(){
-        Vector d = getCraftDimensions();
+        IntVector d = getCraftDimensions();
         Set<Entity> entities = IroncladUtil.getNearbyEntitiesInBox(design.getCraftCenter(this), d.getX(), d.getY(), d.getZ());
         entities.removeIf(entity -> !isEntityOnShip(entity));
         return  entities;
+    }
+
+    /**
+     * get all Entities on a ship
+     * @return Set of Entities on ship
+     */
+    public Set<SimpleEntity> getSimpleEntitiesOnShip(){
+        return getEntitiesOnShip().stream().map(SimpleEntity::new).collect(Collectors.toSet());
     }
 
     public boolean isEntityOnShip(Entity entity){
