@@ -130,8 +130,8 @@ public class CraftDesign
 	public Location getCraftCenter(Craft craft)
 	{
 		CraftBlocks cannonBlocks  = cannonBlockMap.get(craft.getCraftDirection());
-		if (cannonBlocks != null)
-		{
+		if (cannonBlocks != null) {
+			System.out.println("CraftCenter" + cannonBlocks.getCraftCenter());
 			return cannonBlocks.getCraftCenter().clone().add(craft.getOffset()).toLocation(craft.getWorldBukkit());
 		}
 

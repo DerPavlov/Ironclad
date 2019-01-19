@@ -407,7 +407,7 @@ public class DesignStorage
 
 			//craft center
 			Vector center = maxSize.clone().add(new Vector(1, 1, 1));
-			cannonBlocks.setRotationCenter(center.add(minSize).multiply(0.5).clone());
+			cannonBlocks.setCraftCenter(center.add(minSize).multiply(0.5).clone());
 
 			// calculate the rotation Center if a rotation center block was used, otherwise use the center of the craft
 			if (maxRotation != null){

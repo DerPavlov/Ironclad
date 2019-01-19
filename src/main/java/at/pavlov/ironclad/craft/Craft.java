@@ -5,7 +5,6 @@ import java.util.*;
 import at.pavlov.ironclad.Enum.BreakCause;
 import at.pavlov.ironclad.Ironclad;
 import at.pavlov.ironclad.utils.IroncladUtil;
-import com.sun.istack.internal.NotNull;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -58,7 +57,7 @@ public class Craft implements Cloneable {
     // the player which has used the craft last
     private UUID lastUser;
 
-    // amount of fired cannonballs with this craft
+    // distance travelled by this craft
     private double travelledDistance;
 
     // has the craft entry changed since it was last saved in the database
@@ -85,7 +84,7 @@ public class Craft implements Cloneable {
         //the craft is not moving
         this.yaw = IroncladUtil.directionToYaw(craftDirection);
         this.pitch = 0.0;
-        this.velocity = 0.0;
+        this.velocity = 1.0;
 
         Vector dim = design.getCraftDimensions();
         if (dim.getX() >= dim.getY()) {
@@ -382,7 +381,17 @@ public class Craft implements Cloneable {
     public void move(Vector moved)
     {
         offset.add(moved);
+        setCraftDirection(this.futureCraftDirection);
+        setLastMoved(System.currentTimeMillis());
         this.hasUpdated();
+    }
+
+    /**
+     * finished update of async craft movment
+     */
+    public void movementPerformed(){
+        setProcessing(false);
+        move(getTravelVector());
     }
 
     /**
@@ -735,10 +744,14 @@ public class Craft implements Cloneable {
         this.hasUpdated();
     }
 
-    public void transformFutureLocation(Location loc){
+    public void transformToFutureLocation(Location loc){
         Ironclad.getPlugin().logDebug("CraftLoc " + loc);
         IroncladUtil.rotateDirection(getCraftDirection(), getFutureDirection(), loc.subtract(offset)).add(offset).add(getTravelVector());
         Ironclad.getPlugin().logDebug("EndLoc end " + loc);
+    }
+
+    public Vector transformToFutureLocation(Vector vec){
+        return IroncladUtil.rotateDirection(getCraftDirection(), getFutureDirection(), vec.subtract(offset)).add(offset).add(getTravelVector());
     }
 
     public UUID getWorld()
@@ -809,7 +822,9 @@ public class Craft implements Cloneable {
     }
 
     public Vector getTravelVector(){
-        return IroncladUtil.directionToVector(this.yaw, this.pitch, this.velocity);
+        Vector vect = IroncladUtil.directionToVector(this.yaw, this.pitch, this.velocity);
+        System.out.println("getTravelVector: " + vect + " Yaw " + this.yaw);
+        return vect;
     }
 
     public boolean isChunkLoaded(){
@@ -972,7 +987,7 @@ public class Craft implements Cloneable {
         this.travelledDistance = travelledDistance;
     }
 
-    public @NotNull long getLastMoved() {
+    public long getLastMoved() {
             return lastMoved;
     }
 
@@ -988,9 +1003,4 @@ public class Craft implements Cloneable {
         isProcessing = processing;
     }
 
-    public void movementPerformed(){
-        setProcessing(false);
-        setCraftDirection(this.futureCraftDirection);
-        setLastMoved(System.currentTimeMillis());
-    }
 }

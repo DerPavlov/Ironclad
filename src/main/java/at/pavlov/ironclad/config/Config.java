@@ -84,14 +84,14 @@ public class Config
     private final UserMessages userMessage;
 	private final Ironclad plugin;
 	private final DesignStorage designStorage;
-    private final CraftManager cannonManager;
+    private final CraftManager craftManager;
 
 	public Config(Ironclad plugin)
 	{
 		this.plugin = plugin;
 		userMessage = new UserMessages(this.plugin);
 		designStorage = new DesignStorage(this.plugin);
-        cannonManager = new CraftManager(plugin, userMessage, this);
+        craftManager = new CraftManager(plugin, userMessage, this);
 	}
 
 	public void loadConfig()
@@ -176,7 +176,7 @@ public class Config
 
 		//load other configs
 		designStorage.loadCraftDesigns();
-        cannonManager.updateCrafts();
+        craftManager.updateCrafts();
 		userMessage.loadLanguage();
 
 	}
@@ -293,8 +293,8 @@ public class Config
         this.unbreakableBlocks = unbreakableBlocks;
     }
 
-    public CraftManager getCannonManager() {
-        return cannonManager;
+    public CraftManager getCraftManager() {
+        return craftManager;
     }
 
     public ItemHolder getToolThermometer() {

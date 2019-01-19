@@ -243,6 +243,16 @@ public class SimpleBlock implements Cloneable
 		return new Vector(locX, locY, locZ);
 	}
 
+	/**
+	 * SimpleBlock set Vector
+	 */
+	public void setVector(Vector vector)
+	{
+		this.locX = vector.getBlockX();
+		this.locY = vector.getBlockY();
+		this.locZ = vector.getBlockZ();
+	}
+
 	public int getLocX()
 	{
 		return locX;

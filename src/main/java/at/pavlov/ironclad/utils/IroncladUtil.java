@@ -258,6 +258,42 @@ public class IroncladUtil
         }
     }
 
+    public static Vector rotateDirection(BlockFace startDirection, BlockFace endDirection, Vector vect){
+        // if both directions are the same, do nothing
+        if (startDirection.equals(endDirection))
+            return vect;
+
+        int diff = directionToYaw(startDirection) - directionToYaw(endDirection);
+        while (diff < 0)
+            diff += 360;
+        double hz;
+        Ironclad.getPlugin().logDebug("Blockface start: " + startDirection + " Blcokface end: " + endDirection +  " vect " + vect + " diff " + diff);
+        switch (diff){
+            case 90:
+                hz = vect.getZ();
+                vect.setZ(vect.getX());
+                vect.setX(-hz);
+                Ironclad.getPlugin().logDebug("EndLoc " + vect);
+                return vect;
+            case 180:
+                hz = vect.getZ();
+                vect.setZ(-vect.getX());
+                vect.setX(-hz);
+
+                Ironclad.getPlugin().logDebug("EndLoc " + vect);
+                return vect;
+            case 270:
+                hz = vect.getZ();
+                vect.setZ(-vect.getX());
+                vect.setX(hz);
+                Ironclad.getPlugin().logDebug("EndLoc " + vect);
+                return vect;
+            default:
+                Ironclad.getPlugin().logDebug("incorrect craft travel direction  " + diff);
+        }
+        return vect;
+    }
+
     public static Location rotateDirection(BlockFace startDirection, BlockFace endDirection, Location loc){
         int diff = directionToYaw(startDirection) - directionToYaw(endDirection);
         if (diff < 0)
@@ -835,7 +871,7 @@ public class IroncladUtil
 
     public static Vector directionToVector(double yaw, double pitch, double speed){
         double rpitch = pitch * Math.PI / 180.;
-        double ryaw = yaw*Math.PI/180.;
+        double ryaw = yaw * Math.PI / 180.;
         double hx = -Math.cos(rpitch)*Math.sin(ryaw);
         double hy = -Math.sin(rpitch);
         double hz = Math.cos(rpitch)*Math.cos(ryaw);

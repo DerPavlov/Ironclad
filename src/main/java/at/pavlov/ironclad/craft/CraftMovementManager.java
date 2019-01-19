@@ -65,7 +65,9 @@ public class CraftMovementManager {
             {
                 long startTime = System.nanoTime();
                 updateCraftMovement();
-                plugin.logDebug("Time update craft movement: " + new DecimalFormat("0.00").format((System.nanoTime() - startTime)/1000000.0) + "ms");
+                double time = (System.nanoTime() - startTime)/1000000.0;
+                if  (time > 5.)
+                    plugin.logDebug("Time update craft movement: " + new DecimalFormat("0.00").format(time) + "ms");
             }
         }, 1L, 1L);
     }
@@ -87,16 +89,7 @@ public class CraftMovementManager {
         if (craft == null)
             return;
 
-        //check if the future location is empty
-        for (Location loc : craft.getCraftDesign().getAllCraftBlocksAfterMovement(craft)){
-            Block b = loc.getBlock();
-            if (!(b.getType() == Material.AIR || b instanceof Levelled)) {
-                plugin.logDebug("Path of craft " + craft.getCraftName() + " is blocked at " + loc.toVector());
-                return;
-            }
-        }
-
-        //found a craft, nothing is in our way, move it
+        //found a craft, move it
         craft.setLastMoved(System.currentTimeMillis());
         craft.setProcessing(true);
         HashMap<Vector, SimpleBlock> blockSnapshot = new HashMap<>();
@@ -108,27 +101,60 @@ public class CraftMovementManager {
             blockSnapshot.put(snapblock.toVector(), snapblock);
         }
 
+        //add the blocks the craft should be moved
+        for (Location loc : craft.getCraftDesign().getAllCraftBlocksAfterMovement(craft)){
+            SimpleBlock snapblock = new SimpleBlock(loc.getBlock());
+            // add if block not exist already
+            if (!blockSnapshot.containsKey(snapblock.toVector()))
+                blockSnapshot.put(snapblock.toVector(), snapblock);
+        }
+
+
         //Async calculate craft movement
         asyncTask = new MoveCalculateTask(craft.clone(),  blockSnapshot, craft.getEntitiesOnShip()).runTaskAsynchronously(plugin);
-
-        // only do one craft at a time
     }
 
 
-    public void performCraftMovement(Craft craftClone, List<SimpleBlock> newBlocks, List<SimpleBlock> newAttachedBlocks, Set<Entity> entities){
-        long startTime = System.nanoTime();
+    public void performCraftMovement(Craft craftClone, List<SimpleBlock> newBlocks, List<SimpleBlock> newAttachedBlocks, List<SimpleBlock> resetBlocks, List<SimpleBlock> resetAttachedBlocks, Set<Entity> entities, boolean successful){
+        asyncTask = null;
         Craft craft = CraftManager.getCraft(craftClone.getUID());
+        // not successful since target desitination was blocked
+        if (!successful) {
+            plugin.logDebug("Could not move craft " + craftClone.getCraftName() + " since target location was blocked");
+            craft.setVelocity(0);
+            return;
+        }
+
+        plugin.logDebug("performCraftMovement " + newBlocks.size());
+
+        long startTime = System.nanoTime();
         World world = craft.getWorldBukkit();
+
+        //remove attached blocks
+        for (SimpleBlock rBlock : resetAttachedBlocks) {
+            plugin.logDebug("performCraft attached block remove " + rBlock);
+            Block wBlock = rBlock.toLocation(world).getBlock();
+            wBlock.setBlockData(rBlock.getBlockData());
+        }
 
         //update blocks
         for (SimpleBlock cBlock : newBlocks) {
+            plugin.logDebug("performCraft block update " + cBlock);
             Block wBlock = cBlock.toLocation(world).getBlock();
             wBlock.setBlockData(cBlock.getBlockData());
         }
         //place the attachable blocks
         for (SimpleBlock aBlock : newAttachedBlocks){
+            plugin.logDebug("performCraft attached block update " + aBlock);
             Block wBlock = aBlock.toLocation(world).getBlock();
             wBlock.setBlockData(aBlock.getBlockData());
+        }
+
+        //remove blocks
+        for (SimpleBlock rBlock : resetBlocks) {
+            plugin.logDebug("performCraft block remove " + rBlock);
+            Block wBlock = rBlock.toLocation(world).getBlock();
+            wBlock.setBlockData(rBlock.getBlockData());
         }
 
         for (Entity entity : entities){

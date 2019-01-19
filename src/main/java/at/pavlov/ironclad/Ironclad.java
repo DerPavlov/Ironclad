@@ -18,7 +18,6 @@ import at.pavlov.ironclad.config.*;
 import at.pavlov.ironclad.listener.*;
 import at.pavlov.ironclad.craft.CraftMovementManager;
 import at.pavlov.ironclad.scheduler.FakeBlockHandler;
-import com.sun.istack.internal.NotNull;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -45,7 +44,7 @@ public final class Ironclad extends JavaPlugin
     private final FakeBlockHandler fakeBlockHandler;
     private final CraftMovementManager craftMovementManager;
 
-    private final IroncladAPI cannonsAPI;
+    private final IroncladAPI ironcladAPI;
     private Economy economy;
 	
 	//Listener
@@ -59,7 +58,7 @@ public final class Ironclad extends JavaPlugin
 	private final PersistenceDatabase persistenceDatabase;
 	private Connection connection = null;
 
-	private final String cannonDatabase = "cannonlist_2_4_6";
+	private final String craftDatabase = "craftlist_2_4_6";
 	private final String whitelistDatabase = "whitelist_2_4_6";
 
 
@@ -71,7 +70,7 @@ public final class Ironclad extends JavaPlugin
         this.config = new Config(this);
         this.craftMovementManager = new CraftMovementManager(this);
         this.fakeBlockHandler = new FakeBlockHandler(this);
-        this.cannonsAPI = new IroncladAPI(this);
+        this.ironcladAPI = new IroncladAPI(this);
 
         this.persistenceDatabase = new PersistenceDatabase(this);
 
@@ -328,7 +327,7 @@ public final class Ironclad extends JavaPlugin
 
 	public CraftManager getCraftManager()
 	{
-		return this.config.getCannonManager();
+		return this.config.getCraftManager();
 	}
 
 	public PlayerListener getPlayerListener()
@@ -356,7 +355,7 @@ public final class Ironclad extends JavaPlugin
 		return getDesignStorage().getDesign(designId);
 	}
 
-    public Craft getCannon(UUID id)
+    public Craft getCraft(UUID id)
     {
         return CraftManager.getCraft(id);
     }
@@ -371,19 +370,19 @@ public final class Ironclad extends JavaPlugin
 		this.config.getUserMessages().sendMessage(message, player, craft);
 	}
 
-	public void createCannon(Craft craft, boolean saveToDatabase)
+	public void createCraft(Craft craft, boolean saveToDatabase)
 	{
 		this.getCraftManager().createCraft(craft, saveToDatabase);
 	}
 
-	public void spawnCraft(@NotNull CraftDesign cannonDesign, @NotNull Location location, @NotNull BlockFace direction, @NotNull UUID playerUID){
-		Craft craft = new Craft(cannonDesign, location.getWorld().getUID(), location.toVector(), direction, playerUID);
+	public void spawnCraft(CraftDesign craftDesign, Location location, BlockFace direction, UUID playerUID){
+		Craft craft = new Craft(craftDesign, location.getWorld().getUID(), location.toVector(), direction, playerUID);
 		craft.create();
-		this.getCraftManager().createCraft(craft, true);
+		//this.getCraftManager().createCraft(craft, true);
 	}
 
-    public IroncladAPI getCannonsAPI() {
-        return cannonsAPI;
+    public IroncladAPI getIroncladAPI() {
+        return ironcladAPI;
     }
 
     public BlockListener getBlockListener() {
@@ -403,7 +402,7 @@ public final class Ironclad extends JavaPlugin
     }
 
 	public String getCraftDatabase() {
-		return cannonDatabase;
+		return craftDatabase;
 	}
 
 	public String getWhitelistDatabase() {
