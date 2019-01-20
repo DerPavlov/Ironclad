@@ -4,13 +4,13 @@ import at.pavlov.ironclad.Ironclad;
 import at.pavlov.ironclad.craft.Craft;
 import at.pavlov.ironclad.craft.CraftDesign;
 import at.pavlov.ironclad.scheduler.CreateCraftTask;
+import com.sk89q.worldedit.Vector;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
-import org.bukkit.util.Vector;
 
 import java.sql.ResultSet;
 import java.sql.Statement;

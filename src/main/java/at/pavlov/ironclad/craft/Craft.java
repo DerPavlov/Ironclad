@@ -15,8 +15,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.material.Attachable;
-import org.bukkit.util.BlockVector;
-import org.bukkit.util.Vector;
+import com.sk89q.worldedit.Vector;
 
 import at.pavlov.ironclad.Enum.MessageEnum;
 import at.pavlov.ironclad.container.SimpleBlock;
@@ -38,7 +37,7 @@ public class Craft implements Cloneable {
     private double pitch;
     private double velocity;
     // the location is describe by the offset of the craft and the design
-    private Vector offset;
+    private com.sk89q.worldedit.Vector offset;
     // world of the craft
     private UUID world;
 
@@ -429,7 +428,7 @@ public class Craft implements Cloneable {
 
         center = new Vector (center.getBlockX(), center.getBlockY(), center.getBlockZ());
 
-        Vector diffToCenter = offset.clone().subtract(center);
+        Vector diffToCenter = offset.subtract(center);
 
         double newX = diffToCenter.getX()*Math.cos(dAngle) - diffToCenter.getZ()*Math.sin(dAngle);
         double newZ = diffToCenter.getX()*Math.sin(dAngle) + diffToCenter.getZ()*Math.cos(dAngle);
@@ -754,7 +753,7 @@ public class Craft implements Cloneable {
     }
 
     public Location getFutureLocation(Location start){
-        Location loc = start.add(getTravelVector());
+        Location loc = start.add(IroncladUtil.toBukkitVector(getTravelVector()));
         //todo rotation
         return loc;
     }
@@ -765,13 +764,12 @@ public class Craft implements Cloneable {
         this.hasUpdated();
     }
 
-    public void transformToFutureLocation(Location loc){
+    public Location transformToFutureLocation(Location loc){
         Ironclad.getPlugin().logDebug("CraftLoc " + loc);
-        IroncladUtil.rotateDirection(getCraftDirection(), getFutureDirection(), loc.subtract(offset)).add(offset).add(getTravelVector());
-        Ironclad.getPlugin().logDebug("EndLoc end " + loc);
+        return IroncladUtil.toLocation(transformToFutureLocation(IroncladUtil.toWorldEditVector(loc.toVector())), loc.getWorld());
     }
 
-    public Vector transformToFutureLocation(Vector vec){
+    public Vector transformToFutureLocation(com.sk89q.worldedit.Vector vec){
         return IroncladUtil.rotateDirection(getCraftDirection(), getFutureDirection(), vec.subtract(offset)).add(offset).add(getTravelVector());
     }
 
@@ -980,8 +978,8 @@ public class Craft implements Cloneable {
 //            return false;
         Location loc = entity.getLocation();
         //make the bounding box a little bit large if someone is peeking over the edge
-        Location minBB = this.getCraftDesign().getMinBoundnigBoxLocation(this).subtract(1, 1, 1);
-        Location maxBB = this.getCraftDesign().getMaxBoundnigBoxLocation(this).add(1, 1, 1);
+        Vector minBB = this.getCraftDesign().getMinBoundnigBoxLocation(this).subtract(1, 1, 1);
+        Vector maxBB = this.getCraftDesign().getMaxBoundnigBoxLocation(this).add(1, 1, 1);
         if (loc.getWorld().getUID().equals(this.world)){
             return loc.getX() >= minBB.getX() && loc.getY() >= minBB.getY() && loc.getZ() >= minBB.getZ() && loc.getX() <= maxBB.getX() && loc.getY() <= maxBB.getY() && loc.getZ() <= maxBB.getZ();
         }
@@ -993,8 +991,8 @@ public class Craft implements Cloneable {
             return false;
 
         //make the bounding box a little bit large if someone is peeking over the edge
-        Location minBB = this.getCraftDesign().getMinBoundnigBoxLocation(this).subtract(1, 1, 1);
-        Location maxBB = this.getCraftDesign().getMaxBoundnigBoxLocation(this).add(1, 1, 1);
+        Vector minBB = this.getCraftDesign().getMinBoundnigBoxLocation(this).subtract(1, 1, 1);
+        Vector maxBB = this.getCraftDesign().getMaxBoundnigBoxLocation(this).add(1, 1, 1);
         if (loc.getWorld().getUID().equals(this.world)){
             if (loc.getX() >= minBB.getX() && loc.getY() >= minBB.getY() && loc.getZ() >= minBB.getZ() && loc.getX() <= maxBB.getX() && loc.getY() <= maxBB.getY() && loc.getZ() <= maxBB.getZ()){
                 return this.isLocationPartOfCraft(loc.clone().subtract(1, 0, 0)) &&

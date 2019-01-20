@@ -21,7 +21,8 @@ import org.bukkit.material.Torch;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
 import org.bukkit.util.BlockIterator;
-import org.bukkit.util.Vector;
+
+import com.sk89q.worldedit.Vector;
 
 
 public class IroncladUtil
@@ -625,7 +626,7 @@ public class IroncladUtil
         {
         	Location pl = p.getLocation();
             //readable code
-            Vector v = loc.clone().subtract(pl).toVector();
+            org.bukkit.util.Vector v = loc.clone().subtract(pl).toVector();
             float d = (float) v.length();
             if(d<=maxDist)
             {
@@ -697,7 +698,7 @@ public class IroncladUtil
      * @param direction direction
      * @return returns the the location of one block in front of the surface or (if the surface is not found) the start location
      */
-    public static Location findSurface(Location start, Vector direction)
+    public static Location findSurface(Location start, org.bukkit.util.Vector direction)
     {
         World world = start.getWorld();
         Location surface = start.clone();
@@ -733,7 +734,7 @@ public class IroncladUtil
      * @param direction direction
      * @return returns the the location of one block in front of the surface or (if the surface is not found) the start location
      */
-    public static Location findFirstBlock(Location start, Vector direction)
+    public static Location findFirstBlock(Location start, org.bukkit.util.Vector direction)
     {
         World world = start.getWorld();
         Location surface = start.clone();
@@ -770,7 +771,7 @@ public class IroncladUtil
      * @return true if there is a line of sight
      */
     public static boolean hasLineOfSight(Location start, Location stop, int ignoredBlocks){
-        Vector dir =  stop.clone().subtract(start).toVector().normalize();
+        org.bukkit.util.Vector dir =  stop.clone().subtract(start).toVector().normalize();
         BlockIterator iter = new BlockIterator(start.getWorld(), start.clone().add(dir).toVector(),dir, 0, (int) start.distance(stop));
 
         int nontransparent = 0;
@@ -1016,41 +1017,6 @@ public class IroncladUtil
     }
 
     /**
-     * Find the closed block edge for the given direction and return the blockface normal.
-     * @param impactLocation Location of impact above the surface
-     * @param direction impact direction of the cannonball
-     * @return vector normal to plane
-     */
-    public static Vector detectImpactSurfaceNormal(Vector impactLocation, Vector direction){
-        double plane;
-        //the block location
-        Vector imb = new Vector(Math.round(impactLocation.getX()), Math.round(impactLocation.getY()), Math.round(impactLocation.getZ()));
-        //impact vector location relative to the block
-        Vector rv = impactLocation.subtract(imb);
-        //Y - vertical
-        if (direction.getY() > 0)
-            //impact was below
-            plane = 0.5;
-        else
-            //impact was above
-            plane = -0.5;
-        System.out.println("impact: " + imb + " rv: " + rv + " direction " + direction + " plane: " + plane);
-        double t = (plane - rv.getY())/direction.getY();
-        Vector is = direction.clone().multiply(t).add(rv);
-        //detect if is within bonds
-        System.out.println("isurface: " + is);
-        if (is.getX() > -0.5 && is.getX() < 0.5 && is.getZ() > -0.5 && is.getZ() < 0.5){
-            return new Vector(0,1,0);
-        }
-
-
-        //X - horizontal
-
-        //Z - horizontal
-        return new Vector (0,1,0);
-    }
-
-    /**
      * rotates the Facing of a BlockData clockwise
      * @param blockData blockData
      * @return rotated blockData
@@ -1075,5 +1041,17 @@ public class IroncladUtil
             System.out.println("[Ironclad] block data '" + str + "' is not valid");
             return Material.AIR.createBlockData();
         }
+    }
+
+    public static Vector toWorldEditVector(org.bukkit.util.Vector bukkitVector){
+        return new Vector(bukkitVector.getX(), bukkitVector.getY(), bukkitVector.getZ());
+    }
+
+    public static org.bukkit.util.Vector toBukkitVector(Vector worldeditVector){
+        return new org.bukkit.util.Vector(worldeditVector.getX(), worldeditVector.getY(), worldeditVector.getZ());
+    }
+
+    public static Location toLocation (Vector worldeditVector, World world){
+        return new Location(world, worldeditVector.getX(), worldeditVector.getY(), worldeditVector.getZ());
     }
 }

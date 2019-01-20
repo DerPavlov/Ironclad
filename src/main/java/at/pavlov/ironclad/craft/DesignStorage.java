@@ -31,7 +31,7 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Levelled;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.util.Vector;
+import com.sk89q.worldedit.Vector;
 
 
 
@@ -308,8 +308,7 @@ public class DesignStorage
 				for (int z = 0; z < length; ++z) {
 
 					BlockVector3 pt = BlockVector3.at(x, y, z);
-					com.sk89q.worldedit.Vector minPoint = cc.getMinimumPoint();
-					BlockState blockState = cc.getBlock(pt.add(BlockVector3.at(minPoint.getX(), minPoint.getBlockY(), minPoint.getZ())));
+					BlockState blockState = cc.getBlock(pt.add(cc.getMinimumPoint()));
 					//plugin.logDebug("blockstate: " + blockState.getAsString());
 
 					BlockData block = Bukkit.getServer().createBlockData(blockState.getAsString());
@@ -404,12 +403,12 @@ public class DesignStorage
 
 			// calculate the muzzle location
 			//maxSize.add(new Vector(1, 1, 1));
-			cannonBlocks.setMinSize(minSize.clone());
-			cannonBlocks.setMaxSize(maxSize.clone());
+			cannonBlocks.setMinSize(minSize);
+			cannonBlocks.setMaxSize(maxSize);
 
 			//craft center
-			Vector center = maxSize.clone().add(new Vector(1, 1, 1));
-			cannonBlocks.setCraftCenter(center.add(minSize).multiply(0.5).clone());
+			Vector center = maxSize.add(new Vector(1, 1, 1));
+			cannonBlocks.setCraftCenter(center.add(minSize).multiply(0.5));
 
 			// calculate the rotation Center if a rotation center block was used, otherwise use the center of the craft
 			if (maxRotation != null){
@@ -417,7 +416,7 @@ public class DesignStorage
 				cannonBlocks.setRotationCenter(maxRotation.add(minRotation).multiply(0.5));
 			}
 			else {
-				cannonBlocks.setRotationCenter(center.clone());
+				cannonBlocks.setRotationCenter(center);
 			}
 
             //set the center location
@@ -460,10 +459,12 @@ public class DesignStorage
 			cannonDirection = IroncladUtil.roatateFace(cannonDirection);
 
 
+
 		}
         plugin.logDebug("Time to load designs: " + new DecimalFormat("0.00").format((System.nanoTime() - startTime)/1000000.0) + "ms");
 
         return true;
+
 	}
 
 	private void findMinimum(int x, int y, int z, Vector min)

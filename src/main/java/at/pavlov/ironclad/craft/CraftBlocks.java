@@ -2,9 +2,8 @@ package at.pavlov.ironclad.craft;
 
 import java.util.ArrayList;
 
-import org.bukkit.util.Vector;
-
 import at.pavlov.ironclad.container.SimpleBlock;
+import com.sk89q.worldedit.Vector;
 
 
 class CraftBlocks
@@ -77,7 +76,7 @@ class CraftBlocks
 		return minSize;
 	}
 
-	protected void setMinSize(Vector minSize) {
+	void setMinSize(Vector minSize) {
 		this.minSize = minSize;
 	}
 

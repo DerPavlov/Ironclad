@@ -44,8 +44,8 @@
             <url>http://maven.sk89q.com/repo/</url>
         </repository>
         <repository>
-            <id>fawe-repo</id>
-            <url>http://ci.athion.net/job/FastAsyncWorldEdit/ws/mvn/</url>
+            <id>FAWE-1.13</id>
+            <url>http://ci.athion.net/job/FAWE-1.13/ws/mvn/</url>
         </repository>
         <repository>
             <id>spigot-repo</id>
@@ -71,6 +71,11 @@
         <dependency>
             <groupId>com.boydti</groupId>
             <artifactId>fawe-api</artifactId>
+            <version>latest</version>
+        </dependency>
+        <dependency>
+            <groupId>com.boydti</groupId>
+            <artifactId>fawe-bukkit</artifactId>
             <version>latest</version>
         </dependency>
         <dependency>

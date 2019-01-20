@@ -10,12 +10,12 @@ import at.pavlov.ironclad.container.SimpleEntity;
 import at.pavlov.ironclad.scheduler.MoveCalculateTask;
 import at.pavlov.ironclad.scheduler.MoveCraftTask;
 import at.pavlov.ironclad.utils.IroncladUtil;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import com.boydti.fawe.bukkit.wrapper.AsyncWorld;
+import com.boydti.fawe.util.TaskManager;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.Levelled;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -91,7 +91,65 @@ public class CraftMovementManager {
         if (craft == null)
             return;
 
-        //found a craft, move it
+        //Async world
+        AsyncWorld asyncWorld = AsyncWorld.wrap(craft.getWorldBukkit());
+        TaskManager.IMP.async(new MoveCalculateTask(craft.clone(), asyncWorld));
+//            @Override
+//            public void run() {
+//                // Create or load a world async with the provided WorldCreator settings
+//
+//                // AsyncWorld world = AsyncWorld.wrap(bukkitWorld); // Or wrap existing world
+//                Block block = world.getBlockAt(0, 0, 0);
+//                block.setType(Material.BEDROCK);
+//                // When you are done
+//                world.commit();
+//            }
+//        });
+        /*HashSet<Vector> overwrittenBlocks = new HashSet<>();
+
+        boolean successful = true;
+        Vector targetLoc;
+        SimpleBlock targetBlock;
+
+        //perform craft calculations
+        for (SimpleBlock designBlock : craftClone.getCraftDesign().getAllCraftBlocks(craftClone)){
+            SimpleBlock oldBlock = blockSnapshot.get(designBlock.toVector());
+            Ironclad.getPlugin().logDebug("old block " + oldBlock);
+            if (oldBlock.getMaterial() == Material.AIR || oldBlock.getBlockData() instanceof Levelled){
+                Ironclad.getPlugin().logDebug("Found destroyed craft block " + oldBlock);
+            }
+            else{
+                // move the craft to the new location. oldblock was updated to the new location
+                targetLoc = craftClone.transformToFutureLocation(designBlock.toVector());
+                //remove decimal places to the the correct block location
+                targetLoc.setX(Math.floor(targetLoc.getX()));
+                targetLoc.setY(Math.floor(targetLoc.getY()));
+                targetLoc.setZ(Math.floor(targetLoc.getX()));
+                targetBlock = blockSnapshot.get(targetLoc);
+                if (targetBlock == null){
+                    Ironclad.getPlugin().logDebug("target block " + targetLoc + " does not exist in snapshot");
+                    continue;
+                }
+
+                Ironclad.getPlugin().logDebug("target block " + targetBlock + !craftClone.isLocationPartOfCraft(targetLoc));
+                // target block should be Air or a liquid
+                if (!craftClone.isLocationPartOfCraft(targetLoc) && !(targetBlock.getMaterial() == Material.AIR || targetBlock.getBlockData() instanceof Levelled)){
+                    Ironclad.getPlugin().logDebug("Found blocking block at" + targetBlock);
+                    successful = false;
+                    break;
+                }
+                overwrittenBlocks.add(targetLoc);
+                //just update blocks which are not the same
+                if (!targetBlock.getBlockData().equals(oldBlock.getBlockData())) {
+                    Ironclad.getPlugin().logDebug("block needs update " + targetBlock);
+                    if (targetBlock.getBlockData() instanceof Directional)
+                        newAttachedBlocks.add(targetBlock);
+                    else
+                        newBlocks.add(targetBlock);
+                }
+            }*/
+
+/*        //found a craft, move it
         craft.setLastMoved(System.currentTimeMillis());
         craft.setProcessing(true);
         IntVector dim = craft.getCraftDimensions();
@@ -129,7 +187,7 @@ public class CraftMovementManager {
 
         Map<Vector, SimpleBlock> blockSnapshot1 = new HashMap<>();
         //Async calculate craft movement
-        asyncTask = new MoveCalculateTask(craft.clone(),  blockSnapshot1, craft.getSimpleEntitiesOnShip()).runTaskAsynchronously(plugin);
+        asyncTask = new MoveCalculateTask(craft.clone(),  blockSnapshot1, craft.getSimpleEntitiesOnShip()).runTaskAsynchronously(plugin);*/
     }
 
 

@@ -4,12 +4,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import at.pavlov.ironclad.Ironclad;
 import at.pavlov.ironclad.container.IntVector;
 import at.pavlov.ironclad.container.SoundHolder;
+import at.pavlov.ironclad.utils.IroncladUtil;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.util.Vector;
+
+import com.sk89q.worldedit.Vector;
 
 import at.pavlov.ironclad.container.SimpleBlock;
 
@@ -81,7 +84,7 @@ public class CraftDesign
 	{
 		CraftBlocks cannonBlocks  = cannonBlockMap.get(BlockFace.NORTH);
 		if (cannonBlocks != null) {
-			return cannonBlocks.getMaxSize().clone().add(new Vector(1,1,1)).subtract(cannonBlocks.getMinSize().clone());
+			return cannonBlocks.getMaxSize().add(new Vector(1,1,1)).subtract(cannonBlocks.getMinSize());
 		}
 		System.out.println("[Ironclad] missing blocks for craft design");
 		return null;
@@ -93,16 +96,16 @@ public class CraftDesign
 	 * @param craft operated craft
 	 * @return minimum block of the bounding box
 	 */
-	public Location getMinBoundnigBoxLocation(Craft craft)
+	public Vector getMinBoundnigBoxLocation(Craft craft)
 	{
 		CraftBlocks cannonBlocks  = cannonBlockMap.get(craft.getCraftDirection());
 		if (cannonBlocks != null)
 		{
-			return cannonBlocks.getMinSize().clone().add(craft.getOffset()).toLocation(craft.getWorldBukkit());
+			return cannonBlocks.getMinSize().add(craft.getOffset());
 		}
 
 		System.out.println("[Ironclad] missing blocks for craft design " + craft.getCraftName());
-		return craft.getOffset().toLocation(craft.getWorldBukkit());
+		return null;
 	}
 
 	/**
@@ -110,36 +113,15 @@ public class CraftDesign
 	 * @param craft operated craft
 	 * @return maximum block of the bounding box
 	 */
-	public Location getMaxBoundnigBoxLocation(Craft craft)
+	public Vector getMaxBoundnigBoxLocation(Craft craft)
 	{
 		CraftBlocks cannonBlocks  = cannonBlockMap.get(craft.getCraftDirection());
 		if (cannonBlocks != null) {
-			return cannonBlocks.getMaxSize().clone().add(craft.getOffset()).toLocation(craft.getWorldBukkit());
+			return cannonBlocks.getMaxSize().add(craft.getOffset());
 		}
 
 		System.out.println("[Ironclad] missing blocks for craft design " + craft.getCraftName());
-		return craft.getOffset().toLocation(craft.getWorldBukkit());
-	}
-
-	/** calculate the offset for the snapshot array
-	 *
-	 * @param craft snapshot craft
-	 * @return offset
-	 */
-	public IntVector getArrayOffset(Craft craft){
-		CraftBlocks cannonBlocks  = cannonBlockMap.get(craft.getCraftDirection());
-		Vector min = new Vector(0,0,0);
-		if (cannonBlocks != null) {
-			min = cannonBlocks.getMinSize().clone().add(craft.getOffset());
-		}
-		Vector travel = craft.getTravelVector();
-		if (travel.getX() > 0)
-			travel.setX(0);
-		if (travel.getY() > 0)
-			travel.setY(0);
-		if (travel.getZ() > 0)
-			travel.setZ(0);
-		return new IntVector(min.subtract(travel));
+		return null;
 	}
 
 	/**
@@ -152,11 +134,11 @@ public class CraftDesign
 		CraftBlocks cannonBlocks  = cannonBlockMap.get(craft.getCraftDirection());
 		if (cannonBlocks != null) {
 			System.out.println("CraftCenter" + cannonBlocks.getCraftCenter());
-			return cannonBlocks.getCraftCenter().clone().add(craft.getOffset()).toLocation(craft.getWorldBukkit());
+			return IroncladUtil.toLocation(cannonBlocks.getCraftCenter().add(craft.getOffset()),craft.getWorldBukkit());
 		}
 
 		System.out.println("[Ironclad] missing location for craft design " + craft.getCraftName());
-		return craft.getOffset().toLocation(craft.getWorldBukkit());
+		return null;
 	}
 
 
@@ -168,13 +150,12 @@ public class CraftDesign
     public Location getRotationCenter(Craft craft)
     {
     	CraftBlocks cannonBlocks  = cannonBlockMap.get(craft.getCraftDirection());
-    	if (cannonBlocks != null)
-    	{
-    		return cannonBlocks.getRotationCenter().clone().add(craft.getOffset()).toLocation(craft.getWorldBukkit());
+    	if (cannonBlocks != null) {
+    		return IroncladUtil.toLocation(cannonBlocks.getRotationCenter().add(craft.getOffset()),craft.getWorldBukkit());
     	}
 
     	System.out.println("[Ironclad] missing location for craft design " + craft.getCraftName());
-    	return craft.getOffset().toLocation(craft.getWorldBukkit());
+    	return null;
     }
 
 
@@ -226,7 +207,7 @@ public class CraftDesign
 			for (SimpleBlock block : cannonBlocks.getAllCraftBlocks())
 			{
 				Vector vect = block.toVector();
-				locList.add(vect.clone().add(craft.getOffset()).toLocation(craft.getWorldBukkit()));
+				locList.add(IroncladUtil.toLocation(vect.add(craft.getOffset()),craft.getWorldBukkit()));
 			}
 		}
 		return locList;
@@ -245,7 +226,7 @@ public class CraftDesign
     	{
     		for (Vector vect : cannonBlocks.getProtectedBlocks())
     		{
-    			locList.add(vect.clone().add(craft.getOffset()).toLocation(craft.getWorldBukkit()));
+    			locList.add(IroncladUtil.toLocation(vect.add(craft.getOffset()),craft.getWorldBukkit()));
     		}
     	}
 		return locList;
@@ -264,7 +245,7 @@ public class CraftDesign
         {
             for (Vector vect : cannonBlocks.getHullBlocks())
             {
-                locList.add(vect.clone().add(craft.getOffset()).toLocation(craft.getWorldBukkit()));
+                locList.add(IroncladUtil.toLocation(vect.add(craft.getOffset()),craft.getWorldBukkit()));
             }
         }
         return locList;
