@@ -4,6 +4,7 @@ import at.pavlov.ironclad.Ironclad;
 import at.pavlov.ironclad.container.SimpleBlock;
 import at.pavlov.ironclad.container.SimpleEntity;
 import at.pavlov.ironclad.craft.Craft;
+import at.pavlov.ironclad.utils.IroncladUtil;
 import com.boydti.fawe.bukkit.wrapper.AsyncBlock;
 import com.boydti.fawe.bukkit.wrapper.AsyncWorld;
 import com.boydti.fawe.object.collection.BlockVectorSet;
@@ -11,6 +12,7 @@ import com.sk89q.worldedit.Vector;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.Levelled;
 import org.bukkit.entity.Entity;
@@ -34,10 +36,6 @@ public class MoveCalculateTask extends BukkitRunnable{
     public void run() {
         long startTime = System.nanoTime();
 
-        ArrayList<AsyncBlock> newBlocks = new ArrayList<>();
-        ArrayList<AsyncBlock> newAttachedBlocks = new ArrayList<>();
-        ArrayList<AsyncBlock> resetBlocks = new ArrayList<>();
-        ArrayList<AsyncBlock> resetAttachedBlocks = new ArrayList<>();
         BlockVectorSet overwrittenBlocks = new BlockVectorSet();
         boolean successful = true;
 
@@ -77,34 +75,30 @@ public class MoveCalculateTask extends BukkitRunnable{
                 //just update blocks which are not the same
                 if (!targetBlock.getBlockData().equals(oldBlock.getBlockData())) {
                     Ironclad.getPlugin().logDebug("block needs update " + targetBlock);
-                    if (targetBlock.getBlockData() instanceof Directional)
-                        newAttachedBlocks.add(targetBlock);
+                    if (oldBlock.getBlockData() instanceof Directional)
+                        targetBlock.setBlockData(IroncladUtil.rotateBlockData(craftClone.getCraftDirection(), craftClone.getFutureDirection(), oldBlock.getBlockData()));
                     else
-                        newBlocks.add(targetBlock);
+                        targetBlock.setBlockData(oldBlock.getBlockData());
                 }
             }
         }
-
-        //remove left over ship blocks
-        for (SimpleBlock designBlock : craftClone.getCraftDesign().getAllCraftBlocks(craftClone)){
-            targetLoc = designBlock.toVector();
-            Ironclad.getPlugin().logDebug("left over ship block " + targetLoc + " overwritten contains " + overwrittenBlocks.contains(targetLoc));
-            if (!overwrittenBlocks.contains(targetLoc)){
-                Ironclad.getPlugin().logDebug("Found left over block");
-                targetBlock = asyncWorld.getBlockAt(targetLoc.getBlockX(), targetLoc.getBlockY(), targetLoc.getBlockZ());
-                if (targetBlock.getBlockData() instanceof Directional) {
-                    targetBlock.setBlockData(Bukkit.createBlockData(Material.AIR));
-                    resetAttachedBlocks.add(targetBlock);
-                }
-                else{
-                    targetBlock.setBlockData(Bukkit.createBlockData(Material.AIR));
-                    resetBlocks.add(targetBlock);
+        if (successful) {
+            //remove left over ship blocks
+            for (SimpleBlock designBlock : craftClone.getCraftDesign().getAllCraftBlocks(craftClone)) {
+                targetLoc = designBlock.toVector();
+                Ironclad.getPlugin().logDebug("left over ship block " + targetLoc + " overwritten contains " + overwrittenBlocks.contains(targetLoc));
+                if (!overwrittenBlocks.contains(targetLoc)) {
+                    Ironclad.getPlugin().logDebug("Found left over block");
+                    targetBlock = asyncWorld.getBlockAt(targetLoc.getBlockX(), targetLoc.getBlockY(), targetLoc.getBlockZ());
+                    if (targetBlock.getBlockData() instanceof Directional) {
+                        targetBlock.setBlockData(Bukkit.createBlockData(Material.AIR));
+                    } else {
+                        targetBlock.setBlockData(Bukkit.createBlockData(Material.AIR));
+                    }
                 }
             }
-        }
-
-        if (successful)
             asyncWorld.commit();
+        }
         else
             asyncWorld.clear();
 

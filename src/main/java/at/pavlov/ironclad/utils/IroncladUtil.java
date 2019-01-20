@@ -295,6 +295,28 @@ public class IroncladUtil
         return vect;
     }
 
+    public static BlockData rotateBlockData(BlockFace startDirection, BlockFace endDirection, BlockData blockData) {
+        // if both directions are the same, do nothing
+        if (startDirection.equals(endDirection))
+            return blockData;
+
+        int diff = directionToYaw(startDirection) - directionToYaw(endDirection);
+        while (diff < 0)
+            diff += 360;
+        Ironclad.getPlugin().logDebug("Blockface start: " + startDirection + " Blcokface end: " + endDirection + " blockData " + blockData + " diff " + diff);
+        switch (diff) {
+            case 90:
+                return IroncladUtil.roateBlockFacingClockwise(blockData);
+            case 180:
+                return IroncladUtil.roateBlockFacingClockwise(IroncladUtil.roateBlockFacingClockwise(blockData));
+            case 270:
+                return IroncladUtil.roateBlockFacingCouterClockwise(blockData);
+            default:
+                Ironclad.getPlugin().logSevere("incorrect craft travel direction  " + diff);
+                return blockData;
+        }
+    }
+
     public static Location rotateDirection(BlockFace startDirection, BlockFace endDirection, Location loc){
         int diff = directionToYaw(startDirection) - directionToYaw(endDirection);
         if (diff < 0)
@@ -1024,6 +1046,18 @@ public class IroncladUtil
     public static BlockData roateBlockFacingClockwise(BlockData blockData){
         if (blockData instanceof Directional){
             ((Directional) blockData).setFacing(roatateFace(((Directional) blockData).getFacing()));
+        }
+        return blockData;
+    }
+
+    /**
+     * rotates the Facing of a BlockData clockwise
+     * @param blockData blockData
+     * @return rotated blockData
+     */
+    public static BlockData roateBlockFacingCouterClockwise(BlockData blockData){
+        if (blockData instanceof Directional){
+            ((Directional) blockData).setFacing(roatateFaceOpposite(((Directional) blockData).getFacing()));
         }
         return blockData;
     }
