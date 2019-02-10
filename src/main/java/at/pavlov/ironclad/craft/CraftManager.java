@@ -10,7 +10,8 @@ import at.pavlov.ironclad.event.CraftDestroyedEvent;
 import at.pavlov.ironclad.utils.IroncladUtil;
 import at.pavlov.ironclad.utils.DelayedTask;
 import at.pavlov.ironclad.utils.RemoveTaskWrapper;
-import com.sk89q.worldedit.Vector;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.math.Vector3;
 import org.apache.commons.lang.Validate;
 import org.bukkit.*;
 import org.bukkit.block.BlockFace;
@@ -363,7 +364,7 @@ public class CraftManager
         {
             if (craft.getWorld().equals(center.getWorld().getUID())) {
                 Location newLoc = craft.getCraftDesign().getHullBlocks(craft).get(0);
-                Vector box = IroncladUtil.toWorldEditVector(newLoc.subtract(center).toVector());
+                Vector3 box = IroncladUtil.toWorldEditVector(newLoc.subtract(center).toVector());
                 if (craft.getWorld().equals(center.getWorld().getUID()) && Math.abs(box.getX()) < lengthX / 2 && Math.abs(box.getY()) < lengthY / 2 && Math.abs(box.getZ()) < lengthZ / 2)
                     newCraftList.add(craft);
             }
@@ -613,7 +614,7 @@ public class CraftManager
 					// compare blocks
 					if (designBlock.compareMaterialAndFacing(craftBlock.getBlock().getBlockData())) {
 						// this block is same as in the design, get the offset
-						com.sk89q.worldedit.Vector offset = designBlock.subtractInverted(craftBlock).toVector();
+						BlockVector3 offset = designBlock.subtractInverted(craftBlock).toVector();
 
 						// check all other blocks of the craft
 						boolean isCraft = true;

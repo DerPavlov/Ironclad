@@ -43,10 +43,10 @@
             <id>sk89q-repo</id>
             <url>http://maven.sk89q.com/repo/</url>
         </repository>
-        <repository>
+<!--        <repository>
             <id>FAWE-1.13</id>
             <url>http://ci.athion.net/job/FAWE-1.13/ws/mvn/</url>
-        </repository>
+        </repository>-->
         <repository>
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
@@ -68,7 +68,7 @@
             <version>1.13-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
+<!--        <dependency>
             <groupId>com.boydti</groupId>
             <artifactId>fawe-api</artifactId>
             <version>latest</version>
@@ -77,7 +77,7 @@
             <groupId>com.boydti</groupId>
             <artifactId>fawe-bukkit</artifactId>
             <version>latest</version>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>com.sk89q.worldedit</groupId>
             <artifactId>worldedit-core</artifactId>

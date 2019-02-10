@@ -5,10 +5,7 @@ import at.pavlov.ironclad.container.SimpleBlock;
 import at.pavlov.ironclad.container.SimpleEntity;
 import at.pavlov.ironclad.craft.Craft;
 import at.pavlov.ironclad.utils.IroncladUtil;
-import com.boydti.fawe.bukkit.wrapper.AsyncBlock;
-import com.boydti.fawe.bukkit.wrapper.AsyncWorld;
-import com.boydti.fawe.object.collection.BlockVectorSet;
-import com.sk89q.worldedit.Vector;
+import com.sk89q.worldedit.math.Vector3;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -24,22 +21,21 @@ import java.util.*;
 
 public class MoveCalculateTask extends BukkitRunnable{
     private final Craft craftClone;
-    private final AsyncWorld asyncWorld;
+    //private final AsyncWorld asyncWorld;
 
 
-    public MoveCalculateTask(Craft craftClone, AsyncWorld asyncWorld){
+    public MoveCalculateTask(Craft craftClone){
         this.craftClone = craftClone;
-        this.asyncWorld = asyncWorld;
     }
 
     @Override
     public void run() {
         long startTime = System.nanoTime();
 
-        BlockVectorSet overwrittenBlocks = new BlockVectorSet();
+        /*BlockVectorSet overwrittenBlocks = new BlockVectorSet();
         boolean successful = true;
 
-        Vector targetLoc;
+        Vector3 targetLoc;
         AsyncBlock targetBlock;
 
         //perform craft calculations
@@ -47,7 +43,7 @@ public class MoveCalculateTask extends BukkitRunnable{
             targetLoc = designBlock.toVector();
             AsyncBlock oldBlock = asyncWorld.getBlockAt(targetLoc.getBlockX(), targetLoc.getBlockY(), targetLoc.getBlockZ());
             Ironclad.getPlugin().logDebug("old block " + oldBlock);
-            if (oldBlock.getType() == Material.AIR || oldBlock.getBlockData() instanceof Levelled){
+            if (oldBlock.getType() == Material.AIR || oldBlock.getType() == Material.WATER){
                 Ironclad.getPlugin().logDebug("Found destroyed craft block " + oldBlock);
             }
             else{
@@ -66,7 +62,7 @@ public class MoveCalculateTask extends BukkitRunnable{
 
                 Ironclad.getPlugin().logDebug("target block " + targetBlock + " is part of craft " + craftClone.isLocationPartOfCraft(targetLoc));
                 // target block should be Air or a liquid
-                if (!craftClone.isLocationPartOfCraft(targetLoc) && !(targetBlock.getType() == Material.AIR || targetBlock.getBlockData() instanceof Levelled)){
+                if (!craftClone.isLocationPartOfCraft(targetLoc) && !(targetBlock.getType() == Material.AIR || oldBlock.getType() == Material.WATER)){
                     Ironclad.getPlugin().logDebug("Found blocking block at" + targetBlock);
                     successful = false;
                     break;
@@ -112,7 +108,7 @@ public class MoveCalculateTask extends BukkitRunnable{
 
         //run a sync thread to update the calculated data
 //        BukkitTask task = new MoveCraftTask(craftClone, newBlocks, newAttachedBlocks, resetBlocks, resetAttachedBlocks, entities, successful).runTask(Ironclad.getPlugin());
-
+*/
         Ironclad.getPlugin().logDebug("Time for async calculation of craft movement: " + new DecimalFormat("0.00").format((System.nanoTime() - startTime)/1000000.0) + "ms");
     }
 }

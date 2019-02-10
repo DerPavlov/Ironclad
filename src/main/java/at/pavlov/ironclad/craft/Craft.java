@@ -6,8 +6,9 @@ import java.util.stream.Collectors;
 import at.pavlov.ironclad.Enum.BreakCause;
 import at.pavlov.ironclad.Ironclad;
 import at.pavlov.ironclad.container.SimpleEntity;
-import at.pavlov.ironclad.container.IntVector;
 import at.pavlov.ironclad.utils.IroncladUtil;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.math.Vector3;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -15,7 +16,6 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.material.Attachable;
-import com.sk89q.worldedit.Vector;
 
 import at.pavlov.ironclad.Enum.MessageEnum;
 import at.pavlov.ironclad.container.SimpleBlock;
@@ -37,7 +37,7 @@ public class Craft implements Cloneable {
     private double pitch;
     private double velocity;
     // the location is describe by the offset of the craft and the design
-    private com.sk89q.worldedit.Vector offset;
+    private Vector3 offset;
     // world of the craft
     private UUID world;
 
@@ -68,14 +68,16 @@ public class Craft implements Cloneable {
 
     private CraftDesign design;
 
+    public Craft(CraftDesign design, UUID world, BlockVector3 craftOffset, BlockFace craftDirection, UUID owner) {
+        this(design, world, Vector3.at(craftOffset.getX(), craftOffset.getY(), craftOffset.getZ()), craftDirection, owner);
+    }
 
-    public Craft(CraftDesign design, UUID world, Vector cannonOffset, BlockFace craftDirection, UUID owner)
+    public Craft(CraftDesign design, UUID world, Vector3 craftOffset, BlockFace craftDirection, UUID owner)
     {
-
         this.design = design;
         this.designID = design.getDesignID();
         this.world = world;
-        this.offset = cannonOffset;
+        this.offset = craftOffset;
         this.craftDirection = craftDirection;
         this.futureCraftDirection = craftDirection;
         this.owner = owner;
@@ -89,7 +91,7 @@ public class Craft implements Cloneable {
         this.pitch = 0.0;
         this.velocity = 1.0;
 
-        Vector dim = design.getCraftDimensions();
+        BlockVector3 dim = design.getCraftDimensions();
         if (dim.getX() >= dim.getY()) {
             craftLength = dim.getBlockX();
             craftWidth = dim.getBlockY();
@@ -282,7 +284,7 @@ public class Craft implements Cloneable {
         if (getWorld().equals(block.getWorld().getUID())){
             for (SimpleBlock designBlock : design.getAllCraftBlocks(craftDirection))
             {
-                if (designBlock.compareMaterialAndLoc(block, offset))
+                if (designBlock.compareMaterialAndLoc(block, getOffsetBlock()))
                 {
                     return true;
                 }
@@ -303,7 +305,7 @@ public class Craft implements Cloneable {
 
         if (getWorld().equals(loc.getWorld().getUID())){
             for (SimpleBlock designBlock : design.getAllCraftBlocks(craftDirection)) {
-                if (designBlock.compareLocation(loc, offset))
+                if (designBlock.compareLocation(loc, getOffsetBlock()))
                     return true;
             }
         }
@@ -315,13 +317,13 @@ public class Craft implements Cloneable {
      * @param loc - location to check
      * @return - true if it is part of this craft
      */
-    public boolean isLocationPartOfCraft(Vector loc)
+    public boolean isLocationPartOfCraft(BlockVector3 loc)
     {
         if (loc == null)
             return false;
 
         for (SimpleBlock designBlock : design.getAllCraftBlocks(craftDirection)) {
-            if (designBlock.compareLocation(loc, offset))
+            if (designBlock.compareLocation(loc, getOffsetBlock()))
                 return true;
         }
         return false;
@@ -398,7 +400,7 @@ public class Craft implements Cloneable {
      * updates the location of the craft
      * @param moved - how far the craft has been moved
      */
-    public void move(Vector moved)
+    public void move(Vector3 moved)
     {
         offset.add(moved);
         setCraftDirection(this.futureCraftDirection);
@@ -419,21 +421,19 @@ public class Craft implements Cloneable {
      * @param center - center of the rotation
      * @param angle - how far the craft is rotated in degree (90, 180, 270, -90)
      */
-    public void rotate(Vector center, int angle)
+    public void rotate(BlockVector3 center, int angle)
     {
         if (angle == 0)
             return;
 
         double dAngle =  angle*Math.PI/180;
 
-        center = new Vector (center.getBlockX(), center.getBlockY(), center.getBlockZ());
-
-        Vector diffToCenter = offset.subtract(center);
+        BlockVector3 diffToCenter = getOffsetBlock().subtract(center);
 
         double newX = diffToCenter.getX()*Math.cos(dAngle) - diffToCenter.getZ()*Math.sin(dAngle);
         double newZ = diffToCenter.getX()*Math.sin(dAngle) + diffToCenter.getZ()*Math.cos(dAngle);
 
-        offset = new Vector(Math.round(center.getX()+newX), offset.getBlockY(), Math.round(center.getZ()+newZ));
+        offset = Vector3.at(Math.round(center.getX()+newX), offset.getY(), Math.round(center.getZ()+newZ));
 
         //rotate blockface
         if (angle > 0)
@@ -454,7 +454,7 @@ public class Craft implements Cloneable {
      * updates the rotation of the craft by rotating it 90 to the right
      * @param center - center of the rotation
      */
-    public void rotateRight(Vector center)
+    public void rotateRight(BlockVector3 center)
     {
         this.rotate(center, 90);
     }
@@ -463,7 +463,7 @@ public class Craft implements Cloneable {
      * updates the rotation of the craft by rotating it 90 to the left
      * @param center - center of the rotation
      */
-    public void rotateLeft(Vector center)
+    public void rotateLeft(BlockVector3 center)
     {
         this.rotate(center, -90);
     }
@@ -472,7 +472,7 @@ public class Craft implements Cloneable {
      * updates the rotation of the craft by rotating it 180
      * @param center - center of the rotation
      */
-    public void rotateFlip(Vector center)
+    public void rotateFlip(BlockVector3 center)
     {
         this.rotate(center, 180);
     }
@@ -769,8 +769,8 @@ public class Craft implements Cloneable {
         return IroncladUtil.toLocation(transformToFutureLocation(IroncladUtil.toWorldEditVector(loc.toVector())), loc.getWorld());
     }
 
-    public Vector transformToFutureLocation(com.sk89q.worldedit.Vector vec){
-        return IroncladUtil.rotateDirection(getCraftDirection(), getFutureDirection(), vec.subtract(offset)).add(offset).add(getTravelVector());
+    public Vector3 transformToFutureLocation(Vector3 vec){
+        return IroncladUtil.rotateDirection(getCraftDirection(), getFutureDirection(), vec.subtract(getOffset())).add(offset).add(getTravelVector());
     }
 
     public UUID getWorld()
@@ -806,12 +806,25 @@ public class Craft implements Cloneable {
         this.hasUpdated();
     }
 
-    public Vector getOffset()
+    /**
+     * returns the exact Vector (double) of the craft
+     * @return Vector(double, double, double) of the craft position
+     */
+    public Vector3 getOffset()
     {
         return offset;
     }
 
-    public void setOffset(Vector offset)
+    /**
+     * returns the block Vector (int) of the craft
+     * @return Block Vector(int, int, int) of the craft position
+     */
+    public BlockVector3 getOffsetBlock()
+    {
+        return IroncladUtil.toBlockVector3(offset);
+    }
+
+    public void setOffset(Vector3 offset)
     {
         this.offset = offset;
         this.hasUpdated();
@@ -840,8 +853,8 @@ public class Craft implements Cloneable {
             this.setOwner(lastUser);
     }
 
-    public Vector getTravelVector(){
-        Vector vect = IroncladUtil.directionToVector(this.yaw, this.pitch, this.velocity);
+    public Vector3 getTravelVector(){
+        Vector3 vect = IroncladUtil.directionToVector(this.yaw, this.pitch, this.velocity);
         System.out.println("getTravelVector: " + vect + " Yaw " + this.yaw);
         return vect;
     }
@@ -940,14 +953,14 @@ public class Craft implements Cloneable {
      * returns the dimensions of the craft depending of the directions the craft is facing
      * @return Vector(x,y,z) of the dimensions
      */
-    public IntVector getCraftDimensions(){
+    public BlockVector3 getCraftDimensions(){
         switch (this.craftDirection){
             case NORTH:
             case SOUTH:
-                return new IntVector(getCraftWidth(), getCraftLength(), getCraftHeight());
+                return BlockVector3.at(getCraftWidth(), getCraftLength(), getCraftHeight());
             case EAST:
             case WEST:
-                return new IntVector(getCraftLength(), getCraftWidth(), getCraftHeight());
+                return BlockVector3.at(getCraftLength(), getCraftWidth(), getCraftHeight());
             default:
                 return null;
         }
@@ -959,7 +972,7 @@ public class Craft implements Cloneable {
      * @return Set of Entities on ship
      */
     public Set<Entity> getEntitiesOnShip(){
-        IntVector d = getCraftDimensions();
+        BlockVector3 d = getCraftDimensions();
         Set<Entity> entities = IroncladUtil.getNearbyEntitiesInBox(design.getCraftCenter(this), d.getX(), d.getY(), d.getZ());
         entities.removeIf(entity -> !isEntityOnShip(entity));
         return  entities;
@@ -978,8 +991,8 @@ public class Craft implements Cloneable {
 //            return false;
         Location loc = entity.getLocation();
         //make the bounding box a little bit large if someone is peeking over the edge
-        Vector minBB = this.getCraftDesign().getMinBoundnigBoxLocation(this).subtract(1, 1, 1);
-        Vector maxBB = this.getCraftDesign().getMaxBoundnigBoxLocation(this).add(1, 1, 1);
+        BlockVector3 minBB = this.getCraftDesign().getMinBoundnigBoxLocation(this).subtract(1, 1, 1);
+        BlockVector3 maxBB = this.getCraftDesign().getMaxBoundnigBoxLocation(this).add(1, 1, 1);
         if (loc.getWorld().getUID().equals(this.world)){
             return loc.getX() >= minBB.getX() && loc.getY() >= minBB.getY() && loc.getZ() >= minBB.getZ() && loc.getX() <= maxBB.getX() && loc.getY() <= maxBB.getY() && loc.getZ() <= maxBB.getZ();
         }
@@ -991,8 +1004,8 @@ public class Craft implements Cloneable {
             return false;
 
         //make the bounding box a little bit large if someone is peeking over the edge
-        Vector minBB = this.getCraftDesign().getMinBoundnigBoxLocation(this).subtract(1, 1, 1);
-        Vector maxBB = this.getCraftDesign().getMaxBoundnigBoxLocation(this).add(1, 1, 1);
+        BlockVector3 minBB = this.getCraftDesign().getMinBoundnigBoxLocation(this).subtract(1, 1, 1);
+        BlockVector3 maxBB = this.getCraftDesign().getMaxBoundnigBoxLocation(this).add(1, 1, 1);
         if (loc.getWorld().getUID().equals(this.world)){
             if (loc.getX() >= minBB.getX() && loc.getY() >= minBB.getY() && loc.getZ() >= minBB.getZ() && loc.getX() <= maxBB.getX() && loc.getY() <= maxBB.getY() && loc.getZ() <= maxBB.getZ()){
                 return this.isLocationPartOfCraft(loc.clone().subtract(1, 0, 0)) &&

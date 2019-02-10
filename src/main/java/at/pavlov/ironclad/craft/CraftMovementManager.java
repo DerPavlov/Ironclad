@@ -4,14 +4,11 @@ import at.pavlov.ironclad.Enum.MessageEnum;
 import at.pavlov.ironclad.Ironclad;
 import at.pavlov.ironclad.config.Config;
 import at.pavlov.ironclad.config.UserMessages;
-import at.pavlov.ironclad.container.IntVector;
 import at.pavlov.ironclad.container.SimpleBlock;
 import at.pavlov.ironclad.container.SimpleEntity;
 import at.pavlov.ironclad.scheduler.MoveCalculateTask;
 import at.pavlov.ironclad.scheduler.MoveCraftTask;
 import at.pavlov.ironclad.utils.IroncladUtil;
-import com.boydti.fawe.bukkit.wrapper.AsyncWorld;
-import com.boydti.fawe.util.TaskManager;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -92,8 +89,8 @@ public class CraftMovementManager {
             return;
 
         //Async world
-        AsyncWorld asyncWorld = AsyncWorld.wrap(craft.getWorldBukkit());
-        TaskManager.IMP.async(new MoveCalculateTask(craft.clone(), asyncWorld));
+//        AsyncWorld asyncWorld = AsyncWorld.wrap(craft.getWorldBukkit());
+//        TaskManager.IMP.async(new MoveCalculateTask(craft.clone(), asyncWorld));
 //            @Override
 //            public void run() {
 //                // Create or load a world async with the provided WorldCreator settings

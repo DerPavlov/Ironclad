@@ -4,7 +4,7 @@ import at.pavlov.ironclad.Ironclad;
 import at.pavlov.ironclad.craft.Craft;
 import at.pavlov.ironclad.craft.CraftDesign;
 import at.pavlov.ironclad.scheduler.CreateCraftTask;
-import com.sk89q.worldedit.Vector;
+import com.sk89q.worldedit.math.Vector3;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
@@ -74,7 +74,7 @@ public class LoadCraftTask extends BukkitRunnable{
                         continue;
                     }
 
-                    Vector offset = new Vector(rs.getInt("loc_x"), rs.getInt("loc_y"), rs.getInt("loc_z"));
+                    Vector3 offset = Vector3.at(rs.getInt("loc_x"), rs.getInt("loc_y"), rs.getInt("loc_z"));
                     BlockFace craftDirection = BlockFace.valueOf(rs.getString("craft_direction"));
 
                     //make a craft

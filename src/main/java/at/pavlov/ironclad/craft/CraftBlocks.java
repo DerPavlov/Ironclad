@@ -3,45 +3,46 @@ package at.pavlov.ironclad.craft;
 import java.util.ArrayList;
 
 import at.pavlov.ironclad.container.SimpleBlock;
-import com.sk89q.worldedit.Vector;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.math.Vector3;
 
 
 class CraftBlocks
 {
-	private Vector craftCenter;
-	private Vector rotationCenter;														//center off all rotation blocks
-	private Vector minSize;
-	private Vector maxSize;
+	private Vector3 craftCenter;
+	private Vector3 rotationCenter;														//center off all rotation blocks
+	private BlockVector3 minSize;
+	private BlockVector3 maxSize;
     private ArrayList<SimpleBlock> allCraftBlocks = new ArrayList<>();
-    private ArrayList<Vector> hullBlocks = new ArrayList<>();
+    private ArrayList<BlockVector3> hullBlocks = new ArrayList<>();
 	private ArrayList<SimpleBlock> engines = new ArrayList<>();
     private ArrayList<SimpleBlock> chest = new ArrayList<>();
 	private ArrayList<SimpleBlock> sign = new ArrayList<>();
-    private ArrayList<Vector> protectedBlocks = new ArrayList<>();
+    private ArrayList<BlockVector3> protectedBlocks = new ArrayList<>();
 
-	public Vector getRotationCenter()
+	public Vector3 getRotationCenter()
 	{
 		return rotationCenter;
 	}
-	protected void setRotationCenter(Vector rotationCenter)
+	void setRotationCenter(Vector3 rotationCenter)
 	{
 		this.rotationCenter = rotationCenter;
 	}
-	protected ArrayList<SimpleBlock> getAllCraftBlocks()
+	ArrayList<SimpleBlock> getAllCraftBlocks()
 	{
 		return allCraftBlocks;
 	}
-	protected void setAllCraftBlocks(ArrayList<SimpleBlock> allCraftBlocks)
+	void setAllCraftBlocks(ArrayList<SimpleBlock> allCraftBlocks)
 	{
 		this.allCraftBlocks = allCraftBlocks;
 	}
-	protected ArrayList<Vector> getHullBlocks()
+	ArrayList<BlockVector3> getHullBlocks()
 	{
 		return hullBlocks;
 	}
-	protected void setBarrel (ArrayList<Vector> barrelBlocks)
+	void setHullBlocks (ArrayList<BlockVector3> hullBlocks)
 	{
-		this.hullBlocks = barrelBlocks;
+		this.hullBlocks = hullBlocks;
 	}
 
 	protected ArrayList<SimpleBlock> getChest()
@@ -54,12 +55,12 @@ class CraftBlocks
 		this.chest = chest;
 	}
 
-	protected ArrayList<Vector> getProtectedBlocks()
+	protected ArrayList<BlockVector3> getProtectedBlocks()
 	{
 		return protectedBlocks;
 	}
 
-	protected void setProtectedBlocks(ArrayList<Vector> protectedBlocks)
+	protected void setProtectedBlocks(ArrayList<BlockVector3> protectedBlocks)
 	{
 		this.protectedBlocks = protectedBlocks;
 	}
@@ -72,19 +73,19 @@ class CraftBlocks
 		this.engines = engines;
 	}
 
-	public Vector getMinSize() {
+	public BlockVector3 getMinSize() {
 		return minSize;
 	}
 
-	void setMinSize(Vector minSize) {
+	void setMinSize(BlockVector3 minSize) {
 		this.minSize = minSize;
 	}
 
-	public Vector getMaxSize() {
+	public BlockVector3 getMaxSize() {
 		return maxSize;
 	}
 
-	protected void setMaxSize(Vector maxSize) {
+	protected void setMaxSize(BlockVector3 maxSize) {
 		this.maxSize = maxSize;
 	}
 
@@ -96,11 +97,11 @@ class CraftBlocks
 		this.sign = sign;
 	}
 
-	protected Vector getCraftCenter() {
+	protected Vector3 getCraftCenter() {
 		return craftCenter;
 	}
 
-	protected void setCraftCenter(Vector craftCenter) {
+	protected void setCraftCenter(Vector3 craftCenter) {
 		this.craftCenter = craftCenter;
 	}
 }

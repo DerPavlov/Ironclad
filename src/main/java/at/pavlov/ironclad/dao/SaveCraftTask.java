@@ -3,6 +3,7 @@ package at.pavlov.ironclad.dao;
 import at.pavlov.ironclad.Ironclad;
 import at.pavlov.ironclad.craft.Craft;
 import at.pavlov.ironclad.craft.CraftManager;
+import com.sk89q.worldedit.math.BlockVector3;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.sql.PreparedStatement;
@@ -64,9 +65,9 @@ public class SaveCraftTask extends BukkitRunnable {
                 // craft direction
                 preparedStatement.setString(5, craft.getCraftDirection().toString());
                 // save offset
-                preparedStatement.setInt(6, craft.getOffset().getBlockX());
-                preparedStatement.setInt(7, craft.getOffset().getBlockY());
-                preparedStatement.setInt(8, craft.getOffset().getBlockZ());
+                preparedStatement.setInt(6, craft.getOffsetBlock().getX());
+                preparedStatement.setInt(7, craft.getOffsetBlock().getY());
+                preparedStatement.setInt(8, craft.getOffsetBlock().getZ());
                 //save pitch/yaw/velociy
                 preparedStatement.setDouble(9, craft.getYaw());
                 preparedStatement.setDouble(10, craft.getPitch());

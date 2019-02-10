@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 
 import at.pavlov.ironclad.utils.IroncladUtil;
@@ -31,7 +32,6 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Levelled;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import com.sk89q.worldedit.Vector;
 
 
 
@@ -302,7 +302,11 @@ public class DesignStorage
 
 		cc.setOrigin(BlockVector3.ZERO);
 
-		ArrayList<SimpleBlock> schematiclist = new ArrayList<>();
+		//https://github.com/boy0001/FastAsyncWorldedit/wiki/Some-tips-when-using-the-FAWE-API
+//		for (Vector pt : new FastIterator(cc.getRegion(), extent)){
+//
+//		}
+        ArrayList<SimpleBlock> schematiclist = new ArrayList<>();
 		for (int x = 0; x < width; ++x) {
 			for (int y = 0; y < height; ++y) {
 				for (int z = 0; z < length; ++z) {
@@ -327,17 +331,17 @@ public class DesignStorage
             CraftBlocks cannonBlocks = new CraftBlocks();
 
 			// to set the muzzle location the maximum and mininum x, y, z values
-			// of all muzzle blocks have to be found
-			Vector minSize = new Vector(0, 0, 0);
-			Vector maxSize = new Vector(0, 0, 0);
+			// of all size blocks have to be found
+            BlockVector3 minSize = BlockVector3.ZERO;
+            BlockVector3 maxSize = BlockVector3.ZERO;
 			boolean firstEntrySize = true;
 
 			// to set the rotation Center maximum and mininum x, y, z values
 			// of all rotation blocks have to be found
 			// setting max to the size of the marked area is a good approximation
 			// if no rotationblock is given
-			Vector minRotation = null;
-			Vector maxRotation = null;
+            BlockVector3 minRotation = null;
+            BlockVector3 maxRotation = null;
 			boolean firstEntryRotation = true;
 
             for (SimpleBlock sblock : schematiclist) {
@@ -352,8 +356,8 @@ public class DesignStorage
 					if (firstEntryRotation)
 					{
 						firstEntryRotation = false;
-						minRotation = new Vector(x, y, z);
-						maxRotation= new Vector(x, y, z);
+						minRotation = BlockVector3.at(x, y, z);
+						maxRotation= BlockVector3.at(x, y, z);
 					}
 					else
 					{
@@ -366,14 +370,14 @@ public class DesignStorage
 					cannonBlocks.getAllCraftBlocks().add(new SimpleBlock(x, y, z, sblock.getBlockData().clone()));
 					// this can be a destructible block
 					if (isInList(blockProtectedList, sblock.getBlockData()))
-						cannonBlocks.getProtectedBlocks().add(new Vector(x, y, z));
+						cannonBlocks.getProtectedBlocks().add(BlockVector3.at(x, y, z));
 
 					// #############  find the min and max for the craft
 					// reset for the first entry
 					if (firstEntrySize) {
 						firstEntrySize = false;
-						minSize = new Vector(0, 0, 0);
-						maxSize = new Vector(width, height, length);
+						minSize = BlockVector3.ZERO;
+						maxSize = BlockVector3.at(width, height, length);
 					} else {
 						findMinimum(x, y, z, minSize);
 						findMaximum(x, y, z, maxSize);
@@ -396,7 +400,7 @@ public class DesignStorage
 					// #############  hull of the ship
 					else {
 						// all remaining blocks are loading interface or cannonBlocks
-						cannonBlocks.getHullBlocks().add(new Vector(x, y, z));
+						cannonBlocks.getHullBlocks().add(BlockVector3.at(x, y, z));
 					}
 				}
             }
@@ -407,36 +411,34 @@ public class DesignStorage
 			cannonBlocks.setMaxSize(maxSize);
 
 			//craft center
-			Vector center = maxSize.add(new Vector(1, 1, 1));
-			cannonBlocks.setCraftCenter(center.add(minSize).multiply(0.5));
+			BlockVector3 center = maxSize.add(BlockVector3.ONE);
+			cannonBlocks.setCraftCenter(IroncladUtil.toVector3(center.add(minSize)).multiply(0.5));
 
 			// calculate the rotation Center if a rotation center block was used, otherwise use the center of the craft
 			if (maxRotation != null){
-				maxRotation.add(new Vector(1, 1, 1));
-				cannonBlocks.setRotationCenter(maxRotation.add(minRotation).multiply(0.5));
+				cannonBlocks.setRotationCenter(IroncladUtil.toVector3(maxRotation.add(BlockVector3.ONE).add(minRotation)).multiply(0.5));
 			}
 			else {
-				cannonBlocks.setRotationCenter(center);
+				cannonBlocks.setRotationCenter(cannonBlocks.getCraftCenter());
 			}
 
-            //set the center location
-            Vector compensation = new Vector(cannonBlocks.getRotationCenter().getBlockX(), cannonBlocks.getRotationCenter().getBlockY(), cannonBlocks.getRotationCenter().getBlockZ());
+            //set the center location to Zero
+            BlockVector3 compensation = BlockVector3.at(cannonBlocks.getRotationCenter().getX(), cannonBlocks.getRotationCenter().getY(), cannonBlocks.getRotationCenter().getZ());
 
             for (SimpleBlock block : cannonBlocks.getAllCraftBlocks())
                 block.subtract_noCopy(compensation);
-            for (Vector block : cannonBlocks.getHullBlocks())
-                block.subtract(compensation);
+            cannonBlocks.setHullBlocks(IroncladUtil.subtractBlockVectorList(cannonBlocks.getHullBlocks(), compensation));
             for (SimpleBlock block : cannonBlocks.getChest())
                 block.subtract_noCopy(compensation);
 			for (SimpleBlock block : cannonBlocks.getSign())
 				block.subtract_noCopy(compensation);
 			for (SimpleBlock block : cannonBlocks.getEngines())
 				block.subtract_noCopy(compensation);
-            for (Vector block : cannonBlocks.getProtectedBlocks())
-                block.subtract(compensation);
-            cannonBlocks.getMinSize().subtract(compensation);
-            cannonBlocks.getMaxSize().subtract(compensation);
-            cannonBlocks.getRotationCenter().subtract(compensation);
+			cannonBlocks.setProtectedBlocks(IroncladUtil.subtractBlockVectorList(cannonBlocks.getProtectedBlocks(), compensation));
+            cannonBlocks.setMinSize(cannonBlocks.getMinSize().subtract(compensation));
+            cannonBlocks.setMaxSize(cannonBlocks.getMaxSize().subtract(compensation));
+            cannonBlocks.setRotationCenter(cannonBlocks.getRotationCenter().subtract(IroncladUtil.toVector3(compensation)));
+            cannonBlocks.setCraftCenter(cannonBlocks.getCraftCenter().subtract(IroncladUtil.toVector3(compensation)));
 
 			// add blocks to the HashMap
 			cannonDesign.getCannonBlockMap().put(cannonDirection, cannonBlocks);
@@ -467,24 +469,24 @@ public class DesignStorage
 
 	}
 
-	private void findMinimum(int x, int y, int z, Vector min)
+	private void findMinimum(int x, int y, int z, BlockVector3 min)
 	{
 		if (x < min.getBlockX())
-			min.setX(x);
+			min = min.withX(x);
 		if (y < min.getBlockY())
-			min.setY(y);
+            min = min.withY(y);
 		if (z < min.getBlockZ())
-			min.setZ(z);
+            min = min.withZ(z);
 	}
 
-	private Vector findMaximum(int x, int y, int z, Vector max)
+	private BlockVector3 findMaximum(int x, int y, int z, BlockVector3 max)
 	{
 		if (x > max.getBlockX())
-			max.setX(x);
+            max = max.withX(x);
 		if (y > max.getBlockY())
-			max.setY(y);
+            max = max.withY(y);
 		if (z > max.getBlockZ())
-			max.setZ(z);
+            max = max.withZ(z);
 
 		return max;
 	}

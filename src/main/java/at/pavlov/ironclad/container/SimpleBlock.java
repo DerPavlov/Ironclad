@@ -2,13 +2,15 @@ package at.pavlov.ironclad.container;
 
 
 import at.pavlov.ironclad.utils.IroncladUtil;
-import com.sk89q.worldedit.Vector;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.math.Vector3;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.material.Directional;
+import org.bukkit.util.Vector;
 
 public class SimpleBlock implements Cloneable
 {
@@ -27,7 +29,7 @@ public class SimpleBlock implements Cloneable
 		this.blockData = blockData;
 	}
 
-	public SimpleBlock(Vector vect, BlockData blockData) {
+	public SimpleBlock(BlockVector3 vect, BlockData blockData) {
 		this(vect.getBlockX(), vect.getBlockY(), vect.getBlockZ(), blockData);
 	}
 
@@ -35,7 +37,7 @@ public class SimpleBlock implements Cloneable
 		this(block.getX(), block.getY(), block.getZ(), block.getBlockData().clone());
 	}
 
-	private SimpleBlock(Vector vect, Material material)
+	private SimpleBlock(BlockVector3 vect, Material material)
 	{
 		this(vect, material.createBlockData());
 	}
@@ -64,9 +66,19 @@ public class SimpleBlock implements Cloneable
 	 * @param world bukkit world
 	 * @return location of the block
 	 */
-	public Location toLocation(World world, Vector offset)
+	public Location toLocation(World world, BlockVector3 offset)
 	{
-		return new Location(world, locX + offset.getBlockX(), locY + offset.getBlockY(), locZ + offset.getBlockZ());
+		return new Location(world, locX + offset.getX(), locY + offset.getY(), locZ + offset.getZ());
+	}
+
+	/**
+	 * to location with offset
+	 * @param world bukkit world
+	 * @return location of the block
+	 */
+	public Location toLocation(World world, Vector3 offset)
+	{
+		return new Location(world, locX + offset.getX(), locY + offset.getY(), locZ + offset.getZ());
 	}
 
 	/**
@@ -75,10 +87,10 @@ public class SimpleBlock implements Cloneable
 	 * @param offset the offset of the craft
 	 * @return true if both block match
 	 */
-	public boolean compareLocation(Location loc, Vector offset)
+	public boolean compareLocation(Location loc, BlockVector3 offset)
 	{
         org.bukkit.util.Vector v = loc.toVector();
-		return compareLocation(new Vector(v.getX(), v.getY(), v.getZ()), offset);
+		return compareLocation(BlockVector3.at(v.getX(), v.getY(), v.getZ()), offset);
 	}
 
 	/**
@@ -87,7 +99,7 @@ public class SimpleBlock implements Cloneable
 	 * @param offset the offset of the craft
 	 * @return true if both block match
 	 */
-	public boolean compareLocation(Vector loc, Vector offset)
+	public boolean compareLocation(BlockVector3 loc, BlockVector3 offset)
 	{
 		return toVector().add(offset).equals(loc);
 	}
@@ -98,12 +110,11 @@ public class SimpleBlock implements Cloneable
 	 * @param offset the offset of the craft
 	 * @return true if both block match
 	 */
-	public boolean compareMaterialAndLoc(Block block, Vector offset)
-	{		
-		if (toVector().add(offset).equals(block.getLocation().toVector()))
+	public boolean compareMaterialAndLoc(Block block, BlockVector3 offset)
+	{
+		if (toVector().add(offset).equals(IroncladUtil.toBlockVector3(block.getLocation().toVector())))
 		{
-			if (compareMaterial(block.getBlockData()))
-				return true;
+			return compareMaterial(block.getBlockData());
 		}
 		return false;
 	}
@@ -141,7 +152,7 @@ public class SimpleBlock implements Cloneable
 	 * @param offset the locations in x,y,z
 	 * @return true if both block are equal in data and facing
 	 */
-	public boolean compareMaterialAndFacing(World world, Vector offset)
+	public boolean compareMaterialAndFacing(World world, BlockVector3 offset)
 	{
 		Block block = toLocation(world, offset).getBlock();
 		return compareMaterialAndFacing(block.getBlockData());
@@ -172,7 +183,7 @@ public class SimpleBlock implements Cloneable
 	 * @param vect offset vector
 	 * @return a new block with a shifted location
 	 */
-	public SimpleBlock add(Vector vect)
+	public SimpleBlock add(BlockVector3 vect)
 	{
 		return new SimpleBlock(toVector().add(vect), this.blockData);
 	}
@@ -182,7 +193,7 @@ public class SimpleBlock implements Cloneable
 	 * @param vect vector to subtract
 	 * @return new block with new subtracted location
 	 */
-	public SimpleBlock subtract(Vector vect)
+	public SimpleBlock subtract(BlockVector3 vect)
 	{
 		return new SimpleBlock(vect.getBlockX() - locX, vect.getBlockY() - locY, vect.getBlockZ() - locZ, this.blockData);
 	}
@@ -191,24 +202,13 @@ public class SimpleBlock implements Cloneable
      * shifts the location of the block without comparing the id
      * @param vect vector to subtract
      */
-    public void subtract_noCopy(Vector vect)
+    public void subtract_noCopy(BlockVector3 vect)
     {
         locX -= vect.getBlockX();
         locY -= vect.getBlockY();
         locZ -= vect.getBlockZ();
     }
 
-	/**
-	 * shifts the location of the block without comparing the id
-	 * @param vect vector to subtract
-	 */
-	public void subtract_noCopy(IntVector vect)
-	{
-		locX -= vect.getX();
-		locY -= vect.getY();
-		locZ -= vect.getZ();
-	}
-	
 	/** 
 	 * shifts the location of the block without comparing the id
 	 * @param loc
@@ -257,15 +257,15 @@ public class SimpleBlock implements Cloneable
 	/**
 	 * SimpleBlock to Vector
 	 */
-	public Vector toVector()
+	public BlockVector3 toVector()
 	{
-		return new Vector(locX, locY, locZ);
+		return BlockVector3.at(locX, locY, locZ);
 	}
 
 	/**
 	 * SimpleBlock set Vector
 	 */
-	public void setVector(Vector vector)
+	public void setVector(BlockVector3 vector)
 	{
 		this.locX = vector.getBlockX();
 		this.locY = vector.getBlockY();

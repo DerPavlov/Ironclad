@@ -8,6 +8,8 @@ import java.util.*;
 
 import at.pavlov.ironclad.Ironclad;
 import at.pavlov.ironclad.container.*;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.math.Vector3;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -22,7 +24,6 @@ import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
 import org.bukkit.util.BlockIterator;
 
-import com.sk89q.worldedit.Vector;
 
 
 public class IroncladUtil
@@ -259,7 +260,7 @@ public class IroncladUtil
         }
     }
 
-    public static Vector rotateDirection(BlockFace startDirection, BlockFace endDirection, Vector vect){
+    public static Vector3 rotateDirection(BlockFace startDirection, BlockFace endDirection, Vector3 vect){
         // if both directions are the same, do nothing
         if (startDirection.equals(endDirection))
             return vect;
@@ -267,28 +268,23 @@ public class IroncladUtil
         int diff = directionToYaw(startDirection) - directionToYaw(endDirection);
         while (diff < 0)
             diff += 360;
-        double hz;
         Ironclad.getPlugin().logDebug("Blockface start: " + startDirection + " Blcokface end: " + endDirection +  " vect " + vect + " diff " + diff);
         switch (diff){
             case 90:
-                hz = vect.getZ();
-                vect.setZ(vect.getX());
-                vect.setX(-hz);
-                Ironclad.getPlugin().logDebug("EndLoc " + vect);
-                return vect;
+//                vect.setZ(vect.getX());
+//                vect.setX(-hz);
+                Ironclad.getPlugin().logDebug("EndLoc " + Vector3.at(-vect.getZ(), vect.getY(), vect.getX()));
+                return Vector3.at(-vect.getZ(), vect.getY(), vect.getX());
             case 180:
-                hz = vect.getZ();
-                vect.setZ(-vect.getX());
-                vect.setX(-hz);
-
-                Ironclad.getPlugin().logDebug("EndLoc " + vect);
-                return vect;
+//                vect.setZ(-vect.getX());
+//                vect.setX(-hz);
+                Ironclad.getPlugin().logDebug("EndLoc " + Vector3.at(-vect.getZ(), vect.getY(), -vect.getX()));
+                return Vector3.at(-vect.getZ(), vect.getY(), -vect.getX());
             case 270:
-                hz = vect.getZ();
-                vect.setZ(-vect.getX());
-                vect.setX(hz);
-                Ironclad.getPlugin().logDebug("EndLoc " + vect);
-                return vect;
+//                vect.setZ(-vect.getX());
+//                vect.setX(hz);
+                Ironclad.getPlugin().logDebug("EndLoc " + Vector3.at(vect.getZ(), vect.getY(), vect.getX()));
+                return Vector3.at(vect.getZ(), vect.getY(), vect.getX());
             default:
                 Ironclad.getPlugin().logDebug("incorrect craft travel direction  " + diff);
         }
@@ -618,9 +614,9 @@ public class IroncladUtil
         Random r = new Random();
 
         //this is the direction we want to avoid
-        Vector vect = new Vector(face.getModX(),face.getModY(),face.getModZ());
+        Vector3 vect = Vector3.at(face.getModX(),face.getModY(),face.getModZ());
         //orthogonal vector - somehow
-        vect = vect.multiply(vect).subtract(new Vector(1,1,1));
+        vect = vect.multiply(vect).subtract(Vector3.ONE);
 
         loc.setX(loc.getX()+vect.getX()*(r.nextDouble()-0.5));
         loc.setY(loc.getY()+vect.getY()*(r.nextDouble()-0.5));
@@ -884,15 +880,15 @@ public class IroncladUtil
         return radiusEntities;
     }
 
-    public static double vectorToYaw(Vector vector){
+    public static double vectorToYaw(Vector3 vector){
         return Math.atan2(-vector.getX(), vector.getZ())*180./Math.PI;
     }
 
-    public static double vectorToPitch(Vector vector){
+    public static double vectorToPitch(Vector3 vector){
         return -Math.asin(vector.normalize().getY())*180./Math.PI;
     }
 
-    public static Vector directionToVector(double yaw, double pitch, double speed){
+    public static Vector3 directionToVector(double yaw, double pitch, double speed){
         double rpitch = pitch * Math.PI / 180.;
         double ryaw = yaw * Math.PI / 180.;
         double hx = -Math.cos(rpitch)*Math.sin(ryaw);
@@ -900,7 +896,7 @@ public class IroncladUtil
         double hz = Math.cos(rpitch)*Math.cos(ryaw);
 //        System.out.println("yaw: " + yaw + " pitch " + pitch);
 //        System.out.println("vector: " + (new Vector(hx, hy, hz)));
-        return new Vector(hx, hy, hz).multiply(speed);
+        return Vector3.at(hx, hy, hz).multiply(speed);
     }
 
     /**
@@ -1077,15 +1073,38 @@ public class IroncladUtil
         }
     }
 
-    public static Vector toWorldEditVector(org.bukkit.util.Vector bukkitVector){
-        return new Vector(bukkitVector.getX(), bukkitVector.getY(), bukkitVector.getZ());
+    public static Vector3 toWorldEditVector(org.bukkit.util.Vector bukkitVector){
+        return Vector3.at(bukkitVector.getX(), bukkitVector.getY(), bukkitVector.getZ());
     }
 
-    public static org.bukkit.util.Vector toBukkitVector(Vector worldeditVector){
+    public static org.bukkit.util.Vector toBukkitVector(Vector3 worldeditVector){
         return new org.bukkit.util.Vector(worldeditVector.getX(), worldeditVector.getY(), worldeditVector.getZ());
     }
 
-    public static Location toLocation (Vector worldeditVector, World world){
+    public static BlockVector3 toBlockVector3(org.bukkit.util.Vector bukkitVector){
+        return BlockVector3.at(bukkitVector.getBlockX(), bukkitVector.getBlockY(), bukkitVector.getBlockZ());
+    }
+
+    public static BlockVector3 toBlockVector3(Vector3 vector3){
+        return BlockVector3.at(vector3.getX(), vector3.getY(), vector3.getZ());
+    }
+
+    public static Vector3 toVector3(BlockVector3 blockvector3){
+        return Vector3.at(blockvector3.getX(), blockvector3.getY(), blockvector3.getZ());
+    }
+
+    public static Location toLocation (BlockVector3 worldeditVector, World world){
         return new Location(world, worldeditVector.getX(), worldeditVector.getY(), worldeditVector.getZ());
+    }
+
+    public static Location toLocation (Vector3 worldeditVector, World world){
+        return new Location(world, worldeditVector.getX(), worldeditVector.getY(), worldeditVector.getZ());
+    }
+
+    public static ArrayList<BlockVector3> subtractBlockVectorList(List<BlockVector3> blockVectorList, BlockVector3 sub){
+        ArrayList<BlockVector3> newList = new ArrayList<>();
+        for (BlockVector3 vect : blockVectorList)
+            newList.add(vect.subtract(sub));
+        return newList;
     }
 }
