@@ -122,6 +122,8 @@ public class CraftMovementManager {
         BlockVector3 targetLoc;
         Block targetBlock;
 
+        plugin.logDebug("--- Old Craft Offset: " + craft.getOffset() + " Facing " + craft.getCraftDirection());
+
         //perform craft calculations
         for (SimpleBlock designBlock : craft.getCraftDesign().getAllCraftBlocks(craft)) {
             Block oldBlock = bworld.getBlockAt(designBlock.getLocX(), designBlock.getLocY(), designBlock.getLocZ());
@@ -171,6 +173,7 @@ public class CraftMovementManager {
 
 
         craft.movementPerformed();
+        plugin.logDebug("--- Final Craft Offset: " + craft.getOffset() + " Facing " + craft.getCraftDirection());
 
         //Async calculate craft movement
         //asyncTask = new MoveCalculateTask(craft.clone(),  blockSnapshot1, craft.getSimpleEntitiesOnShip()).runTaskAsynchronously(plugin);*/
@@ -256,7 +259,7 @@ public class CraftMovementManager {
 
     /**
      * switches aming mode for this craft
-     * @param player - player in aiming mode
+     * @param player - player in piloting mode
      * @param craft - operated craft
      */
     public void pilotingMode(Player player, Craft craft)
@@ -267,9 +270,9 @@ public class CraftMovementManager {
         boolean isPilotMode = inPilotingMode.containsKey(player.getUniqueId());
         if (isPilotMode) {
             if (craft == null)
-                craft = getCraftInAimingMode(player);
+                craft = getCraftInPilotingMode(player);
         }
-        //enable aiming mode. Sentry cannons can't be operated by players
+        //enable piloting mode. Sentry cannons can't be operated by players
         else if(craft != null) {
             //check if player has permission to aim
             if (player.hasPermission(craft.getCraftDesign().getPermissionPiloting()))
@@ -322,7 +325,7 @@ public class CraftMovementManager {
     public MessageEnum disableAimingMode(Player player)
     {
         //player.playSound(player.getEyeLocation(), Sound.MINECART_BASE, 0.25f, 0.75f);
-        Craft cannon = getCraftInAimingMode(player);
+        Craft cannon = getCraftInPilotingMode(player);
         if (cannon!=null)
             IroncladUtil.playSound(player.getEyeLocation(), cannon.getCraftDesign().getSoundDisablePilotingMode());
         return disableAimingMode(player, cannon);
@@ -355,15 +358,15 @@ public class CraftMovementManager {
 	}
 
     /**
-     * returns the craft of the player if he is in aiming mode
-     * @param player the player who is in aiming mode
-     * @return the craft which is in aiming mode by the given player
+     * returns the craft of the player if he is in piloting mode
+     * @param player the player who is in piloting mode
+     * @return the craft which is in piloting mode by the given player
      */
-    public Craft getCraftInAimingMode(Player player)
+    public Craft getCraftInPilotingMode(Player player)
     {
         if (player == null)
             return null;
-        //return the craft of the player if he is in aiming mode
+        //return the craft of the player if he is in piloting mode
         return CraftManager.getCraft(inPilotingMode.get(player.getUniqueId()));
     }
 }

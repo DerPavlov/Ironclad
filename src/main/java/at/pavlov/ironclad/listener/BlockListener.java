@@ -158,7 +158,7 @@ public class BlockListener implements Listener
             //breaking craft while player is in selection (command) mode is not allowed
             Craft aimingCraft = null;
             if (plugin.getCraftMovementManager().isInPilotingMode(event.getPlayer().getUniqueId()))
-                 aimingCraft = plugin.getCraftMovementManager().getCraftInAimingMode(event.getPlayer());
+                 aimingCraft = plugin.getCraftMovementManager().getCraftInPilotingMode(event.getPlayer());
 
             if (!craft.isProtectedBlock(event.getBlock().getLocation()) && (!craft.equals(aimingCraft)) && !plugin.getCommandListener().isSelectingMode(event.getPlayer())) {
                 plugin.getCraftManager().removeCraft(craft, false, true, BreakCause.PlayerBreak);
