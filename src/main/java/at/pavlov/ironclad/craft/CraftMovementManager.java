@@ -10,9 +10,13 @@ import at.pavlov.ironclad.scheduler.MoveCalculateTask;
 import at.pavlov.ironclad.scheduler.MoveCraftTask;
 import at.pavlov.ironclad.utils.IroncladUtil;
 import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.MaxChangedBlocksException;
 import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.math.Vector3;
+import com.sk89q.worldedit.world.block.BaseBlock;
+import com.sk89q.worldedit.world.block.BlockState;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -97,21 +101,71 @@ public class CraftMovementManager {
 
         //Worldedit
         BlockVector3 dim = craft.getCraftDimensions();
-        BlockVector3 travel = craft.getFutureCraftOffset();
-        int x = dim.getX() + Math.abs(travel.getX()) + 1;
-        int y = dim.getY() + Math.abs(travel.getY()) + 1;
-        int z = dim.getZ() + Math.abs(travel.getZ()) + 1;
-        plugin.logDebug("array dimensions " + x + "," + y + "," + z);
+        plugin.logDebug("craft dimensions " + dim);
+//        BlockVector3 travel = craft.getFutureCraftOffset();
+//        int x = dim.getX() + Math.abs(travel.getX()) + 1;
+//        int y = dim.getY() + Math.abs(travel.getY()) + 1;
+//        int z = dim.getZ() + Math.abs(travel.getZ()) + 1;
+//        plugin.logDebug("array dimensions " + x + "," + y + "," + z);
 
-        // If no player is doing the changes
-        EditSession editSession = WorldEdit.getInstance().getEditSessionFactory().getEditSession(WorldEdit.getInstance().get, -1);
-        // For a specific player
-        editSession = WorldEdit.getInstance().getEditSessionFactory().getEditSession(worldEditWorld, -1, actor);
 
-        // Do stuff with the EditSession
-        editSession.setBlock(new Vector(x, y, z), new BaseBlock(id, data));
-// All changes will have been made once flushQueue is called
-        editSession.flushQueue();
+        World bworld = craft.getWorldBukkit();
+        EditSession editSession = WorldEdit.getInstance().getEditSessionFactory().getEditSession(BukkitAdapter.adapt(bworld), -1);
+        editSession.setFastMode(true);
+
+        HashSet<BlockVector3> overwrittenBlocks = new HashSet<>();
+        ArrayList<SimpleBlock> updateBlocks = new ArrayList<>();
+        ArrayList<BlockVector3> oldBlocks = new ArrayList<>();
+        boolean successful = true;
+        BlockVector3 targetLoc;
+        Block targetBlock;
+
+        //perform craft calculations
+        for (SimpleBlock designBlock : craft.getCraftDesign().getAllCraftBlocks(craft)) {
+            Block oldBlock = bworld.getBlockAt(designBlock.getLocX(), designBlock.getLocY(), designBlock.getLocZ());
+            Ironclad.getPlugin().logDebug("old block " + oldBlock);
+            if (oldBlock.isEmpty() || oldBlock.getBlockData() instanceof Levelled) {
+                Ironclad.getPlugin().logDebug("Found destroyed craft block " + oldBlock);
+            } else {
+                // move the craft to the new location. oldblock was updated to the new location
+                targetLoc = craft.transformToFutureLocation(designBlock.toVector());
+
+                targetBlock = bworld.getBlockAt(targetLoc.getBlockX(), targetLoc.getBlockX(), targetLoc.getBlockZ());
+                if (targetBlock == null) {
+                    Ironclad.getPlugin().logDebug("target block " + targetLoc + " does not exist in snapshot");
+                    continue;
+                }
+
+                Ironclad.getPlugin().logDebug("target block " + targetBlock + !craft.isLocationPartOfCraft(targetLoc));
+                Ironclad.getPlugin().logDebug("Type: " + targetBlock.getType() + " Empty: " + targetBlock.isEmpty() + " Air: " + targetBlock.getType().equals(Material.AIR) + " Liquid: " + (targetBlock.getBlockData() instanceof Levelled));
+                // target block should be Air or a liquid
+                if (!craft.isLocationPartOfCraft(targetLoc) && !(targetBlock.isEmpty() || targetBlock.getBlockData() instanceof Levelled)) {
+                    Ironclad.getPlugin().logDebug("Found blocking block at" + targetBlock);
+                    successful = false;
+                    break;
+                }
+                //blocks that are overwritten by a new block
+                overwrittenBlocks.add(targetLoc);
+                //old blocks of the craft
+                oldBlocks.add(designBlock.toVector());
+                //just update blocks which are not the same
+                if (!targetBlock.getBlockData().equals(oldBlock.getBlockData())) {
+                    Ironclad.getPlugin().logDebug("block needs update " + targetBlock);
+                    updateBlocks.add(new SimpleBlock(targetLoc, oldBlock.getBlockData()));
+
+                }
+            }
+        }
+        if (successful) {
+            BlockState airState = BukkitAdapter.adapt(Bukkit.createBlockData(Material.AIR));
+            for (BlockVector3 vector3 : oldBlocks)
+                editSession.smartSetBlock(vector3, airState);
+            for (SimpleBlock uBlock : updateBlocks) {
+                editSession.smartSetBlock(uBlock.toVector(), BukkitAdapter.adapt(uBlock.getBlockData()));
+            }
+            // All changes will have been made once flushQueue is called
+            editSession.flushSession();
+        }
 
 
         /*
@@ -189,8 +243,8 @@ public class CraftMovementManager {
 //            blockSnapshot[snapblock.getLocX()][snapblock.getLocY()][snapblock.getLocZ()] = snapblock;
 //        }
 
+        craft.movementPerformed();
 
-        Map<Vector, SimpleBlock> blockSnapshot1 = new HashMap<>();
         //Async calculate craft movement
         //asyncTask = new MoveCalculateTask(craft.clone(),  blockSnapshot1, craft.getSimpleEntitiesOnShip()).runTaskAsynchronously(plugin);*/
     }

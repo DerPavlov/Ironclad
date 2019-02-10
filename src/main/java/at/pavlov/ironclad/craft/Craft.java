@@ -778,6 +778,10 @@ public class Craft implements Cloneable {
         return IroncladUtil.rotateDirection(getCraftDirection(), getFutureDirection(), vec.subtract(getOffset())).add(offset).add(getTravelVector());
     }
 
+    public BlockVector3 transformToFutureLocation(BlockVector3 vec){
+        return IroncladUtil.rotateDirection(getCraftDirection(), getFutureDirection(), vec.subtract(getOffsetBlock())).add(getFutureCraftOffset());
+    }
+
     public UUID getWorld()
     {
         return world;

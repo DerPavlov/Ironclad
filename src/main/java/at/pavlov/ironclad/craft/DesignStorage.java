@@ -376,7 +376,7 @@ public class DesignStorage
 					// reset for the first entry
 					if (firstEntrySize) {
 						firstEntrySize = false;
-						minSize = BlockVector3.ZERO;
+						minSize = BlockVector3.at(width, height, length);
 						maxSize = BlockVector3.at(width, height, length);
 					} else {
 						findMinimum(x, y, z, minSize);
@@ -421,6 +421,8 @@ public class DesignStorage
 			else {
 				cannonBlocks.setRotationCenter(cannonBlocks.getCraftCenter());
 			}
+
+			plugin.logDebug("Craft min point: " + minSize + " craft max point" + maxSize + " dim " + maxSize.subtract(minSize));
 
             //set the center location to Zero
             BlockVector3 compensation = BlockVector3.at(cannonBlocks.getRotationCenter().getX(), cannonBlocks.getRotationCenter().getY(), cannonBlocks.getRotationCenter().getZ());

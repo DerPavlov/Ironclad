@@ -133,7 +133,7 @@ public class CraftDesign
 		CraftBlocks cannonBlocks  = cannonBlockMap.get(craft.getCraftDirection());
 		if (cannonBlocks != null) {
 			System.out.println("CraftCenter" + cannonBlocks.getCraftCenter());
-			return IroncladUtil.toLocation(cannonBlocks.getCraftCenter().add(craft.getOffset()),craft.getWorldBukkit());
+			return IroncladUtil.toLocation(cannonBlocks.getCraftCenter().add(craft.getOffsetBlock()),craft.getWorldBukkit());
 		}
 
 		System.out.println("[Ironclad] missing location for craft design " + craft.getCraftName());
@@ -150,7 +150,7 @@ public class CraftDesign
     {
     	CraftBlocks cannonBlocks  = cannonBlockMap.get(craft.getCraftDirection());
     	if (cannonBlocks != null) {
-    		return IroncladUtil.toLocation(cannonBlocks.getRotationCenter().add(craft.getOffset()),craft.getWorldBukkit());
+    		return IroncladUtil.toLocation(cannonBlocks.getRotationCenter().add(craft.getOffsetBlock()),craft.getWorldBukkit());
     	}
 
     	System.out.println("[Ironclad] missing location for craft design " + craft.getCraftName());

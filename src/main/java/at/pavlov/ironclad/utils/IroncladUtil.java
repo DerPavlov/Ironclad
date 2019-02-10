@@ -8,6 +8,7 @@ import java.util.*;
 
 import at.pavlov.ironclad.Ironclad;
 import at.pavlov.ironclad.container.*;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.math.Vector3;
 import org.bukkit.*;
@@ -285,6 +286,37 @@ public class IroncladUtil
 //                vect.setX(hz);
                 Ironclad.getPlugin().logDebug("EndLoc " + Vector3.at(vect.getZ(), vect.getY(), vect.getX()));
                 return Vector3.at(vect.getZ(), vect.getY(), vect.getX());
+            default:
+                Ironclad.getPlugin().logDebug("incorrect craft travel direction  " + diff);
+        }
+        return vect;
+    }
+
+    public static BlockVector3 rotateDirection(BlockFace startDirection, BlockFace endDirection, BlockVector3 vect){
+        // if both directions are the same, do nothing
+        if (startDirection.equals(endDirection))
+            return vect;
+
+        int diff = directionToYaw(startDirection) - directionToYaw(endDirection);
+        while (diff < 0)
+            diff += 360;
+        Ironclad.getPlugin().logDebug("Blockface start: " + startDirection + " Blcokface end: " + endDirection +  " vect " + vect + " diff " + diff);
+        switch (diff){
+            case 90:
+//                vect.setZ(vect.getX());
+//                vect.setX(-hz);
+                Ironclad.getPlugin().logDebug("EndLoc " + BlockVector3.at(-vect.getZ(), vect.getY(), vect.getX()));
+                return BlockVector3.at(-vect.getZ(), vect.getY(), vect.getX());
+            case 180:
+//                vect.setZ(-vect.getX());
+//                vect.setX(-hz);
+                Ironclad.getPlugin().logDebug("EndLoc " + BlockVector3.at(-vect.getZ(), vect.getY(), -vect.getX()));
+                return BlockVector3.at(-vect.getZ(), vect.getY(), -vect.getX());
+            case 270:
+//                vect.setZ(-vect.getX());
+//                vect.setX(hz);
+                Ironclad.getPlugin().logDebug("EndLoc " + BlockVector3.at(vect.getZ(), vect.getY(), vect.getX()));
+                return BlockVector3.at(vect.getZ(), vect.getY(), vect.getX());
             default:
                 Ironclad.getPlugin().logDebug("incorrect craft travel direction  " + diff);
         }

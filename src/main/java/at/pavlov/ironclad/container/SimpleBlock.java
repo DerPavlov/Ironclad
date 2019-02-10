@@ -322,5 +322,24 @@ public class SimpleBlock implements Cloneable
 		return "x:" + locX + " y:" + locY + " z:" + locZ +" blockdata:" + this.getBlockData().toString();
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof SimpleBlock)) {
+			return false;
+		}
+
+		SimpleBlock other = (SimpleBlock) obj;
+		return other.locX == this.locX && other.locY == this.locY && other.locZ == this.locZ && other.blockData.equals(this.blockData);
+	}
+
+	@Override
+	public int hashCode() {
+		int hash = 17;
+		hash = 31 * hash + Integer.hashCode(locX);
+		hash = 31 * hash + Integer.hashCode(locY);
+		hash = 31 * hash + Integer.hashCode(locZ);
+		return hash;
+	}
+
 
 }
