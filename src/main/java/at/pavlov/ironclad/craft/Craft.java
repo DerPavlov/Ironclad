@@ -36,6 +36,8 @@ public class Craft implements Cloneable {
     private double yaw;
     private double pitch;
     private double velocity;
+    //direction the craft is moving (updated from yaw, pitch, velocity)
+    private Vector3 travelVector;
     // the location is describe by the offset of the craft and the design
     private Vector3 offset;
     // world of the craft
@@ -402,7 +404,7 @@ public class Craft implements Cloneable {
      */
     public void move(Vector3 moved)
     {
-        offset.add(moved);
+        offset = offset.add(moved);
         setCraftDirection(this.futureCraftDirection);
         setLastMoved(System.currentTimeMillis());
         this.hasUpdated();
@@ -862,10 +864,13 @@ public class Craft implements Cloneable {
             this.setOwner(lastUser);
     }
 
+    public void updateTravelVector(){
+        this.travelVector = IroncladUtil.directionToVector(this.yaw, this.pitch, this.velocity);
+        System.out.println("getTravelVector: " + travelVector + " Yaw " + this.yaw);
+    }
+
     public Vector3 getTravelVector(){
-        Vector3 vect = IroncladUtil.directionToVector(this.yaw, this.pitch, this.velocity);
-        System.out.println("getTravelVector: " + vect + " Yaw " + this.yaw);
-        return vect;
+        return this.travelVector;
     }
 
     public boolean isChunkLoaded(){

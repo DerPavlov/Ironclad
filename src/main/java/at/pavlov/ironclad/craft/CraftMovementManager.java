@@ -108,6 +108,8 @@ public class CraftMovementManager {
 //        int z = dim.getZ() + Math.abs(travel.getZ()) + 1;
 //        plugin.logDebug("array dimensions " + x + "," + y + "," + z);
 
+        //calculate the travel vector
+        craft.updateTravelVector();
 
         World bworld = craft.getWorldBukkit();
         EditSession editSession = WorldEdit.getInstance().getEditSessionFactory().getEditSession(BukkitAdapter.adapt(bworld), -1);
@@ -167,81 +169,6 @@ public class CraftMovementManager {
             editSession.flushSession();
         }
 
-
-        /*
-        Craft craftClone = craft.clone();
-
-        HashSet<Vector> overwrittenBlocks = new HashSet<>();
-
-        boolean successful = true;
-        Vector targetLoc;
-        SimpleBlock targetBlock;
-
-        //perform craft calculations
-        for (SimpleBlock designBlock : craftClone.getCraftDesign().getAllCraftBlocks(craftClone)){
-            SimpleBlock oldBlock = blockSnapshot.get(designBlock.toVector());
-            Ironclad.getPlugin().logDebug("old block " + oldBlock);
-            if (oldBlock.getMaterial() == Material.AIR || oldBlock.getBlockData() instanceof Levelled){
-                Ironclad.getPlugin().logDebug("Found destroyed craft block " + oldBlock);
-            }
-            else{
-                // move the craft to the new location. oldblock was updated to the new location
-                targetLoc = craftClone.transformToFutureLocation(designBlock.toVector());
-                //remove decimal places to the the correct block location
-                targetLoc.setX(Math.floor(targetLoc.getX()));
-                targetLoc.setY(Math.floor(targetLoc.getY()));
-                targetLoc.setZ(Math.floor(targetLoc.getX()));
-                targetBlock = blockSnapshot.get(targetLoc);
-                if (targetBlock == null){
-                    Ironclad.getPlugin().logDebug("target block " + targetLoc + " does not exist in snapshot");
-                    continue;
-                }
-
-                Ironclad.getPlugin().logDebug("target block " + targetBlock + !craftClone.isLocationPartOfCraft(targetLoc));
-                // target block should be Air or a liquid
-                if (!craftClone.isLocationPartOfCraft(targetLoc) && !(targetBlock.getMaterial() == Material.AIR || targetBlock.getBlockData() instanceof Levelled)){
-                    Ironclad.getPlugin().logDebug("Found blocking block at" + targetBlock);
-                    successful = false;
-                    break;
-                }
-                overwrittenBlocks.add(targetLoc);
-                //just update blocks which are not the same
-                if (!targetBlock.getBlockData().equals(oldBlock.getBlockData())) {
-                    Ironclad.getPlugin().logDebug("block needs update " + targetBlock);
-                    if (targetBlock.getBlockData() instanceof Directional)
-                        newAttachedBlocks.add(targetBlock);
-                    else
-                        newBlocks.add(targetBlock);
-                }
-            }*/
-
-        //found a craft, move it
-
-//        SimpleBlock[][][] blockSnapshot = new SimpleBlock[x][y][z];
-//
-//        //collect the block which should be moved
-//        World world = craft.getWorldBukkit();
-//        IntVector offbox = craft.getCraftDesign().getArrayOffset(craft);
-//        plugin.logDebug("offbox " + offbox);
-//        for (SimpleBlock sblock : craft.getCraftDesign().getAllCraftBlocks(craft)){
-//            SimpleBlock snapblock = new SimpleBlock(sblock.toLocation(world).getBlock());
-//            plugin.logDebug("start block " + snapblock);
-//            snapblock.subtract_noCopy(offbox);
-//            plugin.logDebug("snapblock " + snapblock);
-//            blockSnapshot[snapblock.getLocX()][snapblock.getLocY()][snapblock.getLocZ()] = snapblock;
-//        }
-//
-//        //add the blocks the craft should be moved
-//        for (Location loc : craft.getCraftDesign().getAllCraftBlocksAfterMovement(craft)){
-//            SimpleBlock snapblock = new SimpleBlock(loc.getBlock());
-//            plugin.logDebug("future block " + snapblock);
-//            plugin.logDebug("future blo " + snapblock.toVector());
-//            plugin.logDebug("future loc " + loc.toVector());
-//            // add if block not exist already
-//            snapblock.subtract_noCopy(offbox);
-//            plugin.logDebug("snapblock " + snapblock);
-//            blockSnapshot[snapblock.getLocX()][snapblock.getLocY()][snapblock.getLocZ()] = snapblock;
-//        }
 
         craft.movementPerformed();
 
