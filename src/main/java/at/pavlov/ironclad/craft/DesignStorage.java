@@ -412,11 +412,11 @@ public class DesignStorage
 
 			//craft center
 			BlockVector3 center = maxSize.add(BlockVector3.ONE);
-			cannonBlocks.setCraftCenter(IroncladUtil.toVector3(center.add(minSize)).multiply(0.5));
+			cannonBlocks.setCraftCenter(center.add(minSize).divide(2));
 
 			// calculate the rotation Center if a rotation center block was used, otherwise use the center of the craft
 			if (maxRotation != null){
-				cannonBlocks.setRotationCenter(IroncladUtil.toVector3(maxRotation.add(BlockVector3.ONE).add(minRotation)).multiply(0.5));
+				cannonBlocks.setRotationCenter(maxRotation.add(BlockVector3.ONE).add(minRotation).divide(2));
 			}
 			else {
 				cannonBlocks.setRotationCenter(cannonBlocks.getCraftCenter());
@@ -437,8 +437,8 @@ public class DesignStorage
 			cannonBlocks.setProtectedBlocks(IroncladUtil.subtractBlockVectorList(cannonBlocks.getProtectedBlocks(), compensation));
             cannonBlocks.setMinSize(cannonBlocks.getMinSize().subtract(compensation));
             cannonBlocks.setMaxSize(cannonBlocks.getMaxSize().subtract(compensation));
-            cannonBlocks.setRotationCenter(cannonBlocks.getRotationCenter().subtract(IroncladUtil.toVector3(compensation)));
-            cannonBlocks.setCraftCenter(cannonBlocks.getCraftCenter().subtract(IroncladUtil.toVector3(compensation)));
+            cannonBlocks.setRotationCenter(cannonBlocks.getRotationCenter().subtract(compensation));
+            cannonBlocks.setCraftCenter(cannonBlocks.getCraftCenter().subtract(compensation));
 
 			// add blocks to the HashMap
 			cannonDesign.getCannonBlockMap().put(cannonDirection, cannonBlocks);

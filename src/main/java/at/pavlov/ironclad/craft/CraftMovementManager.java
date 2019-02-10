@@ -9,6 +9,10 @@ import at.pavlov.ironclad.container.SimpleEntity;
 import at.pavlov.ironclad.scheduler.MoveCalculateTask;
 import at.pavlov.ironclad.scheduler.MoveCraftTask;
 import at.pavlov.ironclad.utils.IroncladUtil;
+import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.math.Vector3;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -88,21 +92,32 @@ public class CraftMovementManager {
         if (craft == null)
             return;
 
-        //Async world
-//        AsyncWorld asyncWorld = AsyncWorld.wrap(craft.getWorldBukkit());
-//        TaskManager.IMP.async(new MoveCalculateTask(craft.clone(), asyncWorld));
-//            @Override
-//            public void run() {
-//                // Create or load a world async with the provided WorldCreator settings
-//
-//                // AsyncWorld world = AsyncWorld.wrap(bukkitWorld); // Or wrap existing world
-//                Block block = world.getBlockAt(0, 0, 0);
-//                block.setType(Material.BEDROCK);
-//                // When you are done
-//                world.commit();
-//            }
-//        });
-        /*HashSet<Vector> overwrittenBlocks = new HashSet<>();
+        craft.setLastMoved(System.currentTimeMillis());
+        craft.setProcessing(true);
+
+        //Worldedit
+        BlockVector3 dim = craft.getCraftDimensions();
+        BlockVector3 travel = craft.getFutureCraftOffset();
+        int x = dim.getX() + Math.abs(travel.getX()) + 1;
+        int y = dim.getY() + Math.abs(travel.getY()) + 1;
+        int z = dim.getZ() + Math.abs(travel.getZ()) + 1;
+        plugin.logDebug("array dimensions " + x + "," + y + "," + z);
+
+        // If no player is doing the changes
+        EditSession editSession = WorldEdit.getInstance().getEditSessionFactory().getEditSession(WorldEdit.getInstance().get, -1);
+        // For a specific player
+        editSession = WorldEdit.getInstance().getEditSessionFactory().getEditSession(worldEditWorld, -1, actor);
+
+        // Do stuff with the EditSession
+        editSession.setBlock(new Vector(x, y, z), new BaseBlock(id, data));
+// All changes will have been made once flushQueue is called
+        editSession.flushQueue();
+
+
+        /*
+        Craft craftClone = craft.clone();
+
+        HashSet<Vector> overwrittenBlocks = new HashSet<>();
 
         boolean successful = true;
         Vector targetLoc;
@@ -146,45 +161,38 @@ public class CraftMovementManager {
                 }
             }*/
 
-/*        //found a craft, move it
-        craft.setLastMoved(System.currentTimeMillis());
-        craft.setProcessing(true);
-        IntVector dim = craft.getCraftDimensions();
-        IntVector travel = new IntVector(craft.getTravelVector());
-        int x = dim.getX() + Math.abs(travel.getX()) + 1;
-        int y = dim.getY() + Math.abs(travel.getY()) + 1;
-        int z = dim.getZ() + Math.abs(travel.getZ()) + 1;
-        plugin.logDebug("array dimensions " + x + "," + y + "," + z);
-        SimpleBlock[][][] blockSnapshot = new SimpleBlock[x][y][z];
+        //found a craft, move it
 
-        //collect the block which should be moved
-        World world = craft.getWorldBukkit();
-        IntVector offbox = craft.getCraftDesign().getArrayOffset(craft);
-        plugin.logDebug("offbox " + offbox);
-        for (SimpleBlock sblock : craft.getCraftDesign().getAllCraftBlocks(craft)){
-            SimpleBlock snapblock = new SimpleBlock(sblock.toLocation(world).getBlock());
-            plugin.logDebug("start block " + snapblock);
-            snapblock.subtract_noCopy(offbox);
-            plugin.logDebug("snapblock " + snapblock);
-            blockSnapshot[snapblock.getLocX()][snapblock.getLocY()][snapblock.getLocZ()] = snapblock;
-        }
-
-        //add the blocks the craft should be moved
-        for (Location loc : craft.getCraftDesign().getAllCraftBlocksAfterMovement(craft)){
-            SimpleBlock snapblock = new SimpleBlock(loc.getBlock());
-            plugin.logDebug("future block " + snapblock);
-            plugin.logDebug("future blo " + snapblock.toVector());
-            plugin.logDebug("future loc " + loc.toVector());
-            // add if block not exist already
-            snapblock.subtract_noCopy(offbox);
-            plugin.logDebug("snapblock " + snapblock);
-            blockSnapshot[snapblock.getLocX()][snapblock.getLocY()][snapblock.getLocZ()] = snapblock;
-        }
+//        SimpleBlock[][][] blockSnapshot = new SimpleBlock[x][y][z];
+//
+//        //collect the block which should be moved
+//        World world = craft.getWorldBukkit();
+//        IntVector offbox = craft.getCraftDesign().getArrayOffset(craft);
+//        plugin.logDebug("offbox " + offbox);
+//        for (SimpleBlock sblock : craft.getCraftDesign().getAllCraftBlocks(craft)){
+//            SimpleBlock snapblock = new SimpleBlock(sblock.toLocation(world).getBlock());
+//            plugin.logDebug("start block " + snapblock);
+//            snapblock.subtract_noCopy(offbox);
+//            plugin.logDebug("snapblock " + snapblock);
+//            blockSnapshot[snapblock.getLocX()][snapblock.getLocY()][snapblock.getLocZ()] = snapblock;
+//        }
+//
+//        //add the blocks the craft should be moved
+//        for (Location loc : craft.getCraftDesign().getAllCraftBlocksAfterMovement(craft)){
+//            SimpleBlock snapblock = new SimpleBlock(loc.getBlock());
+//            plugin.logDebug("future block " + snapblock);
+//            plugin.logDebug("future blo " + snapblock.toVector());
+//            plugin.logDebug("future loc " + loc.toVector());
+//            // add if block not exist already
+//            snapblock.subtract_noCopy(offbox);
+//            plugin.logDebug("snapblock " + snapblock);
+//            blockSnapshot[snapblock.getLocX()][snapblock.getLocY()][snapblock.getLocZ()] = snapblock;
+//        }
 
 
         Map<Vector, SimpleBlock> blockSnapshot1 = new HashMap<>();
         //Async calculate craft movement
-        asyncTask = new MoveCalculateTask(craft.clone(),  blockSnapshot1, craft.getSimpleEntitiesOnShip()).runTaskAsynchronously(plugin);*/
+        //asyncTask = new MoveCalculateTask(craft.clone(),  blockSnapshot1, craft.getSimpleEntitiesOnShip()).runTaskAsynchronously(plugin);*/
     }
 
 

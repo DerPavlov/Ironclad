@@ -9,8 +9,8 @@ import com.sk89q.worldedit.math.Vector3;
 
 class CraftBlocks
 {
-	private Vector3 craftCenter;
-	private Vector3 rotationCenter;														//center off all rotation blocks
+	private BlockVector3 craftCenter;
+	private BlockVector3 rotationCenter;														//center off all rotation blocks
 	private BlockVector3 minSize;
 	private BlockVector3 maxSize;
     private ArrayList<SimpleBlock> allCraftBlocks = new ArrayList<>();
@@ -20,11 +20,11 @@ class CraftBlocks
 	private ArrayList<SimpleBlock> sign = new ArrayList<>();
     private ArrayList<BlockVector3> protectedBlocks = new ArrayList<>();
 
-	public Vector3 getRotationCenter()
+	public BlockVector3 getRotationCenter()
 	{
 		return rotationCenter;
 	}
-	void setRotationCenter(Vector3 rotationCenter)
+	void setRotationCenter(BlockVector3 rotationCenter)
 	{
 		this.rotationCenter = rotationCenter;
 	}
@@ -97,11 +97,11 @@ class CraftBlocks
 		this.sign = sign;
 	}
 
-	protected Vector3 getCraftCenter() {
+	protected BlockVector3 getCraftCenter() {
 		return craftCenter;
 	}
 
-	protected void setCraftCenter(Vector3 craftCenter) {
+	protected void setCraftCenter(BlockVector3 craftCenter) {
 		this.craftCenter = craftCenter;
 	}
 }

@@ -752,6 +752,11 @@ public class Craft implements Cloneable {
         this.futureCraftDirection = futureCraftDirection;
     }
 
+    public BlockVector3 getFutureCraftOffset(){
+        //todo add rotation
+        return IroncladUtil.toBlockVector3(this.getOffset().add(getTravelVector()));
+    }
+
     public Location getFutureLocation(Location start){
         Location loc = start.add(IroncladUtil.toBukkitVector(getTravelVector()));
         //todo rotation
