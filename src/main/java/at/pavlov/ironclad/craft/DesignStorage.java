@@ -361,8 +361,8 @@ public class DesignStorage
 					}
 					else
 					{
-						findMinimum(x, y, z, minRotation);
-						findMaximum(x, y, z, maxRotation);
+                        minRotation = findMinimum(x, y, z, minRotation);
+                        maxRotation = findMaximum(x, y, z, maxRotation);
 					}
 				}
 				else {
@@ -379,8 +379,8 @@ public class DesignStorage
 						minSize = BlockVector3.at(width, height, length);
 						maxSize = BlockVector3.at(width, height, length);
 					} else {
-						findMinimum(x, y, z, minSize);
-						findMaximum(x, y, z, maxSize);
+                        minSize = findMinimum(x, y, z, minSize);
+                        maxSize= findMaximum(x, y, z, maxSize);
 					}
 					// #############  engines ########################
 					if (sblock.compareMaterial(blockEngine)) {
@@ -421,8 +421,6 @@ public class DesignStorage
 			else {
 				cannonBlocks.setRotationCenter(cannonBlocks.getCraftCenter());
 			}
-
-			plugin.logDebug("Craft min point: " + minSize + " craft max point" + maxSize + " dim " + maxSize.subtract(minSize));
 
             //set the center location to Zero
             BlockVector3 compensation = BlockVector3.at(cannonBlocks.getRotationCenter().getX(), cannonBlocks.getRotationCenter().getY(), cannonBlocks.getRotationCenter().getZ());
@@ -471,7 +469,7 @@ public class DesignStorage
 
 	}
 
-	private void findMinimum(int x, int y, int z, BlockVector3 min)
+	private BlockVector3 findMinimum(int x, int y, int z, BlockVector3 min)
 	{
 		if (x < min.getBlockX())
 			min = min.withX(x);
@@ -479,6 +477,8 @@ public class DesignStorage
             min = min.withY(y);
 		if (z < min.getBlockZ())
             min = min.withZ(z);
+
+		return min;
 	}
 
 	private BlockVector3 findMaximum(int x, int y, int z, BlockVector3 max)

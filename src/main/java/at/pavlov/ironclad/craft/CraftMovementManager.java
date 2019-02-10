@@ -6,27 +6,20 @@ import at.pavlov.ironclad.config.Config;
 import at.pavlov.ironclad.config.UserMessages;
 import at.pavlov.ironclad.container.SimpleBlock;
 import at.pavlov.ironclad.container.SimpleEntity;
-import at.pavlov.ironclad.scheduler.MoveCalculateTask;
-import at.pavlov.ironclad.scheduler.MoveCraftTask;
 import at.pavlov.ironclad.utils.IroncladUtil;
 import com.sk89q.worldedit.EditSession;
-import com.sk89q.worldedit.MaxChangedBlocksException;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.math.BlockVector3;
-import com.sk89q.worldedit.math.Vector3;
-import com.sk89q.worldedit.world.block.BaseBlock;
 import com.sk89q.worldedit.world.block.BlockState;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.data.Directional;
 import org.bukkit.block.data.Levelled;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
-import sun.java2d.pipe.SpanShapeRenderer;
 
 import java.text.DecimalFormat;
 import java.util.*;
@@ -96,12 +89,15 @@ public class CraftMovementManager {
         if (craft == null)
             return;
 
-        craft.setLastMoved(System.currentTimeMillis());
-        craft.setProcessing(true);
-
         //Worldedit
         BlockVector3 dim = craft.getCraftDimensions();
         plugin.logDebug("craft dimensions " + dim);
+
+        craft.setLastMoved(System.currentTimeMillis());
+        craft.setProcessing(true);
+
+
+
 //        BlockVector3 travel = craft.getFutureCraftOffset();
 //        int x = dim.getX() + Math.abs(travel.getX()) + 1;
 //        int y = dim.getY() + Math.abs(travel.getY()) + 1;
@@ -122,26 +118,23 @@ public class CraftMovementManager {
         BlockVector3 targetLoc;
         Block targetBlock;
 
-        plugin.logDebug("--- Old Craft Offset: " + craft.getOffset() + " Facing " + craft.getCraftDirection());
 
         //perform craft calculations
         for (SimpleBlock designBlock : craft.getCraftDesign().getAllCraftBlocks(craft)) {
             Block oldBlock = bworld.getBlockAt(designBlock.getLocX(), designBlock.getLocY(), designBlock.getLocZ());
-            Ironclad.getPlugin().logDebug("old block " + oldBlock);
+            //Ironclad.getPlugin().logDebug("old block " + oldBlock);
             if (oldBlock.isEmpty() || oldBlock.getBlockData() instanceof Levelled) {
-                Ironclad.getPlugin().logDebug("Found destroyed craft block " + oldBlock);
+                //Ironclad.getPlugin().logDebug("Found destroyed craft block " + oldBlock);
             } else {
                 // move the craft to the new location. oldblock was updated to the new location
                 targetLoc = craft.transformToFutureLocation(designBlock.toVector());
 
                 targetBlock = bworld.getBlockAt(targetLoc.getBlockX(), targetLoc.getBlockX(), targetLoc.getBlockZ());
                 if (targetBlock == null) {
-                    Ironclad.getPlugin().logDebug("target block " + targetLoc + " does not exist in snapshot");
+                    //Ironclad.getPlugin().logDebug("target block " + targetLoc + " does not exist in snapshot");
                     continue;
                 }
 
-                Ironclad.getPlugin().logDebug("target block " + targetBlock + !craft.isLocationPartOfCraft(targetLoc));
-                Ironclad.getPlugin().logDebug("Type: " + targetBlock.getType() + " Empty: " + targetBlock.isEmpty() + " Air: " + targetBlock.getType().equals(Material.AIR) + " Liquid: " + (targetBlock.getBlockData() instanceof Levelled));
                 // target block should be Air or a liquid
                 if (!craft.isLocationPartOfCraft(targetLoc) && !(targetBlock.isEmpty() || targetBlock.getBlockData() instanceof Levelled)) {
                     Ironclad.getPlugin().logDebug("Found blocking block at" + targetBlock);
@@ -154,7 +147,7 @@ public class CraftMovementManager {
                 oldBlocks.add(designBlock.toVector());
                 //just update blocks which are not the same
                 if (!targetBlock.getBlockData().equals(oldBlock.getBlockData())) {
-                    Ironclad.getPlugin().logDebug("block needs update " + targetBlock);
+                    //Ironclad.getPlugin().logDebug("block needs update " + targetBlock);
                     updateBlocks.add(new SimpleBlock(targetLoc, oldBlock.getBlockData()));
 
                 }
@@ -173,7 +166,7 @@ public class CraftMovementManager {
 
 
         craft.movementPerformed();
-        plugin.logDebug("--- Final Craft Offset: " + craft.getOffset() + " Facing " + craft.getCraftDirection());
+        //plugin.logDebug("--- Final Craft Offset: " + craft.getOffset() + " Facing " + craft.getCraftDirection());
 
         //Async calculate craft movement
         //asyncTask = new MoveCalculateTask(craft.clone(),  blockSnapshot1, craft.getSimpleEntitiesOnShip()).runTaskAsynchronously(plugin);*/

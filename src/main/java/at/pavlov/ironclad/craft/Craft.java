@@ -96,13 +96,13 @@ public class Craft implements Cloneable {
         BlockVector3 dim = design.getCraftDimensions();
         if (dim.getX() >= dim.getY()) {
             craftLength = dim.getBlockX();
-            craftWidth = dim.getBlockY();
+            craftWidth = dim.getBlockZ();
         }
         else{
-            craftLength = dim.getBlockY();
+            craftLength = dim.getBlockZ();
             craftWidth = dim.getBlockX();
         }
-        craftHeight = dim.getBlockZ();
+        craftHeight = dim.getBlockY();
 
         this.lastMoved = System.currentTimeMillis();
         this.isProcessing = false;
@@ -971,10 +971,10 @@ public class Craft implements Cloneable {
         switch (this.craftDirection){
             case NORTH:
             case SOUTH:
-                return BlockVector3.at(getCraftWidth(), getCraftLength(), getCraftHeight());
+                return BlockVector3.at(getCraftWidth(), getCraftHeight(), getCraftLength());
             case EAST:
             case WEST:
-                return BlockVector3.at(getCraftLength(), getCraftWidth(), getCraftHeight());
+                return BlockVector3.at(getCraftLength(), getCraftHeight(), getCraftWidth());
             default:
                 return null;
         }
