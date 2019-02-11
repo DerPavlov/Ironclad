@@ -66,7 +66,7 @@ public class CraftMovementManager {
                 long startTime = System.nanoTime();
                 updateCraftMovement();
                 double time = (System.nanoTime() - startTime)/1000000.0;
-                if  (time > 5.)
+                if  (time > 1.)
                     plugin.logDebug("Time update craft movement: " + new DecimalFormat("0.00").format(time) + "ms");
             }
         }, 1L, 1L);
@@ -124,7 +124,7 @@ public class CraftMovementManager {
             Block oldBlock = bworld.getBlockAt(designBlock.getLocX(), designBlock.getLocY(), designBlock.getLocZ());
             //Ironclad.getPlugin().logDebug("old block " + oldBlock);
             if (oldBlock.isEmpty() || oldBlock.getBlockData() instanceof Levelled) {
-                //Ironclad.getPlugin().logDebug("Found destroyed craft block " + oldBlock);
+                Ironclad.getPlugin().logDebug("Found destroyed craft block " + oldBlock);
             } else {
                 // move the craft to the new location. oldblock was updated to the new location
                 targetLoc = craft.transformToFutureLocation(designBlock.toVector());

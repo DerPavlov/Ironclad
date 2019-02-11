@@ -1,5 +1,5 @@
 general:
-  #name of the craft. This will create of on the craft sign - therefore keep it short
+  #name of the craft. This will spawn of on the craft sign - therefore keep it short
   designName: "Classic"
   #This will be used for messages and will replace CRAFT in all messages. (e.g. You created a classic craft)
   messageName: "classic craft"
@@ -19,7 +19,7 @@ signs:
 
 angles:
   #used to adjust in what direction a craft is facing in the schematic
-  schematicDirection: west
+  defaultHorizontalFacing: west
 
 realisticBehaviour:
   #dismantling takes some time (fits to the sound) [s]
@@ -74,9 +74,7 @@ constructionBlocks:
   #type of the engine block
   engine: 'minecraft:furnace'
   #the block used to indicate where the player can place chests on a craft.
-  chest: 'minecraft:chest'
-  #the block used to indicate where the player can place chests on a craft.
-  sign: 'minecraft:wall_sign'
+  chests: 'minecraft:chest'
   #list of blocks in the schematic that will be protected from explosions (e.g. buttons, because they break easily)
   protectedBlocks:
   - 'minecraft:torch'
