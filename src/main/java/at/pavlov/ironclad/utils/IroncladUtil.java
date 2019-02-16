@@ -1139,4 +1139,19 @@ public class IroncladUtil
             newList.add(vect.subtract(sub));
         return newList;
     }
+
+//    public boolean containsChunk(World world, Chunk chunk) {
+//
+//        if (!chunk.getWorld().equals(world)) {
+//            return false;
+//        }
+//        int minChunkX = min.getBlockX() >> 4;
+//        int minChunkZ = min.getBlockZ() >> 4;
+//        int maxChunkX = max.getBlockX() >> 4;
+//        int maxChunkZ = max.getBlockZ() >> 4;
+//
+//        return (chunk.getX() >= minChunkX && chunk.getX() <= maxChunkX
+//                && chunk.getZ() >= minChunkZ && chunk.getZ() <= maxChunkZ);
+//
+//    }
 }

@@ -978,7 +978,22 @@ public class Craft implements Cloneable {
             default:
                 return null;
         }
+    }
 
+    /**
+     * returns the minimum bounding box of the craft
+     * @return the minimum bounding box of the craft
+     */
+    public BlockVector3 getCraftMinBoundingBox(){
+        return this.design.getMinBoundnigBoxLocation(this);
+    }
+
+    /**
+     * returns the maximum bounding box of the craft
+     * @return the maximum bounding box of the craft
+     */
+    public BlockVector3 getCraftMaxBoundingBox(){
+        return this.design.getMaxBoundnigBoxLocation(this);
     }
 
     /**

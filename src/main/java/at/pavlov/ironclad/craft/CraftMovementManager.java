@@ -12,9 +12,11 @@ import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.world.block.BlockState;
+import com.sk89q.worldedit.world.block.BlockTypes;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Levelled;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -75,6 +77,10 @@ public class CraftMovementManager {
     private void updateCraftMovement(){
         if (asyncTask != null)
             return;
+
+        long startTimeFull = System.nanoTime();
+        long startTime = System.nanoTime();
+
         //search for the craft which is waiting the longest
         long waiting = System.currentTimeMillis();
         Craft craft = null;
@@ -97,15 +103,12 @@ public class CraftMovementManager {
         craft.setProcessing(true);
 
 
-
-//        BlockVector3 travel = craft.getFutureCraftOffset();
-//        int x = dim.getX() + Math.abs(travel.getX()) + 1;
-//        int y = dim.getY() + Math.abs(travel.getY()) + 1;
-//        int z = dim.getZ() + Math.abs(travel.getZ()) + 1;
-//        plugin.logDebug("array dimensions " + x + "," + y + "," + z);
-
         //calculate the travel vector
         craft.updateTravelVector();
+
+        plugin.logDebug("Time update pre calc movement: " + new DecimalFormat("0.00").format((System.nanoTime() - startTime)/1000000.0) + "ms");
+        startTime = System.nanoTime();
+
 
         World bworld = craft.getWorldBukkit();
         EditSession editSession = WorldEdit.getInstance().getEditSessionFactory().getEditSession(BukkitAdapter.adapt(bworld), -1);
@@ -117,11 +120,64 @@ public class CraftMovementManager {
         boolean successful = true;
         BlockVector3 targetLoc;
         Block targetBlock;
+        Block oldBlock = null;
 
+        plugin.logDebug("Time update init movement: " + new DecimalFormat("0.00").format((System.nanoTime() - startTime)/1000000.0) + "ms");
+        startTime = System.nanoTime();
+
+        craft.getCraftDesign().getAllCraftBlocks(craft);
+
+        plugin.logDebug("Time update get all craft blocks: " + new DecimalFormat("0.00").format((System.nanoTime() - startTime)/1000000.0) + "ms");
+        startTime = System.nanoTime();
+
+        BlockVector3 cmin = craft.getCraftMinBoundingBox();
+        BlockVector3 cmax = craft.getCraftMaxBoundingBox();
+        plugin.logDebug("cmin " + cmin + " cmax " + cmax);
+
+        BlockVector3 cdim = craft.getCraftDimensions();
+        int cxmin = cmin.getBlockX()>>4;
+        int czmin = cmin.getBlockZ()>>4;
+        int cxmax = cmax.getBlockX()>>4;
+        int czmax = cmax.getBlockZ()>>4;
+        int chunkX = cxmax - cxmin;
+        int chunkZ = czmax - czmin;
+
+        ChunkSnapshot[][] snapshots = new ChunkSnapshot[chunkX+1][chunkZ+1];
+        plugin.logDebug("loading chunks: " + (chunkX+1) + "*" +(chunkZ+1) + " cxmin: " + cxmin + " czmin: " + czmin + " cxmax: " + cxmax + " czmax: " + czmax);
+        for (int chX = 0; chX <= chunkX; chX ++){
+            for (int chZ = 0; chZ <= chunkZ; chZ++){
+                snapshots[chX][chZ] = bworld.getChunkAt((cxmin + chX)<<4, (czmin + chZ)<<4).getChunkSnapshot();
+            }
+        }
+
+        plugin.logDebug("Time update capture snapshots: " + new DecimalFormat("0.00").format((System.nanoTime() - startTime)/1000000.0) + "ms");
+        startTime = System.nanoTime();
+
+        BlockData blockData = null;
+        int sx;
+        int sz;
+        for (SimpleBlock designBlock : craft.getCraftDesign().getAllCraftBlocks(craft)) {
+            sx = designBlock.getLocX()-(cxmin<<4);
+            sz = designBlock.getLocZ()-(czmin<<4);
+            ChunkSnapshot snapshot = snapshots[sx>>4][sz>>4];
+            blockData = snapshot.getBlockData(sx%16, designBlock.getLocY(), sz%16);
+        }
+        plugin.logDebug("blockdata chunk: " + blockData);
+
+        plugin.logDebug("Time update snapshot get blocks: " + new DecimalFormat("0.00").format((System.nanoTime() - startTime)/1000000.0) + "ms");
+        startTime = System.nanoTime();
+
+        for (SimpleBlock designBlock : craft.getCraftDesign().getAllCraftBlocks(craft)) {
+            oldBlock = bworld.getBlockAt(designBlock.getLocX(), designBlock.getLocY(), designBlock.getLocZ());
+        }
+
+        plugin.logDebug("oldblock block: " + oldBlock);
+        plugin.logDebug("Time update world get blocks: " + new DecimalFormat("0.00").format((System.nanoTime() - startTime)/1000000.0) + "ms");
+        startTime = System.nanoTime();
 
         //perform craft calculations
         for (SimpleBlock designBlock : craft.getCraftDesign().getAllCraftBlocks(craft)) {
-            Block oldBlock = bworld.getBlockAt(designBlock.getLocX(), designBlock.getLocY(), designBlock.getLocZ());
+            oldBlock = bworld.getBlockAt(designBlock.getLocX(), designBlock.getLocY(), designBlock.getLocZ());
             //Ironclad.getPlugin().logDebug("old block " + oldBlock);
             if (oldBlock.isEmpty() || oldBlock.getBlockData() instanceof Levelled) {
                 Ironclad.getPlugin().logDebug("Found destroyed craft block " + oldBlock);
@@ -141,31 +197,50 @@ public class CraftMovementManager {
                     successful = false;
                     break;
                 }
-                //blocks that are overwritten by a new block
-                overwrittenBlocks.add(targetLoc);
                 //old blocks of the craft
                 oldBlocks.add(designBlock.toVector());
                 //just update blocks which are not the same
                 if (!targetBlock.getBlockData().equals(oldBlock.getBlockData())) {
                     //Ironclad.getPlugin().logDebug("block needs update " + targetBlock);
                     updateBlocks.add(new SimpleBlock(targetLoc, oldBlock.getBlockData()));
-
+                    //blocks that are overwritten by a new block
+                    overwrittenBlocks.add(targetLoc);
                 }
             }
         }
+
+        plugin.logDebug("Time update search blocks: " + new DecimalFormat("0.00").format((System.nanoTime() - startTime)/1000000.0) + "ms");
+
         if (successful) {
-            BlockState airState = BukkitAdapter.adapt(Bukkit.createBlockData(Material.AIR));
+
+            startTime = System.nanoTime();
+
+            BlockState airState = BlockTypes.VOID_AIR.getDefaultState();
             for (BlockVector3 vector3 : oldBlocks)
-                editSession.smartSetBlock(vector3, airState);
+                if(!overwrittenBlocks.contains(vector3))
+                    editSession.smartSetBlock(vector3, airState);
+
+            plugin.logDebug("Time update write air blocks: " + new DecimalFormat("0.00").format((System.nanoTime() - startTime)/1000000.0) + "ms");
+            startTime = System.nanoTime();
+
             for (SimpleBlock uBlock : updateBlocks) {
                 editSession.smartSetBlock(uBlock.toVector(), BukkitAdapter.adapt(uBlock.getBlockData()));
             }
+
+            plugin.logDebug("Time update write ship blocks: " + new DecimalFormat("0.00").format((System.nanoTime() - startTime)/1000000.0) + "ms");
+            startTime = System.nanoTime();
+
             // All changes will have been made once flushQueue is called
             editSession.flushSession();
+
+            plugin.logDebug("Time update flush ship blocks: " + new DecimalFormat("0.00").format((System.nanoTime() - startTime)/1000000.0) + "ms");
         }
 
-
         craft.movementPerformed();
+
+        plugin.logDebug("Time update move blocks: " + new DecimalFormat("0.00").format((System.nanoTime() - startTimeFull)/1000000.0) + "ms");
+
+
         //plugin.logDebug("--- Final Craft Offset: " + craft.getOffset() + " Facing " + craft.getCraftDirection());
 
         //Async calculate craft movement
