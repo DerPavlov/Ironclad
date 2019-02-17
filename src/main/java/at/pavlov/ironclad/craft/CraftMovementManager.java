@@ -129,45 +129,9 @@ public class CraftMovementManager {
         craft.getCraftDesign().getAllCraftBlocks(craft);
 
         plugin.logDebug("Time update get all craft blocks: " + new DecimalFormat("0.00").format((System.nanoTime() - startTime)/1000000.0) + "ms");
+
+        //#####################  Get blocks ###################
         startTime = System.nanoTime();
-
-        BlockVector3 cmin = craft.getCraftMinBoundingBox();
-        BlockVector3 cmax = craft.getCraftMaxBoundingBox();
-        plugin.logDebug("cmin " + cmin + " cmax " + cmax);
-
-        BlockVector3 cdim = craft.getCraftDimensions();
-        int cxmin = cmin.getBlockX()>>4;
-        int czmin = cmin.getBlockZ()>>4;
-        int cxmax = cmax.getBlockX()>>4;
-        int czmax = cmax.getBlockZ()>>4;
-        int chunkX = cxmax - cxmin;
-        int chunkZ = czmax - czmin;
-
-        ChunkSnapshot[][] snapshots = new ChunkSnapshot[chunkX+1][chunkZ+1];
-        plugin.logDebug("loading chunks: " + (chunkX+1) + "*" +(chunkZ+1) + " cxmin: " + cxmin + " czmin: " + czmin + " cxmax: " + cxmax + " czmax: " + czmax);
-        for (int chX = 0; chX <= chunkX; chX ++){
-            for (int chZ = 0; chZ <= chunkZ; chZ++){
-                snapshots[chX][chZ] = bworld.getChunkAt((cxmin + chX)<<4, (czmin + chZ)<<4).getChunkSnapshot();
-            }
-        }
-
-        plugin.logDebug("Time update capture snapshots: " + new DecimalFormat("0.00").format((System.nanoTime() - startTime)/1000000.0) + "ms");
-        startTime = System.nanoTime();
-
-        BlockData blockData = null;
-        int sx;
-        int sz;
-        for (SimpleBlock designBlock : craft.getCraftDesign().getAllCraftBlocks(craft)) {
-            sx = designBlock.getLocX()-(cxmin<<4);
-            sz = designBlock.getLocZ()-(czmin<<4);
-            ChunkSnapshot snapshot = snapshots[sx>>4][sz>>4];
-            blockData = snapshot.getBlockData(sx%16, designBlock.getLocY(), sz%16);
-        }
-        plugin.logDebug("blockdata chunk: " + blockData);
-
-        plugin.logDebug("Time update snapshot get blocks: " + new DecimalFormat("0.00").format((System.nanoTime() - startTime)/1000000.0) + "ms");
-        startTime = System.nanoTime();
-
         HashMap<BlockVector3, BlockStateHolder> blockmap = new HashMap<>();
         for (SimpleBlock designBlock : craft.getCraftDesign().getAllCraftBlocks(craft)) {
             oldBlock = bworld.getBlockAt(designBlock.getLocX(), designBlock.getLocY(), designBlock.getLocZ());
@@ -175,7 +139,10 @@ public class CraftMovementManager {
         }
 
         plugin.logDebug("Time update world get blocks: " + new DecimalFormat("0.00").format((System.nanoTime() - startTime)/1000000.0) + "ms");
+
+
         //plugin.logDebug("oldblock block: " + blockmap);
+
         startTime = System.nanoTime();
 
         //perform craft calculations
@@ -240,13 +207,54 @@ public class CraftMovementManager {
 
         craft.movementPerformed();
 
-        plugin.logDebug("Time update move blocks: " + new DecimalFormat("0.00").format((System.nanoTime() - startTimeFull)/1000000.0) + "ms");
+        Bukkit.broadcastMessage("Time update move blocks: " + new DecimalFormat("0.00").format((System.nanoTime() - startTimeFull)/1000000.0) + "ms");
 
 
         //plugin.logDebug("--- Final Craft Offset: " + craft.getOffset() + " Facing " + craft.getCraftDirection());
 
         //Async calculate craft movement
         //asyncTask = new MoveCalculateTask(craft.clone(),  blockSnapshot1, craft.getSimpleEntitiesOnShip()).runTaskAsynchronously(plugin);*/
+    }
+
+    private void chunksnapshots(Craft craft){
+        World bworld = craft.getWorldBukkit();
+        double startTime = System.nanoTime();
+
+        BlockVector3 cmin = craft.getCraftMinBoundingBox();
+        BlockVector3 cmax = craft.getCraftMaxBoundingBox();
+        plugin.logDebug("cmin " + cmin + " cmax " + cmax);
+
+        BlockVector3 cdim = craft.getCraftDimensions();
+        int cxmin = cmin.getBlockX()>>4;
+        int czmin = cmin.getBlockZ()>>4;
+        int cxmax = cmax.getBlockX()>>4;
+        int czmax = cmax.getBlockZ()>>4;
+        int chunkX = cxmax - cxmin;
+        int chunkZ = czmax - czmin;
+
+        ChunkSnapshot[][] snapshots = new ChunkSnapshot[chunkX+1][chunkZ+1];
+        plugin.logDebug("loading chunks: " + (chunkX+1) + "*" +(chunkZ+1) + " cxmin: " + cxmin + " czmin: " + czmin + " cxmax: " + cxmax + " czmax: " + czmax);
+        for (int chX = 0; chX <= chunkX; chX ++){
+            for (int chZ = 0; chZ <= chunkZ; chZ++){
+                snapshots[chX][chZ] = bworld.getChunkAt((cxmin + chX)<<4, (czmin + chZ)<<4).getChunkSnapshot();
+            }
+        }
+
+        plugin.logDebug("Time update capture snapshots: " + new DecimalFormat("0.00").format((System.nanoTime() - startTime)/1000000.0) + "ms");
+        startTime = System.nanoTime();
+
+        BlockData blockData = null;
+        int sx;
+        int sz;
+        for (SimpleBlock designBlock : craft.getCraftDesign().getAllCraftBlocks(craft)) {
+            sx = designBlock.getLocX()-(cxmin<<4);
+            sz = designBlock.getLocZ()-(czmin<<4);
+            ChunkSnapshot snapshot = snapshots[sx>>4][sz>>4];
+            blockData = snapshot.getBlockData(sx%16, designBlock.getLocY(), sz%16);
+        }
+        plugin.logDebug("blockdata chunk: " + blockData);
+
+        plugin.logDebug("Time update snapshot get blocks: " + new DecimalFormat("0.00").format((System.nanoTime() - startTime)/1000000.0) + "ms");
     }
 
 

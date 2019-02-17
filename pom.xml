@@ -151,6 +151,7 @@
                 <configuration>
                     <nonFilteredFileExtensions>
                         <nonFilteredFileExtension>schematic</nonFilteredFileExtension>
+                        <nonFilteredFileExtension>schem</nonFilteredFileExtension>
                     </nonFilteredFileExtensions>
                 </configuration>
             </plugin>
