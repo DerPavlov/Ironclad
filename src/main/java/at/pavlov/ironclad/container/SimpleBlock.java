@@ -5,14 +5,14 @@ import at.pavlov.ironclad.utils.IroncladUtil;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.math.Vector3;
-import org.bukkit.Bukkit;
+import com.sk89q.worldedit.world.block.BlockState;
+import com.sk89q.worldedit.world.block.BlockStateHolder;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.material.Directional;
-import org.bukkit.util.Vector;
 
 public class SimpleBlock implements Cloneable
 {
@@ -20,9 +20,9 @@ public class SimpleBlock implements Cloneable
 	private int locY;
 	private int locZ;
 	
-	private BlockData blockData;
+	private BlockState blockData;
 
-	public SimpleBlock(int x, int y, int z, BlockData blockData)
+	public SimpleBlock(int x, int y, int z, BlockState blockData)
 	{
 		locX = x;
 		locY = y;
@@ -31,17 +31,17 @@ public class SimpleBlock implements Cloneable
 		this.blockData = blockData;
 	}
 
-	public SimpleBlock(BlockVector3 vect, BlockData blockData) {
+	public SimpleBlock(BlockVector3 vect, BlockState blockData) {
 		this(vect.getBlockX(), vect.getBlockY(), vect.getBlockZ(), blockData);
 	}
 
 	public SimpleBlock(Block block) {
-		this(block.getX(), block.getY(), block.getZ(), block.getBlockData().clone());
+		this(block.getX(), block.getY(), block.getZ(), BukkitAdapter.adapt(block.getBlockData().clone()));
 	}
 
 	private SimpleBlock(BlockVector3 vect, Material material)
 	{
-		this(vect, material.createBlockData());
+		this(vect, BukkitAdapter.adapt(material.createBlockData()));
 	}
 	
 	public SimpleBlock(Location loc, Material material)
@@ -50,7 +50,7 @@ public class SimpleBlock implements Cloneable
 		locY = loc.getBlockY();
 		locZ = loc.getBlockZ();
 		
-		this.blockData = material.createBlockData();
+		this.blockData = BukkitAdapter.adapt(material.createBlockData());
 	}
 
 	/**
@@ -116,7 +116,7 @@ public class SimpleBlock implements Cloneable
 	{
 		if (toVector().add(offset).equals(BukkitAdapter.asBlockVector(block.getLocation())))
 		{
-			return compareMaterial(block.getBlockData());
+			return compareMaterial(BukkitAdapter.adapt(block.getBlockData()));
 		}
 		return false;
 	}
@@ -126,9 +126,9 @@ public class SimpleBlock implements Cloneable
 	 * @param block block to compare to
 	 * @return true if both block match
 	 */
-	public boolean compareMaterial(BlockData block)
+	public boolean compareMaterial(BlockStateHolder block)
 	{
-		return block.getMaterial().equals(this.blockData.getMaterial());
+		return block.getBlockType().getMaterial().equals(this.blockData.getBlockType().getMaterial());
 	}
 
 	/**
@@ -136,7 +136,7 @@ public class SimpleBlock implements Cloneable
 	 * @param blockData block to compare to
 	 * @return true if both block match
 	 */
-	public boolean compareMaterialAndFacing(BlockData blockData) {
+	public boolean compareMaterialAndFacing(BlockStateHolder blockData) {
 		// different materials
 		if (!compareMaterial(blockData)) {
 			return false;
@@ -157,20 +157,10 @@ public class SimpleBlock implements Cloneable
 	public boolean compareMaterialAndFacing(World world, BlockVector3 offset)
 	{
 		Block block = toLocation(world, offset).getBlock();
-		return compareMaterialAndFacing(block.getBlockData());
+		return compareMaterialAndFacing(BukkitAdapter.adapt(block.getBlockData()));
 	}
 
 	/**
-	 * matches all entries in this SimpleBlock to the given block
-	 * @param blockData block to compare to
-	 * @return true if both block match
-	 */
-	public boolean compareBlockData(BlockData blockData)
-	{
-		return this.blockData.matches(blockData);
-	}
-
-	/** 
 	 * shifts the location of the block without comparing the id
 	 * @param loc location to add
 	 * @return new Simpleblock
@@ -304,24 +294,29 @@ public class SimpleBlock implements Cloneable
 		this.locZ = locZ;
 	}
 
-	public void setBlockData(BlockData blockData)
+	public void setBlockData(BlockState blockData)
 	{
 		this.blockData = blockData;
 	}
 
-	public BlockData getBlockData()
+	public BlockState getBlockState()
 	{
 		return this.blockData;
 	}
 
+	public BlockData getBlockData()
+	{
+		return BukkitAdapter.adapt(this.blockData);
+	}
+
 	public Material getMaterial()
 	{
-		return this.blockData.getMaterial();
+		return BukkitAdapter.adapt(this.blockData).getMaterial();
 	}
 
 	public String toString()
 	{
-		return "x:" + locX + " y:" + locY + " z:" + locZ +" blockdata:" + this.getBlockData().toString();
+		return "x:" + locX + " y:" + locY + " z:" + locZ +" blockdata:" + this.getBlockState().toString();
 	}
 
 	@Override

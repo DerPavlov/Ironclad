@@ -18,7 +18,6 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.block.data.Levelled;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
@@ -72,7 +71,7 @@ public class CraftMovementManager {
                 //if  (time > 1.)
                 //    plugin.logDebug("Time update craft movement: " + new DecimalFormat("0.00").format(time) + "ms");
             }
-        }, 1L, 1L);
+        }, 1L, 40L);
     }
 
     private void updateCraftMovement(){
@@ -150,7 +149,7 @@ public class CraftMovementManager {
         for (SimpleBlock designBlock : craft.getCraftDesign().getAllCraftBlocks(craft)) {
 //            oldBlock = bworld.getBlockAt(designBlock.getLocX(), designBlock.getLocY(), designBlock.getLocZ());
 //            //Ironclad.getPlugin().logDebug("old block " + oldBlock);
-//            if (oldBlock.isEmpty() || oldBlock.getBlockData() instanceof Levelled) {
+//            if (oldBlock.isEmpty() || oldBlock.getBlockState() instanceof Levelled) {
 //                Ironclad.getPlugin().logDebug("Found destroyed craft block " + oldBlock);
 //            } else {
 //                // move the craft to the new location. oldblock was updated to the new location
@@ -162,7 +161,7 @@ public class CraftMovementManager {
 //                }
 //
 //                // target block should be Air or a liquid
-//                if (!craft.isLocationPartOfCraft(targetLoc) && !(targetBlock.isEmpty() || targetBlock.getBlockData() instanceof Levelled)) {
+//                if (!craft.isLocationPartOfCraft(targetLoc) && !(targetBlock.isEmpty() || targetBlock.getBlockState() instanceof Levelled)) {
 //                    Ironclad.getPlugin().logDebug("Found blocking block at" + targetBlock);
 //                    successful = false;
 //                    break;
@@ -170,9 +169,9 @@ public class CraftMovementManager {
                 //old blocks of the craft
                 oldBlocks.add(designBlock.toVector());
                 //just update blocks which are not the same
-                if (!targetBlock.getBlockData().equals(designBlock.getBlockData())) {
+                if (!targetBlock.getBlockData().equals(designBlock.getBlockState())) {
                     //Ironclad.getPlugin().logDebug("block needs update " + targetBlock);
-                    updateBlocks.add(new SimpleBlock(targetLoc, designBlock.getBlockData()));
+                    updateBlocks.add(new SimpleBlock(targetLoc, designBlock.getBlockState()));
                     //blocks that are overwritten by a new block
                     overwrittenBlocks.add(targetLoc);
                 }
@@ -194,7 +193,7 @@ public class CraftMovementManager {
             startTime = System.nanoTime();
 
             for (SimpleBlock uBlock : updateBlocks) {
-                editSession.smartSetBlock(uBlock.toVector(), BukkitAdapter.adapt(uBlock.getBlockData()));
+                editSession.smartSetBlock(uBlock.toVector(), uBlock.getBlockState());
             }
 
             plugin.logDebug("Time update write ship blocks: " + new DecimalFormat("0.00").format((System.nanoTime() - startTime)/1000000.0) + "ms");
@@ -278,27 +277,27 @@ public class CraftMovementManager {
         for (SimpleBlock rBlock : resetAttachedBlocks) {
             plugin.logDebug("performCraft attached block remove " + rBlock);
             Block wBlock = rBlock.toLocation(world).getBlock();
-            wBlock.setBlockData(rBlock.getBlockData());
+            //wBlock.setBlockData(rBlock.getBlockState());
         }
 
         //update blocks
         for (SimpleBlock cBlock : newBlocks) {
             plugin.logDebug("performCraft block update " + cBlock);
             Block wBlock = cBlock.toLocation(world).getBlock();
-            wBlock.setBlockData(cBlock.getBlockData());
+            //wBlock.setBlockData(cBlock.getBlockState());
         }
         //place the attachable blocks
         for (SimpleBlock aBlock : newAttachedBlocks){
             plugin.logDebug("performCraft attached block update " + aBlock);
             Block wBlock = aBlock.toLocation(world).getBlock();
-            wBlock.setBlockData(aBlock.getBlockData());
+            //wBlock.setBlockData(aBlock.getBlockState());
         }
 
         //remove blocks
         for (SimpleBlock rBlock : resetBlocks) {
             plugin.logDebug("performCraft block remove " + rBlock);
             Block wBlock = rBlock.toLocation(world).getBlock();
-            wBlock.setBlockData(rBlock.getBlockData());
+            //wBlock.setBlockData(rBlock.getBlockState());
         }
 
         plugin.logDebug("Time move craft: " + new DecimalFormat("0.00").format((System.nanoTime() - startTime)/1000000.0) + "ms");

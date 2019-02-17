@@ -5,14 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 
 import at.pavlov.ironclad.container.SoundHolder;
-import at.pavlov.ironclad.utils.IroncladUtil;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.math.BlockVector3;
-import com.sk89q.worldedit.math.Vector3;
-import org.bukkit.Bukkit;
+import com.sk89q.worldedit.world.block.BlockState;
+import com.sk89q.worldedit.world.block.BlockStateHolder;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.data.BlockData;
 
 
 import at.pavlov.ironclad.container.SimpleBlock;
@@ -67,12 +65,12 @@ public class CraftDesign
 
 	
 	//constructionblocks:
-	private BlockData schematicBlockTypeIgnore;     				//this block this is ignored in the schematic file
-    private BlockData schematicBlockTypeRotationCenter;			//location of the ship center
-    private BlockData schematicBlockTypeEngine;					//blockdata of the engine
-    private BlockData schematicBlockTypeChest;					//locations of the chest and sign
-	private BlockData schematicBlockTypeSign;					//locations of the chest and sign
-    private List<BlockData> schematicBlockTypeProtected;			//list of blocks that are protected from explosions (e.g. buttons)
+	private BlockState schematicBlockTypeIgnore;     				//this block this is ignored in the schematic file
+    private BlockState schematicBlockTypeRotationCenter;			//location of the ship center
+    private BlockState schematicBlockTypeEngine;					//blockdata of the engine
+    private BlockState schematicBlockTypeChest;					//locations of the chest and sign
+	private BlockState schematicBlockTypeSign;					//locations of the chest and sign
+    private ArrayList<BlockState> schematicBlockTypeProtected;			//list of blocks that are protected from explosions (e.g. buttons)
     
     //craft design block lists for every direction (NORTH, EAST, SOUTH, WEST)
     private HashMap<BlockFace, CraftBlocks> cannonBlockMap = new HashMap<BlockFace, CraftBlocks>();
@@ -329,27 +327,27 @@ public class CraftDesign
 	{
 		this.allowedProjectiles = allowedProjectiles;
 	}
-	public BlockData getSchematicBlockTypeIgnore()
+	public BlockStateHolder getSchematicBlockTypeIgnore()
 	{
 		return schematicBlockTypeIgnore;
 	}
-	public void setSchematicBlockTypeIgnore(BlockData schematicBlockTypeIgnore)
+	public void setSchematicBlockTypeIgnore(BlockState schematicBlockTypeIgnore)
 	{
 		this.schematicBlockTypeIgnore = schematicBlockTypeIgnore;
 	}
-	public BlockData getSchematicBlockTypeRotationCenter()
+	public BlockState getSchematicBlockTypeRotationCenter()
 	{
 		return schematicBlockTypeRotationCenter;
 	}
-	public void setSchematicBlockTypeRotationCenter(BlockData schematicBlockTypeRotationCenter)
+	public void setSchematicBlockTypeRotationCenter(BlockState schematicBlockTypeRotationCenter)
 	{
 		this.schematicBlockTypeRotationCenter = schematicBlockTypeRotationCenter;
 	}
-	public BlockData getSchematicBlockTypeEngine()
+	public BlockState getSchematicBlockTypeEngine()
 	{
 		return schematicBlockTypeEngine;
 	}
-	public void setSchematicBlockTypeEngine(BlockData schematicBlockTypeEngine)
+	public void setSchematicBlockTypeEngine(BlockState schematicBlockTypeEngine)
 	{
 		this.schematicBlockTypeEngine = schematicBlockTypeEngine;
 	}
@@ -370,24 +368,24 @@ public class CraftDesign
 	}
 
 
-	public BlockData getSchematicBlockTypeChest()
+	public BlockState getSchematicBlockTypeChest()
 	{
 		return schematicBlockTypeChest;
 	}
 
 
-	public void setSchematicBlockTypeChest(BlockData schematicBlockTypeChest)
+	public void setSchematicBlockTypeChest(BlockState schematicBlockTypeChest)
 	{
 		this.schematicBlockTypeChest = schematicBlockTypeChest;
 	}
 
-	public List<BlockData> getSchematicBlockTypeProtected()
+	public ArrayList<BlockState> getSchematicBlockTypeProtected()
 	{
 		return schematicBlockTypeProtected;
 	}
 
 
-	public void setSchematicBlockTypeProtected(List<BlockData> schematicBlockTypeProtected)
+	public void setSchematicBlockTypeProtected(ArrayList<BlockState> schematicBlockTypeProtected)
 	{
 		this.schematicBlockTypeProtected = schematicBlockTypeProtected;
 	}
@@ -552,11 +550,11 @@ public class CraftDesign
 		this.craftMaxHeight = craftMaxHeight;
 	}
 
-	public BlockData getSchematicBlockTypeSign() {
+	public BlockState getSchematicBlockTypeSign() {
 		return schematicBlockTypeSign;
 	}
 
-	protected void setSchematicBlockTypeSign(BlockData schematicBlockTypeSign) {
+	protected void setSchematicBlockTypeSign(BlockState schematicBlockTypeSign) {
 		this.schematicBlockTypeSign = schematicBlockTypeSign;
 	}
 

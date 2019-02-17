@@ -211,7 +211,7 @@ public class Craft implements Cloneable {
         for (SimpleBlock cBlock : design.getAllCraftBlocks(this.getCraftDirection()))
         {
             //check if the block is attached to something, then do it later
-            if (cBlock.getBlockData() instanceof org.bukkit.block.data.Directional){
+            if (cBlock.getBlockState() instanceof org.bukkit.block.data.Directional){
                 attatchedBlocks.add(cBlock);
             }
             else {

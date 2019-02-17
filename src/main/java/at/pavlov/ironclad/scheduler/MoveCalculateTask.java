@@ -69,12 +69,12 @@ public class MoveCalculateTask extends BukkitRunnable{
                 }
                 overwrittenBlocks.add(targetLoc);
                 //just update blocks which are not the same
-                if (!targetBlock.getBlockData().equals(oldBlock.getBlockData())) {
+                if (!targetBlock.getBlockState().equals(oldBlock.getBlockState())) {
                     Ironclad.getPlugin().logDebug("block needs update " + targetBlock);
-                    if (oldBlock.getBlockData() instanceof Directional)
-                        targetBlock.setBlockData(IroncladUtil.rotateBlockData(craftClone.getCraftDirection(), craftClone.getFutureDirection(), oldBlock.getBlockData()));
+                    if (oldBlock.getBlockState() instanceof Directional)
+                        targetBlock.setBlockData(IroncladUtil.rotateBlockData(craftClone.getCraftDirection(), craftClone.getFutureDirection(), oldBlock.getBlockState()));
                     else
-                        targetBlock.setBlockData(oldBlock.getBlockData());
+                        targetBlock.setBlockData(oldBlock.getBlockState());
                 }
             }
         }
@@ -86,7 +86,7 @@ public class MoveCalculateTask extends BukkitRunnable{
                 if (!overwrittenBlocks.contains(targetLoc)) {
                     Ironclad.getPlugin().logDebug("Found left over block");
                     targetBlock = asyncWorld.getBlockAt(targetLoc.getBlockX(), targetLoc.getBlockY(), targetLoc.getBlockZ());
-                    if (targetBlock.getBlockData() instanceof Directional) {
+                    if (targetBlock.getBlockState() instanceof Directional) {
                         targetBlock.setBlockData(Bukkit.createBlockData(Material.AIR));
                     } else {
                         targetBlock.setBlockData(Bukkit.createBlockData(Material.AIR));

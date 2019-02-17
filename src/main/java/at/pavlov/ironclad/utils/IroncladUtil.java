@@ -11,6 +11,9 @@ import at.pavlov.ironclad.container.*;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.math.Vector3;
+import com.sk89q.worldedit.world.block.BlockState;
+import com.sk89q.worldedit.world.block.BlockStateHolder;
+import com.sk89q.worldedit.world.block.BlockTypes;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -174,13 +177,13 @@ public class IroncladUtil
      * @param stringList list of Materials as strings
      * @return list of MaterialHolders
      */
-    public static List<BlockData> toBlockDataList(List<String> stringList)
+    public static ArrayList<BlockState> toBlockDataList(List<String> stringList)
     {
-        List<BlockData> blockDataList = new ArrayList<>();
+        ArrayList<BlockState> blockDataList = new ArrayList<>();
 
         for (String str : stringList)
         {
-            BlockData material = Bukkit.createBlockData(str);
+            BlockState material = BukkitAdapter.adapt(Bukkit.createBlockData(str));
             blockDataList.add(material);
         }
 
@@ -323,7 +326,7 @@ public class IroncladUtil
         return vect;
     }
 
-    public static BlockData rotateBlockData(BlockFace startDirection, BlockFace endDirection, BlockData blockData) {
+    public static BlockStateHolder rotateBlockData(BlockFace startDirection, BlockFace endDirection, BlockState blockData) {
         // if both directions are the same, do nothing
         if (startDirection.equals(endDirection))
             return blockData;
@@ -1071,7 +1074,7 @@ public class IroncladUtil
      * @param blockData blockData
      * @return rotated blockData
      */
-    public static BlockData roateBlockFacingClockwise(BlockData blockData){
+    public static BlockState roateBlockFacingClockwise(BlockState blockData){
         if (blockData instanceof Directional){
             ((Directional) blockData).setFacing(roatateFace(((Directional) blockData).getFacing()));
         }
@@ -1083,7 +1086,7 @@ public class IroncladUtil
      * @param blockData blockData
      * @return rotated blockData
      */
-    public static BlockData roateBlockFacingCouterClockwise(BlockData blockData){
+    public static BlockStateHolder roateBlockFacingCouterClockwise(BlockStateHolder blockData){
         if (blockData instanceof Directional){
             ((Directional) blockData).setFacing(roatateFaceOpposite(((Directional) blockData).getFacing()));
         }
@@ -1095,13 +1098,13 @@ public class IroncladUtil
      * @param str Material name
      * @return BlockData or AIR if the block is not valid
      */
-    public static BlockData createBlockData(String str){
+    public static BlockState createBlockData(String str){
         try{
-            return Bukkit.createBlockData(str);
+            return BukkitAdapter.adapt(Bukkit.createBlockData(str));
         }
         catch(Exception e){
             System.out.println("[Ironclad] block data '" + str + "' is not valid");
-            return Material.AIR.createBlockData();
+            return BlockTypes.AIR.getDefaultState();
         }
     }
 

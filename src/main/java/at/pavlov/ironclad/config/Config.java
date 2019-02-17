@@ -6,6 +6,10 @@ import at.pavlov.ironclad.craft.CraftManager;
 import at.pavlov.ironclad.craft.DesignStorage;
 import at.pavlov.ironclad.container.ItemHolder;
 import at.pavlov.ironclad.utils.IroncladUtil;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.world.block.BlockState;
+import com.sk89q.worldedit.world.block.BlockStateHolder;
+import com.sk89q.worldedit.world.block.BlockTypes;
 import org.bukkit.Bukkit;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.inventory.ItemStack;
@@ -51,31 +55,31 @@ public class Config
 
     private boolean imitatedExplosionEnabled;
     private int imitatedExplosionSphereSize;
-    private BlockData imitatedExplosionMaterial= Bukkit.createBlockData("minecraft:glowstone");
+    private BlockState imitatedExplosionMaterial;
     private double imitatedExplosionTime;
 
     private boolean imitatedAimingEnabled;
     private int imitatedAimingLineLength;
-    private BlockData imitatedAimingMaterial = Bukkit.createBlockData("minecraft:glass");
+    private BlockState imitatedAimingMaterial;
     private double imitatedAimingTime;
 
     private boolean imitatedFiringEffectEnabled;
-    private BlockData imitatedFireMaterial = Bukkit.createBlockData("minecraft:glowstone");
-    private BlockData imitatedSmokeMaterial = Bukkit.createBlockData("minecraft:cobweb");
+    private BlockState imitatedFireMaterial;
+    private BlockState imitatedSmokeMaterial;
     private double imitatedFiringTime;
 
     private boolean imitatedPredictorEnabled;
     private int imitatedPredictorIterations;
     private double imitatedPredictorDistance;
-    private BlockData imitatedPredictorMaterial = Bukkit.createBlockData("minecraft:glowstone");
+    private BlockState imitatedPredictorMaterial;
     private double imitatedPredictorTime;
 
 
     //superbreakerBlocks
-    private List<BlockData> superbreakerBlocks = new ArrayList<BlockData>();
+    private ArrayList<BlockState> superbreakerBlocks = new ArrayList<>();
 
     //unbreakableBlocks
-    private List<BlockData> unbreakableBlocks = new ArrayList<BlockData>();
+    private ArrayList<BlockState> unbreakableBlocks = new ArrayList<BlockState>();
 
     //cancelEventForLoadingItem
     private List<ItemHolder> cancelItems = new ArrayList<>();
@@ -277,19 +281,19 @@ public class Config
 	}
 
 
-    public List<BlockData> getSuperbreakerBlocks() {
+    public ArrayList<BlockState> getSuperbreakerBlocks() {
         return superbreakerBlocks;
     }
 
-    void setSuperbreakerBlocks(List<BlockData> superbreakerBlocks) {
+    void setSuperbreakerBlocks(ArrayList<BlockState> superbreakerBlocks) {
         this.superbreakerBlocks = superbreakerBlocks;
     }
 
-    public List<BlockData> getUnbreakableBlocks() {
+    public ArrayList<BlockState> getUnbreakableBlocks() {
         return unbreakableBlocks;
     }
 
-    void setUnbreakableBlocks(List<BlockData> unbreakableBlocks) {
+    void setUnbreakableBlocks(ArrayList<BlockState> unbreakableBlocks) {
         this.unbreakableBlocks = unbreakableBlocks;
     }
 
@@ -331,11 +335,11 @@ public class Config
         return false;
     }
 
-    public BlockData getImitatedExplosionMaterial() {
+    public BlockStateHolder getImitatedExplosionMaterial() {
         return imitatedExplosionMaterial;
     }
 
-    public void setImitatedExplosionMaterial(BlockData imitatedExplosionMaterial) {
+    public void setImitatedExplosionMaterial(BlockState imitatedExplosionMaterial) {
         this.imitatedExplosionMaterial = imitatedExplosionMaterial;
     }
 
@@ -347,27 +351,27 @@ public class Config
         this.imitatedExplosionTime = imitatedExplosionTime;
     }
 
-    public BlockData getImitatedAimingMaterial() {
+    public BlockStateHolder getImitatedAimingMaterial() {
         return imitatedAimingMaterial;
     }
 
-    public void setImitatedAimingMaterial(BlockData imitatedAimingMaterial) {
+    public void setImitatedAimingMaterial(BlockState imitatedAimingMaterial) {
         this.imitatedAimingMaterial = imitatedAimingMaterial;
     }
 
-    public BlockData getImitatedFireMaterial() {
+    public BlockStateHolder getImitatedFireMaterial() {
         return imitatedFireMaterial;
     }
 
-    public void setImitatedFireMaterial(BlockData imitatedFireMaterial) {
+    public void setImitatedFireMaterial(BlockState imitatedFireMaterial) {
         this.imitatedFireMaterial = imitatedFireMaterial;
     }
 
-    public BlockData getImitatedSmokeMaterial() {
+    public BlockStateHolder getImitatedSmokeMaterial() {
         return imitatedSmokeMaterial;
     }
 
-    public void setImitatedSmokeMaterial(BlockData imitatedSmokeMaterial) {
+    public void setImitatedSmokeMaterial(BlockState imitatedSmokeMaterial) {
         this.imitatedSmokeMaterial = imitatedSmokeMaterial;
     }
 
@@ -491,11 +495,11 @@ public class Config
         this.imitatedPredictorDistance = imitatedPredictorDistance;
     }
 
-    public BlockData getImitatedPredictorMaterial() {
+    public BlockStateHolder getImitatedPredictorMaterial() {
         return imitatedPredictorMaterial;
     }
 
-    public void setImitatedPredictorMaterial(BlockData imitatedPredictorMaterial) {
+    public void setImitatedPredictorMaterial(BlockState imitatedPredictorMaterial) {
         this.imitatedPredictorMaterial = imitatedPredictorMaterial;
     }
 

@@ -1,5 +1,6 @@
 package at.pavlov.ironclad.container;
 
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -124,7 +125,7 @@ public class ItemHolder
 	
 	public SimpleBlock toSimpleBlock()
 	{
-		return new SimpleBlock(0, 0, 0, material.createBlockData());
+		return new SimpleBlock(0, 0, 0, BukkitAdapter.adapt(material.createBlockData()));
 	}
 	
 	public ItemStack toItemStack(int amount)

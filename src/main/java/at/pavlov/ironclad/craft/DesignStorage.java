@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 
 import at.pavlov.ironclad.utils.IroncladUtil;
@@ -20,16 +19,14 @@ import com.sk89q.worldedit.extent.transform.BlockTransformExtent;
 import com.sk89q.worldedit.function.operation.ForwardExtentCopy;
 import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector3;
-import com.sk89q.worldedit.math.Vector3;
 import com.sk89q.worldedit.math.transform.AffineTransform;
 import com.sk89q.worldedit.util.io.Closer;
 import com.sk89q.worldedit.world.block.BlockState;
 
-import org.bukkit.Bukkit;
+import com.sk89q.worldedit.world.block.BlockStateHolder;
+import com.sk89q.worldedit.world.registry.BlockMaterial;
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.data.BlockData;
-import org.bukkit.block.data.Levelled;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -47,7 +44,7 @@ public class DesignStorage
 	
 	private final List<CraftDesign> craftsDesignList;
 	private final Ironclad plugin;
-	private final List<Material> craftBlockMaterials;
+	private final List<BlockMaterial> craftBlockMaterials;
 
 	public DesignStorage(Ironclad ironclad)
 	{
@@ -110,9 +107,9 @@ public class DesignStorage
 
 		for (CraftDesign cannonDesign : getCraftsDesignList()) {
 			for (SimpleBlock sBlock : cannonDesign.getAllCraftBlocks(BlockFace.NORTH)){
-				Material material = sBlock.getBlockData().getMaterial();
-				if (material != Material.AIR && !craftBlockMaterials.contains(material)) {
-					craftBlockMaterials.add(sBlock.getBlockData().getMaterial());
+				BlockMaterial material = sBlock.getBlockState().getBlockType().getMaterial();
+				if (!material.isAir() && !craftBlockMaterials.contains(material)) {
+					craftBlockMaterials.add(sBlock.getBlockState().getBlockType().getMaterial());
 				}
 			}
 		}
@@ -284,12 +281,12 @@ public class DesignStorage
 
 		// convert all schematic blocks from the config to BaseBlocks so they
 		// can be rotated
-		BlockData blockIgnore = cannonDesign.getSchematicBlockTypeIgnore();
-		BlockData blockRotationCenter = cannonDesign.getSchematicBlockTypeRotationCenter();
-		BlockData blockEngine = cannonDesign.getSchematicBlockTypeEngine();
-		BlockData blockChest = cannonDesign.getSchematicBlockTypeChest();
-		BlockData blockSign = cannonDesign.getSchematicBlockTypeSign();
-        List<BlockData> blockProtectedList = new ArrayList<BlockData>(cannonDesign.getSchematicBlockTypeProtected());
+		BlockStateHolder blockIgnore = cannonDesign.getSchematicBlockTypeIgnore();
+		BlockState blockRotationCenter = cannonDesign.getSchematicBlockTypeRotationCenter();
+		BlockState blockEngine = cannonDesign.getSchematicBlockTypeEngine();
+		BlockState blockChest = cannonDesign.getSchematicBlockTypeChest();
+		BlockState blockSign = cannonDesign.getSchematicBlockTypeSign();
+        List<BlockState> blockProtectedList = new ArrayList<BlockState>(cannonDesign.getSchematicBlockTypeProtected());
 		
 		
 		// get facing of the craft
@@ -302,10 +299,6 @@ public class DesignStorage
 
 		cc.setOrigin(BlockVector3.ZERO);
 
-		//https://github.com/boy0001/FastAsyncWorldedit/wiki/Some-tips-when-using-the-FAWE-API
-//		for (Vector pt : new FastIterator(cc.getRegion(), extent)){
-//
-//		}
         ArrayList<SimpleBlock> schematiclist = new ArrayList<>();
 		for (int x = 0; x < width; ++x) {
 			for (int y = 0; y < height; ++y) {
@@ -315,11 +308,9 @@ public class DesignStorage
 					BlockState blockState = cc.getBlock(pt.add(cc.getMinimumPoint()));
 					//plugin.logDebug("blockstate: " + blockState.getAsString());
 
-					BlockData block = Bukkit.getServer().createBlockData(blockState.getAsString());
-
 					// ignore if block is AIR, liquid or the IgnoreBlock type
-					if (!block.getMaterial().equals(Material.AIR) && !(block instanceof  Levelled) && !block.matches(blockIgnore)) {
-						schematiclist.add(new SimpleBlock(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ(), block));
+					if (!blockState.getBlockType().getMaterial().isAir() && !blockState.getBlockType().getMaterial().isLiquid() && !blockState.getBlockType().getMaterial().equals(blockIgnore)) {
+						schematiclist.add(new SimpleBlock(pt.getBlockX(), pt.getBlockY(), pt.getBlockZ(), blockState));
 					}
 				}
 			}
@@ -367,9 +358,9 @@ public class DesignStorage
 				}
 				else {
 					//all craft blocks. Ignore the rotation center
-					cannonBlocks.getAllCraftBlocks().add(new SimpleBlock(x, y, z, sblock.getBlockData().clone()));
+					cannonBlocks.getAllCraftBlocks().add(new SimpleBlock(x, y, z, sblock.getBlockState()));
 					// this can be a destructible block
-					if (isInList(blockProtectedList, sblock.getBlockData()))
+					if (isInList(blockProtectedList, sblock.getBlockState()))
 						cannonBlocks.getProtectedBlocks().add(BlockVector3.at(x, y, z));
 
 					// #############  find the min and max for the craft
@@ -385,17 +376,17 @@ public class DesignStorage
 					// #############  engines ########################
 					if (sblock.compareMaterial(blockEngine)) {
 						// the id does not matter
-						cannonBlocks.getEngines().add(new SimpleBlock(x, y, z, sblock.getBlockData().clone()));
+						cannonBlocks.getEngines().add(new SimpleBlock(x, y, z, sblock.getBlockState()));
 					}
 					// #############  chests ########################
 					else if (sblock.compareMaterial(blockChest)) {
 						// the id does not matter
-						cannonBlocks.getChest().add(new SimpleBlock(x, y, z, sblock.getBlockData().clone()));
+						cannonBlocks.getChest().add(new SimpleBlock(x, y, z, sblock.getBlockState()));
 					}
 					// #############  sign ########################
 					else if (sblock.compareMaterial(blockSign)) {
 						// the id does not matter, but the data is important for signs
-						cannonBlocks.getSign().add(new SimpleBlock(x, y, z, sblock.getBlockData().clone()));
+						cannonBlocks.getSign().add(new SimpleBlock(x, y, z, sblock.getBlockState()));
 					}
 					// #############  hull of the ship
 					else {
@@ -448,7 +439,7 @@ public class DesignStorage
 			IroncladUtil.roateBlockFacingClockwise(blockEngine);
             IroncladUtil.roateBlockFacingClockwise(blockChest);
             IroncladUtil.roateBlockFacingClockwise(blockSign);
-			for (BlockData aBlockProtectedList : blockProtectedList) {
+			for (BlockState aBlockProtectedList : blockProtectedList) {
                 IroncladUtil.roateBlockFacingClockwise(aBlockProtectedList);
 			}
 
@@ -524,13 +515,13 @@ public class DesignStorage
         }
     }
 	
-	private boolean isInList(List<BlockData> list, BlockData block)
+	private boolean isInList(List<BlockState> list, BlockStateHolder block)
 	{
 		if (block == null) return true;
 		
-		for (BlockData listBlock : list)
+		for (BlockStateHolder listBlock : list)
 		{
-			if (listBlock != null && listBlock.getMaterial().equals(block.getMaterial()))
+			if (listBlock != null && listBlock.getBlockType().getMaterial().equals(block.getBlockType().getMaterial()))
 				return true;
 		}
 		return false;
@@ -586,11 +577,11 @@ public class DesignStorage
 		return false;
 	}
 
-	public List<Material> getCraftBlockMaterials() {
+	public List<BlockMaterial> getCraftBlockMaterials() {
 		return craftBlockMaterials;
 	}
 
-	public boolean isCraftBlockMaterial(Material material) {
-		return material != Material.AIR && craftBlockMaterials.contains(material);
+	public boolean isCraftBlockMaterial(BlockMaterial material) {
+		return !material.isAir() && craftBlockMaterials.contains(material);
 	}
 }

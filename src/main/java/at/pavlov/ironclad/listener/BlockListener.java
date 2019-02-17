@@ -4,6 +4,8 @@ package at.pavlov.ironclad.listener;
 import at.pavlov.ironclad.Ironclad;
 import at.pavlov.ironclad.Enum.BreakCause;
 import at.pavlov.ironclad.craft.Craft;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.world.block.BlockState;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -40,8 +42,8 @@ public class BlockListener implements Listener
         List<Block> blocks = event.blockList();
         for (int i = 0; i < blocks.size(); i++) {
             Block block = blocks.get(i);
-            for (BlockData unbreakableBlock : plugin.getMyConfig().getUnbreakableBlocks()) {
-                if (unbreakableBlock.matches(block.getBlockData())) {
+            for (BlockState unbreakableBlock : plugin.getMyConfig().getUnbreakableBlocks()) {
+                if (unbreakableBlock.equals(BukkitAdapter.adapt(block.getBlockData()))) {
                     blocks.remove(i--);
                 }
             }

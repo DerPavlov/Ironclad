@@ -482,7 +482,7 @@ public class CraftManager
 	public Craft getCraft(Location craftBlock, UUID owner, boolean silent)
 	{
         // is this block material used for a craft design
-        if (craftBlock.getBlock() == null || !plugin.getDesignStorage().isCraftBlockMaterial(craftBlock.getBlock().getBlockData().getMaterial()))
+        if (craftBlock.getBlock() == null || !plugin.getDesignStorage().isCraftBlockMaterial(BukkitAdapter.adapt(craftBlock.getBlock().getBlockData()).getBlockType().getMaterial()))
             return null;
 
         long startTime = System.nanoTime();
@@ -594,7 +594,7 @@ public class CraftManager
 	{
 
 	    // is this block material used for a craft design
-        if (craftBlock.getBlock() == null || !plugin.getDesignStorage().isCraftBlockMaterial(craftBlock.getBlock().getBlockData().getMaterial()))
+        if (craftBlock.getBlock() == null || !plugin.getDesignStorage().isCraftBlockMaterial(BukkitAdapter.adapt(craftBlock.getBlock().getBlockData()).getBlockType().getMaterial()))
             return null;
 
 		World world = craftBlock.getWorld();
@@ -613,7 +613,7 @@ public class CraftManager
                 }
 				for (SimpleBlock designBlock : designBlockList) {
 					// compare blocks
-					if (designBlock.compareMaterialAndFacing(craftBlock.getBlock().getBlockData())) {
+					if (designBlock.compareMaterialAndFacing(BukkitAdapter.adapt(craftBlock.getBlock().getBlockData()))) {
 						// this block is same as in the design, get the offset
 						BlockVector3 offset = designBlock.subtractInverted(craftBlock).toVector();
 
