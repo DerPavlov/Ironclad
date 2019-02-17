@@ -2,7 +2,7 @@ general:
   #name of the craft. This will spawn of on the craft sign - therefore keep it short
   designName: "Indiaman"
   #This will be used for messages and will replace CRAFT in all messages. (e.g. You created a classic craft)
-  messageName: "Indiaman craft"
+  messageName: "indiaman craft"
   #a short description of the craft
   description: "A large craft"
   #last user of craft becomes to it's owner (craft is public)
