@@ -6,8 +6,10 @@ import java.util.List;
 
 import at.pavlov.ironclad.container.SoundHolder;
 import at.pavlov.ironclad.utils.IroncladUtil;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.math.Vector3;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
@@ -133,7 +135,7 @@ public class CraftDesign
 		CraftBlocks cannonBlocks  = cannonBlockMap.get(craft.getCraftDirection());
 		if (cannonBlocks != null) {
 			System.out.println("CraftCenter" + cannonBlocks.getCraftCenter());
-			return IroncladUtil.toLocation(cannonBlocks.getCraftCenter().add(craft.getOffsetBlock()),craft.getWorldBukkit());
+			return BukkitAdapter.adapt(craft.getWorldBukkit(), cannonBlocks.getCraftCenter().add(craft.getOffsetBlock()));
 		}
 
 		System.out.println("[Ironclad] missing location for craft design " + craft.getCraftName());
@@ -150,7 +152,7 @@ public class CraftDesign
     {
     	CraftBlocks cannonBlocks  = cannonBlockMap.get(craft.getCraftDirection());
     	if (cannonBlocks != null) {
-    		return IroncladUtil.toLocation(cannonBlocks.getRotationCenter().add(craft.getOffsetBlock()),craft.getWorldBukkit());
+    		return BukkitAdapter.adapt(craft.getWorldBukkit(), cannonBlocks.getRotationCenter().add(craft.getOffsetBlock()));
     	}
 
     	System.out.println("[Ironclad] missing location for craft design " + craft.getCraftName());
@@ -206,7 +208,7 @@ public class CraftDesign
 			for (SimpleBlock block : cannonBlocks.getAllCraftBlocks())
 			{
 				BlockVector3 vect = block.toVector();
-				locList.add(IroncladUtil.toLocation(vect.add(craft.getOffsetBlock()),craft.getWorldBukkit()));
+				locList.add(BukkitAdapter.adapt(craft.getWorldBukkit(), vect.add(craft.getOffsetBlock())));
 			}
 		}
 		return locList;
@@ -225,7 +227,7 @@ public class CraftDesign
     	{
     		for (BlockVector3 vect : cannonBlocks.getProtectedBlocks())
     		{
-    			locList.add(IroncladUtil.toLocation(vect.add(craft.getOffsetBlock()),craft.getWorldBukkit()));
+    			locList.add(BukkitAdapter.adapt(craft.getWorldBukkit(), vect.add(craft.getOffsetBlock())));
     		}
     	}
 		return locList;
@@ -244,7 +246,7 @@ public class CraftDesign
         {
             for (BlockVector3 vect : cannonBlocks.getHullBlocks())
             {
-                locList.add(IroncladUtil.toLocation(vect.add(craft.getOffsetBlock()),craft.getWorldBukkit()));
+                locList.add(BukkitAdapter.adapt(craft.getWorldBukkit(), vect.add(craft.getOffsetBlock())));
             }
         }
         return locList;

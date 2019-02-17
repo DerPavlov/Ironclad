@@ -1105,30 +1105,6 @@ public class IroncladUtil
         }
     }
 
-    public static Vector3 toWorldEditVector(org.bukkit.util.Vector bukkitVector){
-        return Vector3.at(bukkitVector.getX(), bukkitVector.getY(), bukkitVector.getZ());
-    }
-
-    public static org.bukkit.util.Vector toBukkitVector(Vector3 worldeditVector){
-        return new org.bukkit.util.Vector(worldeditVector.getX(), worldeditVector.getY(), worldeditVector.getZ());
-    }
-
-    public static BlockVector3 toBlockVector3(org.bukkit.util.Vector bukkitVector){
-        return BlockVector3.at(bukkitVector.getBlockX(), bukkitVector.getBlockY(), bukkitVector.getBlockZ());
-    }
-
-    public static BlockVector3 toBlockVector3(Vector3 vector3){
-        return BlockVector3.at(vector3.getX(), vector3.getY(), vector3.getZ());
-    }
-
-    public static Vector3 toVector3(BlockVector3 blockvector3){
-        return Vector3.at(blockvector3.getX(), blockvector3.getY(), blockvector3.getZ());
-    }
-
-    public static Location toLocation (BlockVector3 worldeditVector, World world){
-        return new Location(world, worldeditVector.getX(), worldeditVector.getY(), worldeditVector.getZ());
-    }
-
     public static Location toLocation (Vector3 worldeditVector, World world){
         return new Location(world, worldeditVector.getX(), worldeditVector.getY(), worldeditVector.getZ());
     }
@@ -1139,19 +1115,4 @@ public class IroncladUtil
             newList.add(vect.subtract(sub));
         return newList;
     }
-
-//    public boolean containsChunk(World world, Chunk chunk) {
-//
-//        if (!chunk.getWorld().equals(world)) {
-//            return false;
-//        }
-//        int minChunkX = min.getBlockX() >> 4;
-//        int minChunkZ = min.getBlockZ() >> 4;
-//        int maxChunkX = max.getBlockX() >> 4;
-//        int maxChunkZ = max.getBlockZ() >> 4;
-//
-//        return (chunk.getX() >= minChunkX && chunk.getX() <= maxChunkX
-//                && chunk.getZ() >= minChunkZ && chunk.getZ() <= maxChunkZ);
-//
-//    }
 }

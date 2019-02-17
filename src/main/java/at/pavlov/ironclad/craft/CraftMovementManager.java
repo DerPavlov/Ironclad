@@ -12,6 +12,7 @@ import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.world.block.BlockState;
+import com.sk89q.worldedit.world.block.BlockStateHolder;
 import com.sk89q.worldedit.world.block.BlockTypes;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -167,46 +168,47 @@ public class CraftMovementManager {
         plugin.logDebug("Time update snapshot get blocks: " + new DecimalFormat("0.00").format((System.nanoTime() - startTime)/1000000.0) + "ms");
         startTime = System.nanoTime();
 
+        HashMap<BlockVector3, BlockStateHolder> blockmap = new HashMap<>();
         for (SimpleBlock designBlock : craft.getCraftDesign().getAllCraftBlocks(craft)) {
             oldBlock = bworld.getBlockAt(designBlock.getLocX(), designBlock.getLocY(), designBlock.getLocZ());
+            blockmap.put(BukkitAdapter.asBlockVector(oldBlock.getLocation()), BukkitAdapter.adapt(oldBlock.getBlockData()));
         }
 
-        plugin.logDebug("oldblock block: " + oldBlock);
         plugin.logDebug("Time update world get blocks: " + new DecimalFormat("0.00").format((System.nanoTime() - startTime)/1000000.0) + "ms");
+        //plugin.logDebug("oldblock block: " + blockmap);
         startTime = System.nanoTime();
 
         //perform craft calculations
         for (SimpleBlock designBlock : craft.getCraftDesign().getAllCraftBlocks(craft)) {
-            oldBlock = bworld.getBlockAt(designBlock.getLocX(), designBlock.getLocY(), designBlock.getLocZ());
-            //Ironclad.getPlugin().logDebug("old block " + oldBlock);
-            if (oldBlock.isEmpty() || oldBlock.getBlockData() instanceof Levelled) {
-                Ironclad.getPlugin().logDebug("Found destroyed craft block " + oldBlock);
-            } else {
-                // move the craft to the new location. oldblock was updated to the new location
+//            oldBlock = bworld.getBlockAt(designBlock.getLocX(), designBlock.getLocY(), designBlock.getLocZ());
+//            //Ironclad.getPlugin().logDebug("old block " + oldBlock);
+//            if (oldBlock.isEmpty() || oldBlock.getBlockData() instanceof Levelled) {
+//                Ironclad.getPlugin().logDebug("Found destroyed craft block " + oldBlock);
+//            } else {
+//                // move the craft to the new location. oldblock was updated to the new location
                 targetLoc = craft.transformToFutureLocation(designBlock.toVector());
-
                 targetBlock = bworld.getBlockAt(targetLoc.getBlockX(), targetLoc.getBlockX(), targetLoc.getBlockZ());
-                if (targetBlock == null) {
-                    //Ironclad.getPlugin().logDebug("target block " + targetLoc + " does not exist in snapshot");
-                    continue;
-                }
-
-                // target block should be Air or a liquid
-                if (!craft.isLocationPartOfCraft(targetLoc) && !(targetBlock.isEmpty() || targetBlock.getBlockData() instanceof Levelled)) {
-                    Ironclad.getPlugin().logDebug("Found blocking block at" + targetBlock);
-                    successful = false;
-                    break;
-                }
+//                if (targetBlock == null) {
+//                    //Ironclad.getPlugin().logDebug("target block " + targetLoc + " does not exist in snapshot");
+//                    continue;
+//                }
+//
+//                // target block should be Air or a liquid
+//                if (!craft.isLocationPartOfCraft(targetLoc) && !(targetBlock.isEmpty() || targetBlock.getBlockData() instanceof Levelled)) {
+//                    Ironclad.getPlugin().logDebug("Found blocking block at" + targetBlock);
+//                    successful = false;
+//                    break;
+//                }
                 //old blocks of the craft
                 oldBlocks.add(designBlock.toVector());
                 //just update blocks which are not the same
-                if (!targetBlock.getBlockData().equals(oldBlock.getBlockData())) {
+                if (!targetBlock.getBlockData().equals(designBlock.getBlockData())) {
                     //Ironclad.getPlugin().logDebug("block needs update " + targetBlock);
-                    updateBlocks.add(new SimpleBlock(targetLoc, oldBlock.getBlockData()));
+                    updateBlocks.add(new SimpleBlock(targetLoc, designBlock.getBlockData()));
                     //blocks that are overwritten by a new block
                     overwrittenBlocks.add(targetLoc);
                 }
-            }
+//            }
         }
 
         plugin.logDebug("Time update search blocks: " + new DecimalFormat("0.00").format((System.nanoTime() - startTime)/1000000.0) + "ms");

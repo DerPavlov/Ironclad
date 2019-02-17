@@ -498,7 +498,10 @@ public class DesignStorage
 	 */
 	private void copyDefaultDesigns()
 	{
-		copyFile("classic");
+		copyFile("frigate");
+		copyFile("galleon");
+		copyFile("manowar");
+		copyFile("indiaman");
 	}
 
     /**

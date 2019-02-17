@@ -7,6 +7,7 @@ import at.pavlov.ironclad.Enum.BreakCause;
 import at.pavlov.ironclad.Ironclad;
 import at.pavlov.ironclad.container.SimpleEntity;
 import at.pavlov.ironclad.utils.IroncladUtil;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.math.Vector3;
 import org.bukkit.*;
@@ -756,11 +757,11 @@ public class Craft implements Cloneable {
 
     public BlockVector3 getFutureCraftOffset(){
         //todo add rotation
-        return IroncladUtil.toBlockVector3(this.getOffset().add(getTravelVector()));
+        return this.getOffset().add(getTravelVector()).toBlockPoint();
     }
 
     public Location getFutureLocation(Location start){
-        Location loc = start.add(IroncladUtil.toBukkitVector(getTravelVector()));
+        Location loc = start.add(BukkitAdapter.adapt(this.getWorldBukkit(), getTravelVector()));
         //todo rotation
         return loc;
     }
@@ -773,7 +774,7 @@ public class Craft implements Cloneable {
 
     public Location transformToFutureLocation(Location loc){
         Ironclad.getPlugin().logDebug("CraftLoc " + loc);
-        return IroncladUtil.toLocation(transformToFutureLocation(IroncladUtil.toWorldEditVector(loc.toVector())), loc.getWorld());
+        return IroncladUtil.toLocation(transformToFutureLocation(BukkitAdapter.asVector(loc)), loc.getWorld());
     }
 
     public Vector3 transformToFutureLocation(Vector3 vec){
@@ -832,7 +833,7 @@ public class Craft implements Cloneable {
      */
     public BlockVector3 getOffsetBlock()
     {
-        return IroncladUtil.toBlockVector3(offset);
+        return offset.toBlockPoint();
     }
 
     public void setOffset(Vector3 offset)

@@ -19,6 +19,7 @@ import at.pavlov.ironclad.listener.*;
 import at.pavlov.ironclad.craft.CraftMovementManager;
 import at.pavlov.ironclad.scheduler.FakeBlockHandler;
 import at.pavlov.ironclad.utils.IroncladUtil;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import net.milkbowl.vault.economy.Economy;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -372,7 +373,7 @@ public final class Ironclad extends JavaPlugin
 	}
 
 	public void spawnCraft(CraftDesign craftDesign, Location location, BlockFace direction, UUID playerUID){
-		Craft craft = new Craft(craftDesign, location.getWorld().getUID(), IroncladUtil.toWorldEditVector(location.toVector()), direction, playerUID);
+		Craft craft = new Craft(craftDesign, location.getWorld().getUID(), BukkitAdapter.asVector(location), direction, playerUID);
 		craft.create();
 		//this.getCraftManager().createCraft(craft, true);
 	}

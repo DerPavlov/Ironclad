@@ -2,8 +2,10 @@ package at.pavlov.ironclad.container;
 
 
 import at.pavlov.ironclad.utils.IroncladUtil;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.math.Vector3;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -112,7 +114,7 @@ public class SimpleBlock implements Cloneable
 	 */
 	public boolean compareMaterialAndLoc(Block block, BlockVector3 offset)
 	{
-		if (toVector().add(offset).equals(IroncladUtil.toBlockVector3(block.getLocation().toVector())))
+		if (toVector().add(offset).equals(BukkitAdapter.asBlockVector(block.getLocation())))
 		{
 			return compareMaterial(block.getBlockData());
 		}
