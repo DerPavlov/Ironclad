@@ -867,7 +867,7 @@ public class Craft implements Cloneable {
 
     public void updateTravelVector(){
         this.travelVector = IroncladUtil.directionToVector(this.yaw, this.pitch, this.velocity);
-        System.out.println("getTravelVector: " + travelVector + " Yaw " + this.yaw);
+        //System.out.println("getTravelVector: " + travelVector + " Yaw " + this.yaw);
     }
 
     public Vector3 getTravelVector(){

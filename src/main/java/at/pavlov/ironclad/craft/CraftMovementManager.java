@@ -66,11 +66,11 @@ public class CraftMovementManager {
         {
             public void run()
             {
-                long startTime = System.nanoTime();
+                //long startTime = System.nanoTime();
                 updateCraftMovement();
-                double time = (System.nanoTime() - startTime)/1000000.0;
-                if  (time > 1.)
-                    plugin.logDebug("Time update craft movement: " + new DecimalFormat("0.00").format(time) + "ms");
+                //double time = (System.nanoTime() - startTime)/1000000.0;
+                //if  (time > 1.)
+                //    plugin.logDebug("Time update craft movement: " + new DecimalFormat("0.00").format(time) + "ms");
             }
         }, 1L, 1L);
     }
@@ -79,7 +79,6 @@ public class CraftMovementManager {
         if (asyncTask != null)
             return;
 
-        long startTimeFull = System.nanoTime();
         long startTime = System.nanoTime();
 
         //search for the craft which is waiting the longest
@@ -97,8 +96,8 @@ public class CraftMovementManager {
             return;
 
         //Worldedit
-        BlockVector3 dim = craft.getCraftDimensions();
-        plugin.logDebug("craft dimensions " + dim);
+        //BlockVector3 dim = craft.getCraftDimensions();
+        //plugin.logDebug("craft dimensions " + dim);
 
         craft.setLastMoved(System.currentTimeMillis());
         craft.setProcessing(true);
@@ -143,6 +142,8 @@ public class CraftMovementManager {
 
         //plugin.logDebug("oldblock block: " + blockmap);
 
+
+        long startTimeFull = System.nanoTime();
         startTime = System.nanoTime();
 
         //perform craft calculations
@@ -207,7 +208,7 @@ public class CraftMovementManager {
 
         craft.movementPerformed();
 
-        Bukkit.broadcastMessage("Time update move blocks: " + new DecimalFormat("0.00").format((System.nanoTime() - startTimeFull)/1000000.0) + "ms");
+        Bukkit.broadcastMessage("Time update " + craft.getCraftName() + ": " + new DecimalFormat("0.00").format((System.nanoTime() - startTimeFull)/1000000.0) + "ms");
 
 
         //plugin.logDebug("--- Final Craft Offset: " + craft.getOffset() + " Facing " + craft.getCraftDirection());
