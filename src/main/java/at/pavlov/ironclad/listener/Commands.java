@@ -601,7 +601,7 @@ public class Commands implements TabExecutor
             switch (cmd){
                 case INFO:{
                     userMessages.sendMessage(MessageEnum.CraftInfo, player, craft);
-                    IroncladUtil.playSound(craft.getMuzzle(), craft.getCraftDesign().getSoundSelected());
+                    IroncladUtil.playSound(craft.getRotationCenter(), craft.getCraftDesign().getSoundSelected());
                     break;
                 }
                 case DISMANTLE:{
@@ -611,7 +611,7 @@ public class Commands implements TabExecutor
                 case BUY_CRAFT:{
                     if (craft.isPaid()){
                         userMessages.sendMessage(MessageEnum.ErrorAlreadyPaid, player, craft);
-                        IroncladUtil.playErrorSound(craft.getMuzzle());
+                        IroncladUtil.playErrorSound(craft.getRotationCenter());
                     }
                     else{
                         //redraw money if required
@@ -619,13 +619,13 @@ public class Commands implements TabExecutor
                             EconomyResponse r = plugin.getEconomy().withdrawPlayer(player, craft.getCraftDesign().getEconomyBuildingCost());
                             if (!r.transactionSuccess()) {
                                 userMessages.sendMessage(MessageEnum.ErrorNoMoney, player, craft);
-                                IroncladUtil.playErrorSound(craft.getMuzzle());
+                                IroncladUtil.playErrorSound(craft.getRotationCenter());
                             }
                             else {
                                 craft.boughtByPlayer(player.getUniqueId());
                                 //IroncladUtil.playSound();
                                 userMessages.sendMessage(MessageEnum.CmdPaidCraft, player, craft);
-                                IroncladUtil.playSound(craft.getMuzzle(), craft.getCraftDesign().getSoundSelected());
+                                IroncladUtil.playSound(craft.getRotationCenter(), craft.getCraftDesign().getSoundSelected());
                             }
                         }
                     }

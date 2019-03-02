@@ -17,7 +17,6 @@ import com.sk89q.worldedit.world.block.BlockTypes;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Directional;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
@@ -341,7 +340,7 @@ public class IroncladUtil
             case 180:
                 return IroncladUtil.roateBlockFacingClockwise(IroncladUtil.roateBlockFacingClockwise(blockData));
             case 270:
-                return IroncladUtil.roateBlockFacingCouterClockwise(blockData);
+                return IroncladUtil.rotateBlockFacingCouterClockwise(blockData);
             default:
                 Ironclad.getPlugin().logSevere("incorrect craft travel direction  " + diff);
                 return blockData;
@@ -1086,7 +1085,7 @@ public class IroncladUtil
      * @param blockData blockData
      * @return rotated blockData
      */
-    public static BlockStateHolder roateBlockFacingCouterClockwise(BlockStateHolder blockData){
+    public static BlockStateHolder rotateBlockFacingCouterClockwise(BlockStateHolder blockData){
         if (blockData instanceof Directional){
             ((Directional) blockData).setFacing(roatateFaceOpposite(((Directional) blockData).getFacing()));
         }
@@ -1106,10 +1105,6 @@ public class IroncladUtil
             System.out.println("[Ironclad] block data '" + str + "' is not valid");
             return BlockTypes.AIR.getDefaultState();
         }
-    }
-
-    public static Location toLocation (Vector3 worldeditVector, World world){
-        return new Location(world, worldeditVector.getX(), worldeditVector.getY(), worldeditVector.getZ());
     }
 
     public static ArrayList<BlockVector3> subtractBlockVectorList(List<BlockVector3> blockVectorList, BlockVector3 sub){

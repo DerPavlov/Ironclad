@@ -15,13 +15,14 @@ Commands:
   CraftNotFound: 'RED [Ironclad] Craft not found.'
   BuyCraft: 'YELLOW [Ironclad] Click the craft buy it. This will withdraw money from your account'
   PaidCraft: 'GREEN [Ironclad] Craft fee paid. GOLD BUILD_COSTS GREEN has be withdrawn from your bank account.'
-  ClaimCraftsStarted: 'YELLOW [Ironclad] Claiming crafts in the surrounding. This might take a few seconds.'
+  ClaimCraftsStarted: 'YELLOW [Ironclad] Clcruising crafts in the surrounding. This might take a few seconds.'
   ClaimCraftsFinished: 'GREEN [Ironclad] Successfully claimed all crafts in the surrounding.'
 
-Piloting:
-  EnablePilotingMode: 'GREEN [Ironclad] Entering piloting mode. Hold SHIFT to change direction.'
-  DisablePilotingMode: 'RED [Ironclad] Leaving piloting mode'
-  TooFarForPilotingMode: 'YELLOW [Ironclad] You need to be closer to the CRAFT for the piloting mode'
+Cruising:
+  EnableCruisingMode: 'GREEN [Ironclad] Entering cruising mode. Hold SHIFT to change direction.'
+  DisableCruisingMode: 'RED [Ironclad] Leaving cruising mode'
+  TooFarForCruisingMode: 'YELLOW [Ironclad] You need to be closer to the CRAFT for the cruising mode'
+  SettingCombinedAngle: 'YELLOW [Ironclad] New angle h: GOLD HDEGREE degree YELLOW and v: GOLD VDEGREE degree'
 
 Craft:
   Created: 'GREEN [Ironclad] You created a GOLD CRAFT'

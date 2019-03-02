@@ -38,7 +38,7 @@ public class Craft implements Cloneable {
     private double pitch;
     private double velocity;
     //direction the craft is moving (updated from yaw, pitch, velocity)
-    private Vector3 travelVector;
+    private Vector3 cruisingVector;
     // the location is describe by the offset of the craft and the design
     private Vector3 offset;
     // world of the craft
@@ -58,6 +58,8 @@ public class Craft implements Cloneable {
     private boolean isValid;
     // time point of the last movement of the craft
     private long lastMoved = 0;
+    // last time the angle of the ship has been updated by the cruising mode
+    private long lastAngleChange = 0;
     // currently changed by async thread
     private boolean isProcessing;
     // the player which has used the craft last
@@ -106,6 +108,7 @@ public class Craft implements Cloneable {
         craftHeight = dim.getBlockY();
 
         this.lastMoved = System.currentTimeMillis();
+        this.lastAngleChange = System.currentTimeMillis();
         this.isProcessing = false;
 
         this.databaseId = UUID.randomUUID();
@@ -140,7 +143,7 @@ public class Craft implements Cloneable {
      * returns the location of the muzzle
      * @return location of the muzzle
      */
-    public Location getMuzzle()
+    public Location getRotationCenter()
     {
           return design.getRotationCenter(this);
     }
@@ -416,7 +419,7 @@ public class Craft implements Cloneable {
      */
     public void movementPerformed(){
         setProcessing(false);
-        move(getTravelVector());
+        move(getCruisingVector());
     }
 
     /**
@@ -757,11 +760,11 @@ public class Craft implements Cloneable {
 
     public BlockVector3 getFutureCraftOffset(){
         //todo add rotation
-        return this.getOffset().add(getTravelVector()).toBlockPoint();
+        return this.getOffset().add(getCruisingVector()).toBlockPoint();
     }
 
     public Location getFutureLocation(Location start){
-        Location loc = start.add(BukkitAdapter.adapt(this.getWorldBukkit(), getTravelVector()));
+        Location loc = start.add(BukkitAdapter.adapt(this.getWorldBukkit(), getCruisingVector()));
         //todo rotation
         return loc;
     }
@@ -774,11 +777,11 @@ public class Craft implements Cloneable {
 
     public Location transformToFutureLocation(Location loc){
         Ironclad.getPlugin().logDebug("CraftLoc " + loc);
-        return IroncladUtil.toLocation(transformToFutureLocation(BukkitAdapter.asVector(loc)), loc.getWorld());
+        return BukkitAdapter.adapt(loc.getWorld(), transformToFutureLocation(BukkitAdapter.asVector(loc)));
     }
 
     public Vector3 transformToFutureLocation(Vector3 vec){
-        return IroncladUtil.rotateDirection(getCraftDirection(), getFutureDirection(), vec.subtract(getOffset())).add(offset).add(getTravelVector());
+        return IroncladUtil.rotateDirection(getCraftDirection(), getFutureDirection(), vec.subtract(getOffset())).add(offset).add(getCruisingVector());
     }
 
     public BlockVector3 transformToFutureLocation(BlockVector3 vec){
@@ -865,13 +868,13 @@ public class Craft implements Cloneable {
             this.setOwner(lastUser);
     }
 
-    public void updateTravelVector(){
-        this.travelVector = IroncladUtil.directionToVector(this.yaw, this.pitch, this.velocity);
-        //System.out.println("getTravelVector: " + travelVector + " Yaw " + this.yaw);
+    public void updateCruisingVector(){
+        this.cruisingVector = IroncladUtil.directionToVector(this.yaw, this.pitch, this.velocity);
+        //System.out.println("getCruisingVector: " + cruisingVector + " Yaw " + this.yaw);
     }
 
-    public Vector3 getTravelVector(){
-        return this.travelVector;
+    public Vector3 getCruisingVector(){
+        return this.cruisingVector;
     }
 
     public boolean isChunkLoaded(){
@@ -1073,4 +1076,31 @@ public class Craft implements Cloneable {
         isProcessing = processing;
     }
 
+    public long getLastAngleChange() {
+        return lastAngleChange;
+    }
+
+    public void setLastAngleChange(long lastAngleChange) {
+        this.lastAngleChange = lastAngleChange;
+    }
+
+    public void angleHasChanged(){
+        lastAngleChange = System.currentTimeMillis();
+    }
+
+    public double getMaxYaw(){
+        return this.getYaw() + getCraftDesign().getMaxHorizontalAngle();
+    }
+
+    public double getMinYaw(){
+        return this.getYaw() + getCraftDesign().getMinHorizontalAngle();
+    }
+
+    public double getMaxPitch(){
+        return getCraftDesign().getMaxVerticalAngle();
+    }
+
+    public double getMinPitch(){
+        return getCraftDesign().getMinVerticalAngle();
+    }
 }

@@ -34,6 +34,14 @@ public class CraftDesign
 
 	//angles
 	private BlockFace schematicDirection;
+	private double maxHorizontalAngle;
+	private double minHorizontalAngle;
+	private double maxVerticalAngle;
+	private double minVerticalAngle;
+	private double angleStepSize;
+	private double angleLargeStepSize;
+	private int angleUpdateSpeed;
+	private boolean angleUpdateMessage;
 
 	//realistic behavior
 	private double dismantlingDelay;
@@ -47,7 +55,7 @@ public class CraftDesign
 	private String permissionBuild;
 	private String permissionDismantle;
     private String permissionRename;
-    private String permissionPiloting;
+    private String permissionCruising;
 	
 	//accessRestriction
 	private boolean accessForOwnerOnly;
@@ -59,9 +67,11 @@ public class CraftDesign
     private SoundHolder soundCreate;
     private SoundHolder soundDestroy;
 	private SoundHolder soundDismantle;
+	private SoundHolder soundAngleChange;
+	private SoundHolder soundMove;
 	private SoundHolder soundSelected;
-	private SoundHolder soundEnablePilotingMode;
-	private SoundHolder soundDisablePilotingMode;
+	private SoundHolder soundEnableCruisingMode;
+	private SoundHolder soundDisableCruisingMode;
 
 	
 	//constructionblocks:
@@ -502,28 +512,28 @@ public class CraftDesign
 		this.dismantlingDelay = dismantlingDelay;
 	}
 
-	public SoundHolder getSoundEnablePilotingMode() {
-		return soundEnablePilotingMode;
+	public SoundHolder getSoundEnableCruisingMode() {
+		return soundEnableCruisingMode;
 	}
 
-	public void setSoundEnablePilotingMode(SoundHolder soundEnablePilotingMode) {
-		this.soundEnablePilotingMode = soundEnablePilotingMode;
+	public void setSoundEnableCruisingMode(SoundHolder soundEnableCruisingMode) {
+		this.soundEnableCruisingMode = soundEnableCruisingMode;
 	}
 
-	public SoundHolder getSoundDisablePilotingMode() {
-		return soundDisablePilotingMode;
+	public SoundHolder getSoundDisableCruisingMode() {
+		return soundDisableCruisingMode;
 	}
 
-	public void setSoundDisablePilotingMode(SoundHolder soundDisablePilotingMode) {
-		this.soundDisablePilotingMode = soundDisablePilotingMode;
+	public void setSoundDisableCruisingMode(SoundHolder soundDisableCruisingMode) {
+		this.soundDisableCruisingMode = soundDisableCruisingMode;
 	}
 
-	public String getPermissionPiloting() {
-		return permissionPiloting;
+	public String getPermissionCruising() {
+		return permissionCruising;
 	}
 
-	public void setPermissionPiloting(String permissionPiloting) {
-		this.permissionPiloting = permissionPiloting;
+	public void setPermissionCruising(String permissionCruising) {
+		this.permissionCruising = permissionCruising;
 	}
 
 	public int getCraftMaxLength() {
@@ -564,5 +574,85 @@ public class CraftDesign
 
 	public void setSchematicDirection(BlockFace schematicDirection) {
 		this.schematicDirection = schematicDirection;
+	}
+
+	public double getMaxHorizontalAngle() {
+		return maxHorizontalAngle;
+	}
+
+	public void setMaxHorizontalAngle(double maxHorizontalAngle) {
+		this.maxHorizontalAngle = maxHorizontalAngle;
+	}
+
+	public double getMinHorizontalAngle() {
+		return minHorizontalAngle;
+	}
+
+	public void setMinHorizontalAngle(double minHorizontalAngle) {
+		this.minHorizontalAngle = minHorizontalAngle;
+	}
+
+	public double getMaxVerticalAngle() {
+		return maxVerticalAngle;
+	}
+
+	public void setMaxVerticalAngle(double maxVerticalAngle) {
+		this.maxVerticalAngle = maxVerticalAngle;
+	}
+
+	public double getMinVerticalAngle() {
+		return minVerticalAngle;
+	}
+
+	public void setMinVerticalAngle(double minVerticalAngle) {
+		this.minVerticalAngle = minVerticalAngle;
+	}
+
+	public double getAngleStepSize() {
+		return angleStepSize;
+	}
+
+	public void setAngleStepSize(double angleStepSize) {
+		this.angleStepSize = angleStepSize;
+	}
+
+	public double getAngleLargeStepSize() {
+		return angleLargeStepSize;
+	}
+
+	public void setAngleLargeStepSize(double angleLargeStepSize) {
+		this.angleLargeStepSize = angleLargeStepSize;
+	}
+
+	public int getAngleUpdateSpeed() {
+		return angleUpdateSpeed;
+	}
+
+	public void setAngleUpdateSpeed(int angleUpdateSpeed) {
+		this.angleUpdateSpeed = angleUpdateSpeed;
+	}
+
+	public boolean isAngleUpdateMessage() {
+		return angleUpdateMessage;
+	}
+
+	public void setAngleUpdateMessage(boolean angleUpdateMessage) {
+		this.angleUpdateMessage = angleUpdateMessage;
+	}
+
+	public SoundHolder getSoundAngleChange() {
+		return soundAngleChange;
+	}
+
+	public void setSoundAngleChange(SoundHolder soundAngleChange) {
+		this.soundAngleChange = soundAngleChange;
+	}
+
+	public SoundHolder getSoundMove() {
+		return soundMove;
+	}
+
+	public void setSoundMove(SoundHolder soundMove) {
+		this.soundMove = soundMove;
 	}
 }

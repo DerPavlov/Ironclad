@@ -6,12 +6,8 @@ import at.pavlov.ironclad.craft.CraftManager;
 import at.pavlov.ironclad.craft.DesignStorage;
 import at.pavlov.ironclad.container.ItemHolder;
 import at.pavlov.ironclad.utils.IroncladUtil;
-import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.world.block.BlockState;
 import com.sk89q.worldedit.world.block.BlockStateHolder;
-import com.sk89q.worldedit.world.block.BlockTypes;
-import org.bukkit.Bukkit;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -42,7 +38,7 @@ public class Config
     private double keepAliveTeleportDistance;
 	//tools
 	private ItemHolder toolAdjust = new ItemHolder("minecraft:air");
-	private ItemHolder toolAutoaim = new ItemHolder("minecraft:clock");
+	private ItemHolder toolCruising = new ItemHolder("minecraft:clock");
 	private ItemHolder toolFiring = new ItemHolder("minecraft:flint_and_steel");
     private ItemHolder toolRamrod = new ItemHolder("minecraft:stick");
 	private ItemHolder toolRotating = new ItemHolder("minecraft:rail");
@@ -58,10 +54,10 @@ public class Config
     private BlockState imitatedExplosionMaterial;
     private double imitatedExplosionTime;
 
-    private boolean imitatedAimingEnabled;
-    private int imitatedAimingLineLength;
-    private BlockState imitatedAimingMaterial;
-    private double imitatedAimingTime;
+    private boolean imitatedCruisingEnabled;
+    private int imitatedCruisingLineLength;
+    private BlockState imitatedCruisingMaterial;
+    private double imitatedCruisingTime;
 
     private boolean imitatedFiringEffectEnabled;
     private BlockState imitatedFireMaterial;
@@ -123,7 +119,7 @@ public class Config
 
 		//tools
 		setToolAdjust(new ItemHolder(plugin.getConfig().getString("tools.adjust", "minecraft:air")));
-		setToolAutoaim(new ItemHolder(plugin.getConfig().getString("tools.autoaim", "minecraft:clock")));
+		setToolCruising(new ItemHolder(plugin.getConfig().getString("tools.autoaim", "minecraft:clock")));
 		setToolFiring(new ItemHolder(plugin.getConfig().getString("tools.firing", "minecraft:flint_and_steel")));
         setToolRamrod(new ItemHolder(plugin.getConfig().getString("tools.ramrod", "minecraft:stick")));
 		setToolRotating(new ItemHolder(plugin.getConfig().getString("tools.adjust", "minecraft:rail")));
@@ -141,11 +137,11 @@ public class Config
         setImitatedExplosionMaterial(IroncladUtil.createBlockData(plugin.getConfig().getString("imitatedEffects.explosion.material", "minecraft:glowstone")));
         setImitatedExplosionTime(plugin.getConfig().getDouble("imitatedEffects.explosion.time", 1.0));
 
-        //imitated aiming
-        setImitatedAimingEnabled(plugin.getConfig().getBoolean("imitatedEffects.aiming.enabled", false));
-        setImitatedAimingLineLength(plugin.getConfig().getInt("imitatedEffects.aiming.length", 5));
-        setImitatedAimingMaterial(IroncladUtil.createBlockData(plugin.getConfig().getString("imitatedEffects.aiming.block", "minecraft:glass")));
-        setImitatedAimingTime(plugin.getConfig().getDouble("imitatedEffects.aiming.time", 1.0));
+        //imitated cruising
+        setImitatedCruisingEnabled(plugin.getConfig().getBoolean("imitatedEffects.cruising.enabled", false));
+        setImitatedCruisingLineLength(plugin.getConfig().getInt("imitatedEffects.cruising.length", 5));
+        setImitatedCruisingMaterial(IroncladUtil.createBlockData(plugin.getConfig().getString("imitatedEffects.cruising.block", "minecraft:glass")));
+        setImitatedCruisingTime(plugin.getConfig().getDouble("imitatedEffects.cruising.time", 1.0));
 
         //imitated firing effects
         setImitatedFiringEffectEnabled(plugin.getConfig().getBoolean("imitatedEffects.firing.enabled", false));
@@ -240,14 +236,14 @@ public class Config
 		this.toolAdjust = toolAdjust;
 	}
 
-	public ItemHolder getToolAutoaim()
+	public ItemHolder getToolCruising()
 	{
-		return toolAutoaim;
+		return toolCruising;
 	}
 
-	void setToolAutoaim(ItemHolder toolAutoaim)
+	void setToolCruising(ItemHolder toolCruising)
 	{
-		this.toolAutoaim = toolAutoaim;
+		this.toolCruising = toolCruising;
 	}
 
 	public ItemHolder getToolRotating()
@@ -351,12 +347,12 @@ public class Config
         this.imitatedExplosionTime = imitatedExplosionTime;
     }
 
-    public BlockStateHolder getImitatedAimingMaterial() {
-        return imitatedAimingMaterial;
+    public BlockStateHolder getImitatedCruisingMaterial() {
+        return imitatedCruisingMaterial;
     }
 
-    public void setImitatedAimingMaterial(BlockState imitatedAimingMaterial) {
-        this.imitatedAimingMaterial = imitatedAimingMaterial;
+    public void setImitatedCruisingMaterial(BlockState imitatedCruisingMaterial) {
+        this.imitatedCruisingMaterial = imitatedCruisingMaterial;
     }
 
     public BlockStateHolder getImitatedFireMaterial() {
@@ -375,12 +371,12 @@ public class Config
         this.imitatedSmokeMaterial = imitatedSmokeMaterial;
     }
 
-    public boolean isImitatedAimingEnabled() {
-        return imitatedAimingEnabled;
+    public boolean isImitatedCruisingEnabled() {
+        return imitatedCruisingEnabled;
     }
 
-    public void setImitatedAimingEnabled(boolean imitatedAimingEnabled) {
-        this.imitatedAimingEnabled = imitatedAimingEnabled;
+    public void setImitatedCruisingEnabled(boolean imitatedCruisingEnabled) {
+        this.imitatedCruisingEnabled = imitatedCruisingEnabled;
     }
 
     public boolean isImitatedFiringEffectEnabled() {
@@ -391,12 +387,12 @@ public class Config
         this.imitatedFiringEffectEnabled = imitatedFiringEffectEnabled;
     }
 
-    public int getImitatedAimingLineLength() {
-        return imitatedAimingLineLength;
+    public int getImitatedCruisingLineLength() {
+        return imitatedCruisingLineLength;
     }
 
-    public void setImitatedAimingLineLength(int imitatedAimingLineLength) {
-        this.imitatedAimingLineLength = imitatedAimingLineLength;
+    public void setImitatedCruisingLineLength(int imitatedCruisingLineLength) {
+        this.imitatedCruisingLineLength = imitatedCruisingLineLength;
     }
 
     public double getImitatedBlockMinimumDistance() {
@@ -439,12 +435,12 @@ public class Config
         this.imitatedExplosionEnabled = imitatedExplosionEnabled;
     }
 
-    public double getImitatedAimingTime() {
-        return imitatedAimingTime;
+    public double getImitatedCruisingTime() {
+        return imitatedCruisingTime;
     }
 
-    public void setImitatedAimingTime(double imitatedAimingTime) {
-        this.imitatedAimingTime = imitatedAimingTime;
+    public void setImitatedCruisingTime(double imitatedCruisingTime) {
+        this.imitatedCruisingTime = imitatedCruisingTime;
     }
 
     public double getImitatedFiringTime() {

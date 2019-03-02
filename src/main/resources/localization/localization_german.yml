@@ -8,7 +8,6 @@ Error:
   AlreadyPaid: 'RED [Ironclad] Die Kanonenabgabe wurde für diese Kanone bereits bezahlt'
   PlayerNotFound: 'RED [Ironclad] Spielername nicht vorhanden.'
 
-
 Commands:
   SelectCraft: 'YELLOW [Ironclad] Bitte Kanone auswählen.'
   SelectBlock: 'YELLOW [Ironclad] Bitte Block auswählen.'
@@ -19,10 +18,11 @@ Commands:
   ClaimCannonsStarted: 'YELLOW [Ironclad] Inbesitznahme alle Kanonen in der Umgebung gestartet. Bitte warten'
   ClaimCannonsFinished: 'GREEN [Ironclad] Vorgang abgeschlossen.'
 
-Piloting:
-  EnablePilotingMode: 'GREEN [Ironclad] Pilotmodus gestartet. Halte SHIFT um die Richtung zu ändern.'
-  DisablePilotingMode: 'RED [Ironclad] Pilotmodus verlassen'
-  TooFarForPilotingMode: 'YELLOW [Ironclad] Du muss auf CRAFT sein um den Pilotmodus zu verwenden.'
+Cruising:
+  EnableCruisingMode: 'GREEN [Ironclad] Pilotmodus gestartet. Halte SHIFT um die Richtung zu ändern.'
+  DisableCruisingMode: 'RED [Ironclad] Pilotmodus verlassen'
+  TooFarForCruisingMode: 'YELLOW [Ironclad] Du muss auf CRAFT sein um den Pilotmodus zu verwenden.'
+  SettingCombinedAngle: 'YELLOW [Ironclad] Neuer Winkel h: HDEGREE° YELLOW und v: GOLD VDEGREE°'
 
 Craft:
   Fire: 'YELLOW [Ironclad] FEUER!'
@@ -48,7 +48,6 @@ Craft:
   ImitatedEffects:
     Enabled: 'GREEN [Ironclad] Alternativ Effekte aktiviert'
     Disabled: 'RED [Ironclad] Alternativ Effekte deaktiviert'
-
 
 Permission:
   ErrorBuild: 'RED [Ironclad] Du darfst diese CRAFT nicht bauen.'

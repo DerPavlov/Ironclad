@@ -90,7 +90,7 @@ public class IroncladAPI {
 
     public void setCannonAngle(Craft craft, double horizontal, double vertical)
     {
-        //plugin.getAiming().
+        //plugin.getCruising().
     }
 
     /**

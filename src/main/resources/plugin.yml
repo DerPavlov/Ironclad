@@ -27,7 +27,7 @@ permissions:
       ironclad.player.rename: true
       ironclad.player.build: true
       ironclad.player.dismantle: true
-      ironclad.player.piloting: true
+      ironclad.player.cruising: true
       ironclad.player.info: true
       ironclad.player.help: true
       ironclad.player.reset: true
@@ -50,7 +50,7 @@ permissions:
   ironclad.player.dismantle:
     description: Allows a player to deconstruct a ironclad when he is the owner
     default: false
-  ironclad.player.piloting:
+  ironclad.player.cruising:
     description: Allows a player to pilot an ironclad
     default: false
   ironclad.player.info:

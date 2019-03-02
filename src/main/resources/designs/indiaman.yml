@@ -20,6 +20,20 @@ signs:
 angles:
   #used to adjust in what direction a craft is facing in the schematic
   defaultHorizontalFacing: west
+  #min and max horizontal angles determine how far to the left and right the cannon can be aim
+  maxHorizontalAngle: 10.0
+  minHorizontalAngle: -10.0
+  #min and max vertical angles determine how far upwards or downwards the cannon can be aimed
+  maxVerticalAngle: 10.0
+  minVerticalAngle: -10.0
+  #each change of the angles will change angle by this amount
+  angleStepSize: 0.5
+  #rougher steps to change cannon direction more quickly
+  largeStepSize: 1.0
+  #how fast the cannons can be turned in seconds (fastest is 0.05s)
+  angleUpdateSpeed: 1
+  #a message with the new angles is displayed to the user while aiming
+  angleUpdateMessage: false
 
 realisticBehaviour:
   #dismantling takes some time (fits to the sound) [s]
@@ -37,8 +51,8 @@ permissions:
   #all the permissions required for a player to use certain parts of the craft
   #more information can be found here: http://dev.bukkit.org/bukkit-plugins/cannons/pages/installation-and-configuration/cannons-2-0-and-up/permissions/
   build: ironclad.player.build
-  #permission for piloting an ironclad
-  piloting: ironclad.player.piloting
+  #permission for cruising an ironclad
+  cruising: ironclad.player.cruising
   #for deconstructing a craft you need to be the owner and have this permission
   dismantle: ironclad.player.dismantle
   #give the craft a new name
@@ -63,6 +77,10 @@ sounds:
   selected: 'BLOCK_ANVIL_LAND:1:2'
   #destroying a craft
   destroy: 'ENTITY_ZOMBIE_ATTACK_IRON_DOOR:1:0.5'
+  #changing the angle of a cannon
+  angleChange: 'ENTITY_IRON_GOLEM_STEP:1:0.5'
+  #fuse igniting sound when firing
+  move: 'BLOCK_ANVIL_USE:5:1'
   #dismantling a craft
   dismantle: 'BLOCK_ANVIL_USE:1:0.5'
 

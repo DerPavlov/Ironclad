@@ -545,7 +545,7 @@ public class CraftManager
                     if (!silent)
                     {
                         userMessages.sendMessage(message, owner, craft);
-                        IroncladUtil.playSound(craft.getMuzzle(), craft.getCraftDesign().getSoundCreate());
+                        IroncladUtil.playSound(craft.getRotationCenter(), craft.getCraftDesign().getSoundCreate());
                     }
                     CraftAfterCreateEvent caceEvent = new CraftAfterCreateEvent(craft, player.getUniqueId());
                 	Bukkit.getServer().getPluginManager().callEvent(caceEvent);
@@ -556,7 +556,7 @@ public class CraftManager
                     if (!silent)
                     {
                         userMessages.sendMessage(message, player, craft);
-                        IroncladUtil.playErrorSound(craft.getMuzzle());
+                        IroncladUtil.playErrorSound(craft.getRotationCenter());
                     }
 
 

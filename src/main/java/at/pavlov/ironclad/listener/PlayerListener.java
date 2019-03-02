@@ -1,6 +1,9 @@
 package at.pavlov.ironclad.listener;
 
+import at.pavlov.ironclad.Enum.MessageEnum;
 import at.pavlov.ironclad.craft.Craft;
+import at.pavlov.ironclad.craft.CraftMovementManager;
+import at.pavlov.ironclad.utils.IroncladUtil;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -30,6 +33,7 @@ public class PlayerListener implements Listener
     private final UserMessages userMessages;
     private final Ironclad plugin;
     private final CraftManager cannonManager;
+    private final CraftMovementManager craftMovement;
 
     public PlayerListener(Ironclad plugin)
     {
@@ -37,6 +41,7 @@ public class PlayerListener implements Listener
         this.config = this.plugin.getMyConfig();
         this.userMessages = this.plugin.getMyConfig().getUserMessages();
         this.cannonManager = this.plugin.getCraftManager();
+        this.craftMovement = this.plugin.getCraftMovementManager();
     }
 
     @EventHandler
@@ -49,21 +54,21 @@ public class PlayerListener implements Listener
     public void PlayerMove(PlayerMoveEvent event)
     {
         // only active if the player is in moving mode
-//        Craft craft =  aiming.getCraftInAimingMode(event.getPlayer());
-//        if (!aiming.distanceCheck(event.getPlayer(), craft)) {
-//            userMessages.sendMessage(MessageEnum.PilotingModeTooFarAway, event.getPlayer());
-//            MessageEnum message = aiming.disableAimingMode(event.getPlayer(), craft);
-//            userMessages.sendMessage(message, event.getPlayer());
-//        }
+        Craft craft =  craftMovement.getCraftInCruisingMode(event.getPlayer());
+        if (!craft.isEntityOnShip(event.getPlayer())) {
+            userMessages.sendMessage(MessageEnum.CruisingModeTooFarAway, event.getPlayer());
+            MessageEnum message = craftMovement.disableCruisingMode(event.getPlayer(), craft);
+            userMessages.sendMessage(message, event.getPlayer());
+        }
     }
     /*
-    * remove Player from auto aiming list
+    * remove Player from auto cruising list
     * @param event - PlayerQuitEvent
     */
     @EventHandler
     public void LogoutEvent(PlayerQuitEvent event)
     {
-        //aiming.removePlayer(event.getPlayer());
+        craftMovement.disableCruisingMode(event.getPlayer());
     }
 
     /**
@@ -202,34 +207,34 @@ public class PlayerListener implements Listener
                 event.setCancelled(true);
 
 
-//            // ############ set cruising angle ################################
-//            if((config.getToolAdjust().equalsFuzzy(eventitem) || config.getToolAutoaim().equalsFuzzy(eventitem)))
-//            {
-//                plugin.logDebug("change craft angle");
-//                event.setCancelled(true);
-//
-//                if (plugin.getEconomy() != null && !craft.isPaid()){
-//                    // craft fee is not paid
-//                    userMessages.sendMessage(MessageEnum.ErrorNotPaid, player, craft);
-//                    IroncladUtil.playErrorSound(craft.getMuzzle());
-//                    return;
-//                }
-//
-//                MessageEnum message = aiming.changeAngle(craft, event.getAction(), event.getBlockFace(), player);
-//                userMessages.sendMessage(message, player, craft);
-//
-//                // update Signs
-//                craft.updateCraftSigns();
-//
-//                if(message!=null)
-//                    return;
-//            }
+            // ############ set cruising angle ################################
+            if((config.getToolAdjust().equalsFuzzy(eventitem) || config.getToolCruising().equalsFuzzy(eventitem)))
+            {
+                plugin.logDebug("change craft angle");
+                event.setCancelled(true);
+
+                if (plugin.getEconomy() != null && !craft.isPaid()){
+                    // craft fee is not paid
+                    userMessages.sendMessage(MessageEnum.ErrorNotPaid, player, craft);
+                    IroncladUtil.playErrorSound(craft.getRotationCenter());
+                    return;
+                }
+
+                MessageEnum message = craftMovement.changeAngle(craft, event.getAction(), event.getBlockFace(), player);
+                userMessages.sendMessage(message, player, craft);
+
+                // update Signs
+                craft.updateCraftSigns();
+
+                if(message!=null)
+                    return;
+            }
         }
-        //no craft found - maybe the player has click into the air to stop aiming
+        //no craft found - maybe the player has click into the air to stop cruising
         else if(craft == null && action == Action.RIGHT_CLICK_AIR && event.getHand() == EquipmentSlot.HAND){
-                // stop aiming mode when right clicking in the air
-//                if (config.getToolAutoaim().equalsFuzzy(eventitem))
-//                    aiming.pilotingMode(player, null, false);
+                // stop cruising mode when right clicking in the air
+                if (config.getToolCruising().equalsFuzzy(eventitem))
+                    craftMovement.cruisingMode(player, null);
                 plugin.getCommandListener().removeCraftSelector(player);
         }
     }

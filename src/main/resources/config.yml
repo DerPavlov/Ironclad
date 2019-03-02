@@ -27,9 +27,9 @@ tools:
   #the item a player needs to be holding to adjust the aim of a craft. Default is air.
   #minimum is id:data. Named items id:data:displayName:lore1:lore2:....
   ajust: 'minecraft:air'
-  #the item used to autoaim a craft. Default is clock
+  #the item used to pilot a craft. Default is compass
   #minimum is id:data. Named items id:data:displayName:lore1:lore2:....
-  autoaim: 'minecraft:clock'
+  cruising: 'minecraft:compass'
   #the item used to fire a craft. Default is flint and steel. Not every craft needs a FiringItem.
   #a data value of -1 means that every durability is accepted for flint and steel
   #minimum is id:data. Named items id:data:displayName:lore1:lore2:....
@@ -66,11 +66,11 @@ imitatedEffects:
     #how long the effect will be displayed [s]
     time: 2
 
-  #firing effect if the player is far away and display the aiming angle of the craft
-  aiming:
-    #set to true to create a line of blocks while aiming
+  #firing effect if the player is far away and display the cruising angle of the craft
+  cruising:
+    #set to true to create a line of blocks while cruising
     enabled: true
-    #how long the aiming vector will be. Longer means it is easier to see where you are aiming
+    #how long the cruising vector will be. Longer means it is easier to see where you are cruising
     length: 5
     #this block will used to display the angle
     block: 'minecraft:glass'

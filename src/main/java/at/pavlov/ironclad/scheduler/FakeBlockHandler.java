@@ -3,6 +3,9 @@ package at.pavlov.ironclad.scheduler;
 import at.pavlov.ironclad.Ironclad;
 import at.pavlov.ironclad.Enum.FakeBlockType;
 import at.pavlov.ironclad.container.FakeBlockEntry;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import com.sk89q.worldedit.math.Vector3;
+import com.sk89q.worldedit.world.block.BlockStateHolder;
 import org.bukkit.Location;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
@@ -18,7 +21,7 @@ public class FakeBlockHandler {
 
     private ArrayList<FakeBlockEntry> list = new ArrayList<FakeBlockEntry>();
 
-    private long lastAiming;
+    private long lastCruising;
     private long lastImpactPredictor;
 
 
@@ -36,7 +39,7 @@ public class FakeBlockHandler {
      */
     public void setupScheduler()
     {
-        //changing angles for aiming mode
+        //changing angles for cruising mode
         plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable()
         {
             public void run() {
@@ -90,8 +93,7 @@ public class FakeBlockHandler {
         {
             FakeBlockEntry next = iter.next();
             //if older and if the type matches
-            if (next.getStartTime() < (lastAiming - 50) && (next.getType() == FakeBlockType.AIMING)
-                    || next.getStartTime() < (lastImpactPredictor - 50) && (next.getType() == FakeBlockType.IMPACT_PREDICTOR))
+            if (next.getStartTime() < (lastCruising - 50) && (next.getType() == FakeBlockType.CRUISING))
             {
                 //send real block to player
                 Player player = next.getPlayerBukkit();
@@ -146,15 +148,15 @@ public class FakeBlockHandler {
      * @param length lenght of the line
      * @param player name of the player
      */
-    public void imitateLine(final Player player, Location loc, Vector direction, int offset, int length, BlockData blockData, FakeBlockType type, double duration)
+    public void imitateLine(final Player player, Location loc, Vector3 direction, int offset, int length, BlockStateHolder blockData, FakeBlockType type, double duration)
     {
         if(loc == null || player == null)
             return;
 
-        BlockIterator iter = new BlockIterator(loc.getWorld(), loc.toVector(), direction, offset, length);
+        BlockIterator iter = new BlockIterator(loc.getWorld(), loc.toVector(), new Vector(direction.getX(), direction.getY(), direction.getZ()), offset, length);
         while (iter.hasNext())
         {
-            sendBlockChangeToPlayer(player, iter.next().getLocation(), blockData, type, duration);
+            sendBlockChangeToPlayer(player, iter.next().getLocation(), BukkitAdapter.adapt(blockData), type, duration);
         }
 
     }
@@ -196,11 +198,8 @@ public class FakeBlockHandler {
                 list.add(fakeBlockEntry);
             }
 
-
-            if (type == FakeBlockType.IMPACT_PREDICTOR)
-                lastImpactPredictor = System.currentTimeMillis();
-            if (type == FakeBlockType.AIMING)
-                lastAiming = System.currentTimeMillis();
+            if (type == FakeBlockType.CRUISING)
+                lastCruising = System.currentTimeMillis();
 
         }
     }

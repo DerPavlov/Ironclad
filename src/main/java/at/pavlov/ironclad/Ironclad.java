@@ -81,7 +81,6 @@ public final class Ironclad extends JavaPlugin
         this.entityListener = new EntityListener(this);
         this.signListener = new SignListener(this);
         this.commands = new Commands(this);
-
     }
 
     public static Ironclad getPlugin() {
@@ -172,7 +171,7 @@ public final class Ironclad extends JavaPlugin
 			});
 
 
-			// setting up Aiming Mode Task
+			// setting up Cruising Mode Task
 			craftMovementManager.initMovementExecute();
             fakeBlockHandler.setupScheduler();
 

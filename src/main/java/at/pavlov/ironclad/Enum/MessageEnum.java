@@ -22,10 +22,11 @@ public enum MessageEnum
 	CmdClaimCraftStarted("Commands.ClaimCraftsStarted"),
 	CmdClaimCraftsFinished("Commands.ClaimCraftsFinished"),
 
-	//Piloting
-	PilotingModeEnabled("Piloting.EnablePilotingMode"),
-	PilotingModeDisabled("Piloting.DisablePilotingMode"),
-	PilotingModeTooFarAway("Piloting.TooFarForPilotingMode"),
+	//Cruising
+	CruisingModeEnabled("Cruising.EnableCruisingMode"),
+	CruisingModeDisabled("Cruising.DisableCruisingMode"),
+	CruisingModeTooFarAway("Cruising.TooFarForCruisingMode"),
+	SettingCombinedAngle ("Aiming.SettingCombinedAngle"),
 
 	//craft
 	CraftCreated ("Craft.Created"),

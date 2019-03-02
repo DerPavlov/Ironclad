@@ -156,13 +156,13 @@ public class BlockListener implements Listener
         if (craft != null)
         {
             //breaking is only allowed when the barrel is broken - minor stuff as buttons are canceled
-            //you can't break your own craft in aiming mode
+            //you can't break your own craft in cruising mode
             //breaking craft while player is in selection (command) mode is not allowed
-            Craft aimingCraft = null;
-            if (plugin.getCraftMovementManager().isInPilotingMode(event.getPlayer().getUniqueId()))
-                 aimingCraft = plugin.getCraftMovementManager().getCraftInPilotingMode(event.getPlayer());
+            Craft cruisingCraft = null;
+            if (plugin.getCraftMovementManager().isInCruisingMode(event.getPlayer().getUniqueId()))
+                 cruisingCraft = plugin.getCraftMovementManager().getCraftInCruisingMode(event.getPlayer());
 
-            if (!craft.isProtectedBlock(event.getBlock().getLocation()) && (!craft.equals(aimingCraft)) && !plugin.getCommandListener().isSelectingMode(event.getPlayer())) {
+            if (!craft.isProtectedBlock(event.getBlock().getLocation()) && (!craft.equals(cruisingCraft)) && !plugin.getCommandListener().isSelectingMode(event.getPlayer())) {
                 plugin.getCraftManager().removeCraft(craft, false, true, BreakCause.PlayerBreak);
                 plugin.logDebug("craft broken:  " + !craft.isProtectedBlock(event.getBlock().getLocation()));
             }

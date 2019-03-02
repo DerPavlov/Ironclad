@@ -92,12 +92,12 @@ public class DesignStorage
 		for (DesignFileName designFile : designFileList)
 		{
 			plugin.logDebug("loading craft " + designFile.getYmlString());
-			CraftDesign cannonDesign = new CraftDesign();
+			CraftDesign craftDesign = new CraftDesign();
 			//load .yml
-			loadDesignYml(cannonDesign, designFile.getYmlString());
+			loadDesignYml(craftDesign, designFile.getYmlString());
 			//load .shematic and add to list if valid
-			if (loadDesignSchematic(cannonDesign, designFile.getSchematicString()))
-				craftsDesignList.add(cannonDesign);
+			if (loadDesignSchematic(craftDesign, designFile.getSchematicString()))
+				craftsDesignList.add(craftDesign);
 		}
 		
 		//sort the list so the designs with more craft blocks comes first
@@ -105,8 +105,8 @@ public class DesignStorage
 		Comparator<CraftDesign> comparator = new DesignComparator();
 		craftsDesignList.sort(comparator);
 
-		for (CraftDesign cannonDesign : getCraftsDesignList()) {
-			for (SimpleBlock sBlock : cannonDesign.getAllCraftBlocks(BlockFace.NORTH)){
+		for (CraftDesign craftDesign : getCraftsDesignList()) {
+			for (SimpleBlock sBlock : craftDesign.getAllCraftBlocks(BlockFace.NORTH)){
 				BlockMaterial material = sBlock.getBlockState().getBlockType().getMaterial();
 				if (!material.isAir() && !craftBlockMaterials.contains(material)) {
 					craftBlockMaterials.add(sBlock.getBlockState().getBlockType().getMaterial());
@@ -179,8 +179,8 @@ public class DesignStorage
 	private void loadDesignYml(CraftDesign craftDesign, String ymlFile)
 	{
 		// load .yml file
-		File cannonDesignFile = new File(getPath() + ymlFile);
-		FileConfiguration craftDesignConfig = YamlConfiguration.loadConfiguration(cannonDesignFile);
+		File craftDesignFile = new File(getPath() + ymlFile);
+		FileConfiguration craftDesignConfig = YamlConfiguration.loadConfiguration(craftDesignFile);
 
 		// load all entries of the config file
 
@@ -201,6 +201,15 @@ public class DesignStorage
 
 		// angles
 		craftDesign.setSchematicDirection(BlockFace.valueOf(craftDesignConfig.getString("angles.schematicDirection", "NORTH").toUpperCase()));
+		craftDesign.setMaxHorizontalAngle(craftDesignConfig.getDouble("angles.maxHorizontalAngle", 20.0));
+		craftDesign.setMinHorizontalAngle(craftDesignConfig.getDouble("angles.minHorizontalAngle", -20.0));
+		craftDesign.setMaxVerticalAngle(craftDesignConfig.getDouble("angles.maxVerticalAngle", 10.0));
+		craftDesign.setMinVerticalAngle(craftDesignConfig.getDouble("angles.minVerticalAngle", -10.0));
+		craftDesign.setAngleStepSize(craftDesignConfig.getDouble("angles.angleStepSize", 0.1));
+		craftDesign.setAngleLargeStepSize(craftDesignConfig.getDouble("angles.largeStepSize", 1.0));
+		craftDesign.setAngleUpdateSpeed((int) (craftDesignConfig.getDouble("angles.angleUpdateSpeed", 1.0) * 1000.0));
+		craftDesign.setAngleUpdateMessage(craftDesignConfig.getBoolean("angles.angleUpdateMessage", false));
+
 
 		//realistic behavior
 		craftDesign.setDismantlingDelay(craftDesignConfig.getDouble("realisticBehaviour.dismantlingDelay", 1.75));
@@ -214,7 +223,7 @@ public class DesignStorage
 		// permissions
 		craftDesign.setPermissionBuild(craftDesignConfig.getString("permissions.build", "ironclad.player.build"));
 		craftDesign.setPermissionDismantle(craftDesignConfig.getString("permissions.dismantle", "ironclad.player.dismantle"));
-		craftDesign.setPermissionRename(craftDesignConfig.getString("permissions.piloting", "ironclad.player.piloting"));
+		craftDesign.setPermissionRename(craftDesignConfig.getString("permissions.cruising", "ironclad.player.cruising"));
         craftDesign.setPermissionRename(craftDesignConfig.getString("permissions.rename", "ironclad.player.rename"));
 
 		// accessRestriction
@@ -224,9 +233,11 @@ public class DesignStorage
         craftDesign.setSoundCreate(new SoundHolder(craftDesignConfig.getString("sounds.create","BLOCK_ANVIL_LAND:1:0.5")));
         craftDesign.setSoundDestroy(new SoundHolder(craftDesignConfig.getString("sounds.destroy","ENTITY_ZOMBIE_ATTACK_IRON_DOOR:1:0.5")));
         craftDesign.setSoundDismantle(new SoundHolder(craftDesignConfig.getString("sounds.dismantle", "BLOCK_ANVIL_USE:1:0.5")));
+		craftDesign.setSoundAngleChange(new SoundHolder(craftDesignConfig.getString("sounds.angleChange","ENTITY_IRON_GOLEM_STEP:1:0.5")));
+		craftDesign.setSoundMove(new SoundHolder(craftDesignConfig.getString("sounds.move","BLOCK_ANVIL_LAND:5:1")));
 		craftDesign.setSoundSelected(new SoundHolder(craftDesignConfig.getString("sounds.selected","BLOCK_ANVIL_LAND:1:2")));
-		craftDesign.setSoundEnablePilotingMode(new SoundHolder(craftDesignConfig.getString("sounds.enablePilotingMode","NONE:1:1")));
-		craftDesign.setSoundDisablePilotingMode(new SoundHolder(craftDesignConfig.getString("sounds.disablePilotingMode","NONE:1:1")));
+		craftDesign.setSoundEnableCruisingMode(new SoundHolder(craftDesignConfig.getString("sounds.enableCruisingMode","NONE:1:1")));
+		craftDesign.setSoundDisableCruisingMode(new SoundHolder(craftDesignConfig.getString("sounds.disableCruisingMode","NONE:1:1")));
 
 
 		// constructionBlocks
@@ -241,10 +252,10 @@ public class DesignStorage
 
 	/**
 	 * loads the schematic of the config file
-	 * @param cannonDesign design of the craft
+	 * @param craftDesign design of the craft
 	 * @param schematicFile path of the schematic file
 	 */
-	private boolean loadDesignSchematic(CraftDesign cannonDesign, String schematicFile)
+	private boolean loadDesignSchematic(CraftDesign craftDesign, String schematicFile)
 	{
         long startTime = System.nanoTime();
 		
@@ -281,16 +292,16 @@ public class DesignStorage
 
 		// convert all schematic blocks from the config to BaseBlocks so they
 		// can be rotated
-		BlockStateHolder blockIgnore = cannonDesign.getSchematicBlockTypeIgnore();
-		BlockState blockRotationCenter = cannonDesign.getSchematicBlockTypeRotationCenter();
-		BlockState blockEngine = cannonDesign.getSchematicBlockTypeEngine();
-		BlockState blockChest = cannonDesign.getSchematicBlockTypeChest();
-		BlockState blockSign = cannonDesign.getSchematicBlockTypeSign();
-        List<BlockState> blockProtectedList = new ArrayList<BlockState>(cannonDesign.getSchematicBlockTypeProtected());
+		BlockStateHolder blockIgnore = craftDesign.getSchematicBlockTypeIgnore();
+		BlockState blockRotationCenter = craftDesign.getSchematicBlockTypeRotationCenter();
+		BlockState blockEngine = craftDesign.getSchematicBlockTypeEngine();
+		BlockState blockChest = craftDesign.getSchematicBlockTypeChest();
+		BlockState blockSign = craftDesign.getSchematicBlockTypeSign();
+        List<BlockState> blockProtectedList = new ArrayList<BlockState>(craftDesign.getSchematicBlockTypeProtected());
 		
 		
 		// get facing of the craft
-		BlockFace cannonDirection = cannonDesign.getSchematicDirection();
+		BlockFace craftDirection = craftDesign.getSchematicDirection();
 
 		// read out blocks
 		int width = cc.getDimensions().getBlockX();
@@ -319,7 +330,7 @@ public class DesignStorage
 		for (int i = 0; i < 4; i++)
 		{
 			// create CraftBlocks entry
-            CraftBlocks cannonBlocks = new CraftBlocks();
+            CraftBlocks craftBlocks = new CraftBlocks();
 
 			// to set the muzzle location the maximum and mininum x, y, z values
 			// of all size blocks have to be found
@@ -358,10 +369,10 @@ public class DesignStorage
 				}
 				else {
 					//all craft blocks. Ignore the rotation center
-					cannonBlocks.getAllCraftBlocks().add(new SimpleBlock(x, y, z, sblock.getBlockState()));
+					craftBlocks.getAllCraftBlocks().add(new SimpleBlock(x, y, z, sblock.getBlockState()));
 					// this can be a destructible block
 					if (isInList(blockProtectedList, sblock.getBlockState()))
-						cannonBlocks.getProtectedBlocks().add(BlockVector3.at(x, y, z));
+						craftBlocks.getProtectedBlocks().add(BlockVector3.at(x, y, z));
 
 					// #############  find the min and max for the craft
 					// reset for the first entry
@@ -376,63 +387,67 @@ public class DesignStorage
 					// #############  engines ########################
 					if (sblock.compareMaterial(blockEngine)) {
 						// the id does not matter
-						cannonBlocks.getEngines().add(new SimpleBlock(x, y, z, sblock.getBlockState()));
+						craftBlocks.getEngines().add(new SimpleBlock(x, y, z, sblock.getBlockState()));
 					}
 					// #############  chests ########################
 					else if (sblock.compareMaterial(blockChest)) {
 						// the id does not matter
-						cannonBlocks.getChest().add(new SimpleBlock(x, y, z, sblock.getBlockState()));
+						craftBlocks.getChest().add(new SimpleBlock(x, y, z, sblock.getBlockState()));
 					}
 					// #############  sign ########################
 					else if (sblock.compareMaterial(blockSign)) {
 						// the id does not matter, but the data is important for signs
-						cannonBlocks.getSign().add(new SimpleBlock(x, y, z, sblock.getBlockState()));
+						craftBlocks.getSign().add(new SimpleBlock(x, y, z, sblock.getBlockState()));
 					}
 					// #############  hull of the ship
 					else {
-						// all remaining blocks are loading interface or cannonBlocks
-						cannonBlocks.getHullBlocks().add(BlockVector3.at(x, y, z));
+						// all remaining blocks are loading interface or craftBlocks
+						craftBlocks.getHullBlocks().add(BlockVector3.at(x, y, z));
 					}
 				}
             }
 
 			// calculate the muzzle location
 			//maxSize.add(new Vector(1, 1, 1));
-			cannonBlocks.setMinSize(minSize);
-			cannonBlocks.setMaxSize(maxSize);
+			craftBlocks.setMinSize(minSize);
+			craftBlocks.setMaxSize(maxSize);
 
 			//craft center
 			BlockVector3 center = maxSize.add(BlockVector3.ONE);
-			cannonBlocks.setCraftCenter(center.add(minSize).divide(2));
+			craftBlocks.setCraftCenter(center.add(minSize).divide(2));
 
 			// calculate the rotation Center if a rotation center block was used, otherwise use the center of the craft
 			if (maxRotation != null){
-				cannonBlocks.setRotationCenter(maxRotation.add(BlockVector3.ONE).add(minRotation).divide(2));
+				craftBlocks.setRotationCenter(maxRotation.add(BlockVector3.ONE).add(minRotation).divide(2));
+
 			}
 			else {
-				cannonBlocks.setRotationCenter(cannonBlocks.getCraftCenter());
+				craftBlocks.setRotationCenter(craftBlocks.getCraftCenter());
 			}
+			//set rotation center above Craft for visual effects
+			BlockVector3 rotation = craftBlocks.getRotationCenter();
+			craftBlocks.setRotationCenter(BlockVector3.at(rotation.getX(), maxSize.getY()+1,rotation.getZ()));
 
             //set the center location to Zero
-            BlockVector3 compensation = BlockVector3.at(cannonBlocks.getRotationCenter().getX(), cannonBlocks.getRotationCenter().getY(), cannonBlocks.getRotationCenter().getZ());
+            BlockVector3 compensation = BlockVector3.at(craftBlocks.getRotationCenter().getX(), craftBlocks.getRotationCenter().getY(), craftBlocks.getRotationCenter().getZ());
 
-            for (SimpleBlock block : cannonBlocks.getAllCraftBlocks())
+            for (SimpleBlock block : craftBlocks.getAllCraftBlocks())
                 block.subtract_noCopy(compensation);
-            cannonBlocks.setHullBlocks(IroncladUtil.subtractBlockVectorList(cannonBlocks.getHullBlocks(), compensation));
-            for (SimpleBlock block : cannonBlocks.getChest())
+            craftBlocks.setHullBlocks(IroncladUtil.subtractBlockVectorList(craftBlocks.getHullBlocks(), compensation));
+            for (SimpleBlock block : craftBlocks.getChest())
                 block.subtract_noCopy(compensation);
-			for (SimpleBlock block : cannonBlocks.getSign())
+			for (SimpleBlock block : craftBlocks.getSign())
 				block.subtract_noCopy(compensation);
-			for (SimpleBlock block : cannonBlocks.getEngines())
+			for (SimpleBlock block : craftBlocks.getEngines())
 				block.subtract_noCopy(compensation);
-			cannonBlocks.setProtectedBlocks(IroncladUtil.subtractBlockVectorList(cannonBlocks.getProtectedBlocks(), compensation));
-            cannonBlocks.setMinSize(cannonBlocks.getMinSize().subtract(compensation));
-            cannonBlocks.setMaxSize(cannonBlocks.getMaxSize().subtract(compensation));
-            cannonBlocks.setRotationCenter(cannonBlocks.getRotationCenter().subtract(compensation));
-            cannonBlocks.setCraftCenter(cannonBlocks.getCraftCenter().subtract(compensation));
+			craftBlocks.setProtectedBlocks(IroncladUtil.subtractBlockVectorList(craftBlocks.getProtectedBlocks(), compensation));
+            craftBlocks.setMinSize(craftBlocks.getMinSize().subtract(compensation));
+            craftBlocks.setMaxSize(craftBlocks.getMaxSize().subtract(compensation));
+            craftBlocks.setRotationCenter(craftBlocks.getRotationCenter().subtract(compensation));
+            craftBlocks.setCraftCenter(craftBlocks.getCraftCenter().subtract(compensation));
 
 			// add blocks to the HashMap
-			cannonDesign.getCannonBlockMap().put(cannonDirection, cannonBlocks);
+			craftDesign.getCannonBlockMap().put(craftDirection, craftBlocks);
 
 			//rotate blocks for the next iteration
 			IroncladUtil.roateBlockFacingClockwise(blockRotationCenter);
@@ -448,8 +463,8 @@ public class DesignStorage
 				simpleBlock.rotate90();
 			}
 
-            //rotate cannonDirection
-			cannonDirection = IroncladUtil.roatateFace(cannonDirection);
+            //rotate craftDirection
+			craftDirection = IroncladUtil.roatateFace(craftDirection);
 
 
 
@@ -555,10 +570,10 @@ public class DesignStorage
 	 */
 	public CraftDesign getDesign(String designId)
 	{
-		for (CraftDesign cannonDesign : craftsDesignList)
+		for (CraftDesign craftDesign : craftsDesignList)
 		{
-			if (cannonDesign.getDesignID().equals(designId))
-				return cannonDesign;
+			if (craftDesign.getDesignID().equals(designId))
+				return craftDesign;
 		}
 		return null;
 	}

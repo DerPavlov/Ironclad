@@ -20,7 +20,7 @@ public class FakeBlockEntry implements Cloneable{
 
     //fake block will only be shown to this player
     private final UUID player;
-    //only one type effect will be shown (aiming, explosion,...)
+    //only one type effect will be shown (cruising, explosion,...)
     private final FakeBlockType type;
 
 
